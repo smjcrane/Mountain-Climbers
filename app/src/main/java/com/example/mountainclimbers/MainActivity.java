@@ -8,20 +8,20 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button startbutton;
+    private Button startButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        startbutton = findViewById(R.id.mainStartButton);
-        startbutton.setOnClickListener(new View.OnClickListener() {
+        startButton = findViewById(R.id.mainStartButton);
+        startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent seeMountain = new Intent();
-                seeMountain.setClass(MainActivity.this, SeeMountain.class);
-                startActivity(seeMountain);
+                Intent selectLevel = new Intent();
+                selectLevel.setClass(MainActivity.this, LevelSelectActivity.class);
+                startActivity(selectLevel);
             }
         });
     }

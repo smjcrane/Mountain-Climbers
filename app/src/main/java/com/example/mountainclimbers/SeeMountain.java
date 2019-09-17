@@ -1,5 +1,6 @@
 package com.example.mountainclimbers;
 
+import android.content.Intent;
 import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,7 +27,16 @@ public class SeeMountain extends AppCompatActivity {
 
         mountainView = findViewById(R.id.mountainView);
 
-        loadLevel(R.raw.lvl01);
+        int levelID = -1;
+        Intent caller = getIntent();
+        Bundle extras = caller.getExtras();
+        if (extras != null) {
+            if (extras.containsKey(LevelSelectActivity.LEVELID)) {
+                levelID = extras.getInt(LevelSelectActivity.LEVELID, -1);
+            }
+        }
+
+        loadLevel(levelID);
 
         Button goButton = findViewById(R.id.mountainGoButton);
         goButton.setOnClickListener(new View.OnClickListener() {
