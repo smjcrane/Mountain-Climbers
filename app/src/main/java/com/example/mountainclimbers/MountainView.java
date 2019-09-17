@@ -27,6 +27,7 @@ public class MountainView extends View {
 
     public static int STEP_NUMBER = 1000;
     public static int PADDING = 150;
+    private static int TEXT_SIZE = 1000;
 
     private Mountain mountain;
     private Paint mountainPaint, skyPaint, victoryTextPaint;
@@ -50,7 +51,7 @@ public class MountainView extends View {
         this.skyPaint.setColor(r.getColor(R.color.skyBlue));
         this.victoryTextPaint = new Paint();
         this.victoryTextPaint.setColor(r.getColor(R.color.victoryGold));
-        this.victoryTextPaint.setTextSize(400);
+        this.victoryTextPaint.setTextSize(TEXT_SIZE);
         this.arrowFilter = new PorterDuffColorFilter(r.getColor(R.color.guideArrows), PorterDuff.Mode.SRC_ATOP);
         this.highlightedArrowFilter = new PorterDuffColorFilter(r.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
         this.climbers = new ArrayList<>();
@@ -155,6 +156,17 @@ public class MountainView extends View {
         paint.getTextBounds(text, 0, text.length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
         float y = cHeight / 2f + r.height() / 2f - r.bottom;
+        while (x < PADDING){
+            TEXT_SIZE = TEXT_SIZE - 50;
+            paint.setTextSize(TEXT_SIZE);
+            canvas.getClipBounds(r);
+            cHeight = r.height();
+            cWidth = r.width();
+            paint.setTextAlign(Paint.Align.LEFT);
+            paint.getTextBounds(text, 0, text.length(), r);
+            x = cWidth / 2f - r.width() / 2f - r.left;
+            y = cHeight / 2f + r.height() / 2f - r.bottom;
+        }
         canvas.drawText(text, x, y, paint);
     }
 
