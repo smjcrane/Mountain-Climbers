@@ -64,9 +64,10 @@ public class MountainView extends View {
 
     public void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * padding;
+        int height = getHeight() - 2 * padding;
         for (MountainClimber climber : climbers){
             canvas.drawCircle(climber.getPosition() * width / mountain.getWidth() + padding,
-                    getHeight() - padding - mountain.getHeightAt(climber.getPosition()) * getHeight() / mountain.getViewHeight(),
+                    getHeight() - padding - mountain.getHeightAt(climber.getPosition()) * height / mountain.getMaxHeight(),
                     30, climberPaints.get(climber));
         }
     }
@@ -76,9 +77,10 @@ public class MountainView extends View {
             return;
         }
         int width = getWidth() - 2 * padding;
+        int height = getHeight() - 2 * padding;
         for (MountainClimber climber : climbers){
             int cx = climber.getPosition() * width / mountain.getWidth() + padding;
-            int cy = getHeight() - padding - this.mountain.getHeightAt(climber.getPosition())  * getHeight() / mountain.getViewHeight();
+            int cy = getHeight() - padding - this.mountain.getHeightAt(climber.getPosition())  * height / mountain.getMaxHeight();
             Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
             d.setColorFilter(arrowFilter);
 
@@ -106,18 +108,17 @@ public class MountainView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         int x = 0;
-        int height = getHeight();
+        int height = getHeight() - 2 * padding;
         int width = getWidth() - 2 * padding;
-        canvas.drawRect(0,  height, width + 2 * padding, 0, skyPaint);
-        canvas.drawRect(0, height, padding, height - padding, mountainPaint);
-        canvas.drawRect(width + padding, height, width + 2 * padding, height - padding, mountainPaint);
+        canvas.drawRect(0,  getHeight(), getWidth(), 0, skyPaint);
+        canvas.drawRect(0, getHeight(), getWidth(), getHeight() - padding, mountainPaint);
         for (int i = 0; i < STEP_NUMBER; i++){
-            int y = mountain.getHeightAt(
-                    mountain.getWidth() * i / STEP_NUMBER) * height / mountain.getViewHeight();
+            int y = - padding + mountain.getHeightAt(
+                    mountain.getWidth() * i / STEP_NUMBER) * height / mountain.getMaxHeight();
             canvas.drawRect(i * width / STEP_NUMBER + padding,
-                    height,
+                    height + padding,
                     (i + 1) * width / STEP_NUMBER + padding,
-                    height - y - padding, mountainPaint);
+                    height - y, mountainPaint);
         }
         drawClimbers(canvas);
         drawDirections(canvas);
@@ -186,7 +187,7 @@ public class MountainView extends View {
                     int bestDistance = Integer.MAX_VALUE;
                     for (MountainClimber climber : climbers){
                         int cx = climber.getPosition() * getWidth() / mountain.getWidth();
-                        int cy = getHeight() - mountain.getHeightAt(climber.getPosition()) * getHeight() / mountain.getViewHeight();
+                        int cy = getHeight() - mountain.getHeightAt(climber.getPosition()) * getHeight() / mountain.getMaxHeight();
                         if (Math.abs(cx - x) + Math.abs(cy - y) < bestDistance){
                             bestClimber = climber;
                             bestDistance = (int) (Math.abs(cx - x) + Math.abs(cy - y));
@@ -203,7 +204,7 @@ public class MountainView extends View {
                     return false;
                 }
                 int cx = selectedClimber.getPosition() * getWidth() / mountain.getWidth();
-                int cy = getHeight() - mountain.getHeightAt(selectedClimber.getPosition()) * getHeight() / mountain.getViewHeight();
+                int cy = getHeight() - mountain.getHeightAt(selectedClimber.getPosition()) * getHeight() / mountain.getMaxHeight();
                 Log.d("MVIEW", cx + " " + cy + ", " + x + " " + y);
                 if (x > cx){
                     selectedClimber.setDirection(MountainClimber.Direction.RIGHT);
