@@ -32,6 +32,10 @@ public class Mountain {
         return maxHeight;
     }
 
+    public int getViewHeight(){
+        return maxHeight + 20;
+    }
+
     public int getHeightAt(int x){
         if (x > this.width || x < 0){
             throw new IndexOutOfBoundsException("The mountain is only "
