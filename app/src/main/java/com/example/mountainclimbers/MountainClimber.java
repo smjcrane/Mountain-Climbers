@@ -44,6 +44,9 @@ public class MountainClimber {
     }
 
     public boolean canMoveDown(Mountain mountain){
+        if (position == 0 || position == mountain.getWidth()){
+            return false;
+        }
         Mountain.Slope slope = mountain.getTypeAt(position);
         switch (slope){
             case MIN:
