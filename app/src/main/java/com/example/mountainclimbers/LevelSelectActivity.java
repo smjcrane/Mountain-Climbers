@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -13,6 +13,7 @@ public class LevelSelectActivity extends AppCompatActivity {
 
     public static final Integer[] levelIDs = new Integer[] {R.raw.lvl00, R.raw.lvl01};
     public static final String LEVELID = "levelID";
+    public static final String LEVEL_POS = "levelpos";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +28,18 @@ public class LevelSelectActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent playLevel = new Intent();
-                playLevel.setClass(LevelSelectActivity.this, SeeMountain.class);
+                playLevel.setClass(LevelSelectActivity.this, SeeMountainActivity.class);
                 playLevel.putExtra(LEVELID, levelIDs[position]);
+                playLevel.putExtra(LEVEL_POS, position);
                 startActivity(playLevel);
+            }
+        });
+
+        Button backButton = findViewById(R.id.levelSelectBackButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

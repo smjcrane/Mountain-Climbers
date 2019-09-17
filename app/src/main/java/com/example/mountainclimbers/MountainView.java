@@ -1,12 +1,14 @@
 package com.example.mountainclimbers;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -35,6 +37,8 @@ public class MountainView extends View {
     private MountainClimber selectedClimber;
     private Moving moving;
     private boolean victory;
+    private Rect r = new Rect();
+    private OnVictoryListener victoryListener;
 
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -53,6 +57,12 @@ public class MountainView extends View {
         this.climberPaints = new HashMap<>();
         this.selectedClimber = null;
         this.moving = Moving.NONE;
+        this.victoryListener = new OnVictoryListener() {
+            @Override
+            public void onVictory() {
+                return;
+            }
+        };
     }
 
     public void addClimber(MountainClimber climber, int colorId){
@@ -64,11 +74,22 @@ public class MountainView extends View {
 
     public void setMountain(Mountain mountain){
         this.mountain = mountain;
+        this.victory = false;
+        this.moving = Moving.NONE;
+        this.climbers = new ArrayList<>();
+        this.selectedClimber = null;
+        this.climberPaints = new HashMap<>();
+        invalidate();
     }
 
-    public boolean removeClimbers(){
+    public void setOnVictoryListener(OnVictoryListener v){
+        this.victoryListener = v;
+    }
+
+    private boolean removeClimbers(){
         if (climbers.size() == 1){
             victory = true;
+            victoryListener.onVictory();
             return false;
         }
         for (MountainClimber climber : climbers){
@@ -83,7 +104,7 @@ public class MountainView extends View {
         return false;
     }
 
-    public void drawClimbers(Canvas canvas){
+    private void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
         for (MountainClimber climber : climbers){
@@ -93,7 +114,7 @@ public class MountainView extends View {
         }
     }
 
-    public void drawDirections(Canvas canvas){
+    private void drawDirections(Canvas canvas){
         if (moving == Moving.UP || moving == Moving.DOWN || victory){
             return;
         }
@@ -126,6 +147,17 @@ public class MountainView extends View {
         }
     }
 
+    private void drawCenter(Canvas canvas, Paint paint, String text) {
+        canvas.getClipBounds(r);
+        int cHeight = r.height();
+        int cWidth = r.width();
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.getTextBounds(text, 0, text.length(), r);
+        float x = cWidth / 2f - r.width() / 2f - r.left;
+        float y = cHeight / 2f + r.height() / 2f - r.bottom;
+        canvas.drawText(text, x, y, paint);
+    }
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -147,7 +179,7 @@ public class MountainView extends View {
         drawDirections(canvas);
 
         if (victory){
-            canvas.drawText("YOU WIN!", 0, 500, victoryTextPaint);
+            drawCenter(canvas, victoryTextPaint, "YOU WIN!");
         }
 
         if (moving != Moving.NONE){
@@ -260,5 +292,9 @@ public class MountainView extends View {
 
     public enum Moving{
         UP, DOWN, NONE
+    }
+
+    public interface OnVictoryListener {
+        public void onVictory();
     }
 }

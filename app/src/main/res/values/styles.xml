@@ -10,6 +10,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textSize">40dp</item>
+        <item name="colorButtonNormal">@color/mountainGrey</item>
     </style>
 
 </resources>
