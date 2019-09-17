@@ -12,10 +12,10 @@ public class SeeMountain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_see_mountain);
 
-        Mountain mountain = new Mountain(new int[] {0, 100, 20, 70, 40, 80, 0});
-        mountain = new Mountain(new int[] {0, 100, 0});
+        Mountain mountain = new Mountain(new int[] {0, 100, 0, 70, 40, 80, 0});
         final MountainView mountainView = findViewById(R.id.mountainView);
         mountainView.setMountain(mountain);
+
         MountainClimber greenClimber = new MountainClimber();
         greenClimber.setPosition(0);
         mountainView.addClimber(greenClimber, R.color.climberGreen);
@@ -23,6 +23,10 @@ public class SeeMountain extends AppCompatActivity {
         MountainClimber purpleClimber = new MountainClimber();
         purpleClimber.setPosition(mountain.getWidth());
         mountainView.addClimber(purpleClimber, R.color.climberPurple);
+
+        MountainClimber blueClimber = new MountainClimber();
+        blueClimber.setPosition(200);
+        mountainView.addClimber(blueClimber, R.color.climberBlue);
 
         Button goButton = findViewById(R.id.mountainGoButton);
         goButton.setOnClickListener(new View.OnClickListener() {
