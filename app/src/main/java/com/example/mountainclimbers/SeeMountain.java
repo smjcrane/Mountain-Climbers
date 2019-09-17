@@ -13,6 +13,7 @@ public class SeeMountain extends AppCompatActivity {
         setContentView(R.layout.activity_see_mountain);
 
         Mountain mountain = new Mountain(new int[] {0, 100, 20, 70, 40, 80, 0});
+        mountain = new Mountain(new int[] {0, 100, 0});
         final MountainView mountainView = findViewById(R.id.mountainView);
         mountainView.setMountain(mountain);
         MountainClimber greenClimber = new MountainClimber();

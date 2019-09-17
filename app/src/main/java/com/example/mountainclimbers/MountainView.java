@@ -26,7 +26,7 @@ public class MountainView extends View {
     public static int STEP_NUMBER = 1000;
 
     private Mountain mountain;
-    private Paint mountainPaint, skyPaint;
+    private Paint mountainPaint, skyPaint, victoryTextPaint;
     private ColorFilter arrowFilter, highlightedArrowFilter;
     private List<MountainClimber> climbers;
     private Map<MountainClimber, Paint> climberPaints;
@@ -34,6 +34,7 @@ public class MountainView extends View {
     private MountainClimber selectedClimber;
     private Moving moving;
     private int padding = 100;
+    private boolean victory;
 
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -43,6 +44,9 @@ public class MountainView extends View {
         this.mountainPaint.setColor(r.getColor(R.color.mountainGrey));
         this.skyPaint = new Paint();
         this.skyPaint.setColor(r.getColor(R.color.skyBlue));
+        this.victoryTextPaint = new Paint();
+        this.victoryTextPaint.setColor(r.getColor(R.color.victoryGold));
+        this.victoryTextPaint.setTextSize(400);
         this.arrowFilter = new PorterDuffColorFilter(r.getColor(R.color.guideArrows), PorterDuff.Mode.SRC_ATOP);
         this.highlightedArrowFilter = new PorterDuffColorFilter(r.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
         this.climbers = new ArrayList<>();
@@ -62,6 +66,23 @@ public class MountainView extends View {
         this.mountain = mountain;
     }
 
+    public boolean removeClimbers(){
+        if (climbers.size() == 1){
+            victory = true;
+            Log.d("MVIEW", "victory");
+            return false;
+        }
+        for (MountainClimber climber : climbers){
+            for (MountainClimber c2 : climbers) {
+                if (c2 != climber && Math.abs(c2.getPosition() - climber.getPosition()) < 1.5) {
+                    this.climbers.remove(c2);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * padding;
         int height = getHeight() - 2 * padding;
@@ -73,7 +94,7 @@ public class MountainView extends View {
     }
 
     public void drawDirections(Canvas canvas){
-        if (moving == Moving.UP || moving == Moving.DOWN){
+        if (moving == Moving.UP || moving == Moving.DOWN || victory){
             return;
         }
         int width = getWidth() - 2 * padding;
@@ -107,7 +128,9 @@ public class MountainView extends View {
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        int x = 0;
+
+        while (removeClimbers()){};
+
         int height = getHeight() - 2 * padding;
         int width = getWidth() - 2 * padding;
         canvas.drawRect(0,  getHeight(), getWidth(), 0, skyPaint);
@@ -122,6 +145,12 @@ public class MountainView extends View {
         }
         drawClimbers(canvas);
         drawDirections(canvas);
+
+        if (victory){
+            Log.d("MVIEW", "you have won");
+            canvas.drawText("YOU WIN!", 0, 500, victoryTextPaint);
+        }
+
         if (moving != Moving.NONE){
             boolean canGoUp = (moving == Moving.UP);
             for (MountainClimber climber : climbers){
@@ -139,13 +168,16 @@ public class MountainView extends View {
                 return;
             } else {
                 moving = Moving.NONE;
-                //TODO collision checking
                 invalidate();
             }
         }
     }
 
     public void go(){
+        if (victory){
+            return;
+        }
+        
         boolean allSelected = true;
         for (MountainClimber climber : climbers){
             if (climber.getDirection() == null){
@@ -177,6 +209,10 @@ public class MountainView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent e){
+        if (victory){
+            return true;
+        }
+
         float x = e.getX();
         float y = e.getY();
 
