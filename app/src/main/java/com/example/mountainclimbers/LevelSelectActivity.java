@@ -12,7 +12,10 @@ import android.widget.ListView;
 public class LevelSelectActivity extends AppCompatActivity {
 
     public static final Integer[] levelIDs = new Integer[] {
-            R.raw.lvl00, R.raw.lvl01, R.raw.lvl02,
+            R.raw.lvl00, R.raw.lvl01, R.raw.lvl02, R.raw.lvl03, R.raw.lvl04,
+            R.raw.lvl05, R.raw.lvl06, R.raw.lvl07, R.raw.lvl08, R.raw.lvl09,
+            R.raw.lvl10, R.raw.lvl11, R.raw.lvl12, R.raw.lvl13, R.raw.lvl14,
+            R.raw.lvl15, R.raw.lvl16, R.raw.lvl17, R.raw.lvl18, R.raw.lvl19,
             R.raw.lvl20};
     public static final String LEVELID = "levelID";
     public static final String LEVEL_POS = "levelpos";

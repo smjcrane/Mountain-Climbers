@@ -75,6 +75,7 @@ public class MountainView extends View {
     }
 
     public void setMountain(Mountain mountain){
+        Log.d("MVIEW", "width " + mountain.getWidth());
         this.mountain = mountain;
         this.victory = false;
         this.moving = Moving.NONE;
@@ -267,12 +268,12 @@ public class MountainView extends View {
         float x = e.getX();
         float y = e.getY();
 
+        int width = getWidth() - 2 * PADDING;
+        int height = getHeight() - 2 * PADDING;
+
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (selectedClimber == null){
-                    int width = getWidth() - 2 * PADDING;
-                    int height = getHeight() - 2 * PADDING;
-
                     MountainClimber bestClimber = null;
                     int bestDistance = 50;
                     for (MountainClimber climber : climbers){
@@ -293,8 +294,7 @@ public class MountainView extends View {
                 if (selectedClimber == null){
                     return false;
                 }
-                int cx = selectedClimber.getPosition() * getWidth() / mountain.getWidth();
-                int cy = getHeight() - mountain.getHeightAt(selectedClimber.getPosition()) * getHeight() / mountain.getMaxHeight();
+                int cx = selectedClimber.getPosition() * width / mountain.getWidth() + PADDING;
                 if (x > cx){
                     selectedClimber.setDirection(MountainClimber.Direction.RIGHT);
                 } else {
