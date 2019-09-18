@@ -1,6 +1,6 @@
 0 100 0
 0 200
 N This time there are two climbers.  They have to keep the same height at all times.
-R0 Set the climber's direction
-L1 Set this one to the left
+R0 Set the climber on the left to go to the right
+L1 And the one of the right to go to the left
 G Press GO

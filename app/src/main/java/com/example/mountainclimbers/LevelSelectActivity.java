@@ -11,7 +11,9 @@ import android.widget.ListView;
 
 public class LevelSelectActivity extends AppCompatActivity {
 
-    public static final Integer[] levelIDs = new Integer[] {R.raw.lvl00, R.raw.lvl01};
+    public static final Integer[] levelIDs = new Integer[] {
+            R.raw.lvl00, R.raw.lvl01, R.raw.lvl02,
+            R.raw.lvl20};
     public static final String LEVELID = "levelID";
     public static final String LEVEL_POS = "levelpos";
 
