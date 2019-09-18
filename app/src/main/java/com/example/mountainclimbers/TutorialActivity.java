@@ -11,38 +11,35 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
-public class SeeMountainActivity extends AppCompatActivity {
+public class TutorialActivity extends AppCompatActivity {
 
-    private MountainView mountainView;
-    public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberBlue};
-    private Button buttonBack, buttonNextLevel, buttonReset;
+    public static int[] levelIDs = new int[] {R.raw.tutorial0, R.raw.tutorial1, R.raw.tutorial2};
+
+    private TutorialMountainView mountainView;
     private TextView goButton;
+    private Button buttonBack, buttonNextLevel, buttonReset;
     private int levelID;
     private int levelPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_see_mountain);
+        setContentView(R.layout.activity_tutorial);
 
-        mountainView = findViewById(R.id.mountainView);
+        levelPos = 0;
+        levelID = levelIDs[levelPos];
 
-        levelID = -1;
-        Intent caller = getIntent();
-        Bundle extras = caller.getExtras();
-        if (extras != null) {
-            if (extras.containsKey(LevelSelectActivity.LEVELID)) {
-                levelID = extras.getInt(LevelSelectActivity.LEVELID, -1);
-                levelPos = extras.getInt(LevelSelectActivity.LEVEL_POS, -1);
-            }
-        }
+        mountainView = findViewById(R.id.tutorialMountainView);
 
-        goButton = findViewById(R.id.mountainGoButton);
+        goButton = findViewById(R.id.tutorialGoButton);
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SeeMountainActivity.this.mountainView.go();
+                TutorialActivity.this.mountainView.go();
             }
         });
 
@@ -58,7 +55,7 @@ public class SeeMountainActivity extends AppCompatActivity {
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadLevel(SeeMountainActivity.this.levelID);
+                loadLevel();
             }
         });
 
@@ -67,8 +64,8 @@ public class SeeMountainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 levelPos++;
-                levelID = LevelSelectActivity.levelIDs[levelPos];
-                loadLevel(levelID);
+                levelID = levelIDs[levelPos];
+                loadLevel();
             }
         });
 
@@ -78,28 +75,28 @@ public class SeeMountainActivity extends AppCompatActivity {
                 buttonBack.setVisibility(View.VISIBLE);
                 buttonReset.setVisibility(View.VISIBLE);
 
-                if (levelPos < LevelSelectActivity.levelIDs.length - 1){
+                if (levelPos < levelIDs.length - 1){
                     buttonNextLevel.setVisibility(View.VISIBLE);
                 }
 
-                goButton.setVisibility(View.INVISIBLE);
-            }
+                goButton.setVisibility(View.INVISIBLE);            }
         });
 
-        loadLevel(levelID);
+        loadLevel();
+
     }
 
-    private void loadLevel(int levelResourceID){
+    private void loadLevel(){
         buttonBack.setVisibility(View.INVISIBLE);
         buttonReset.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.VISIBLE);
         try {
-            InputStream stream = getResources().openRawResource(levelResourceID);
+            InputStream stream = getResources().openRawResource(levelID);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(stream));
             String[] heightStrings = br.readLine().split(" ");
-            String[] climberString = br.readLine().split(" ");
+            String[] climberStrings = br.readLine().split(" ");
 
             int[] heights = new int[heightStrings.length];
             for (int i = 0; i < heightStrings.length; i++) {
@@ -109,11 +106,39 @@ public class SeeMountainActivity extends AppCompatActivity {
             Mountain mountain = new Mountain(heights);
             mountainView.setMountain(mountain);
 
-            for (int i = 0; i < climberString.length; i++) {
+            for (int i = 0; i < climberStrings.length; i++) {
                 MountainClimber climber = new MountainClimber();
-                climber.setPosition(Integer.parseInt(climberString[i]));
-                mountainView.addClimber(climber, colorIDs[i]);
+                climber.setPosition(Integer.parseInt(climberStrings[i]));
+                mountainView.addClimber(climber, SeeMountainActivity.colorIDs[i]);
             }
+
+            List<Instruction> instructionList = new ArrayList<>();
+            while (br.ready()){
+                String s = br.readLine();
+                String type = s.substring(0, 1);
+                if (type.equals("N")){
+                    instructionList.add(new Instruction(
+                            s.substring(2), Instruction.ANYWHERE, null, mountainView
+                    ));
+                    //set text and wait for any tap
+                } else if (type.equals("G")){
+                    instructionList.add(new Instruction(
+                            s.substring(2), Instruction.GO_BUTTON, null, mountainView
+                    ));
+                    //set text and wait for go button
+                } else {
+                    int startOfText = s.indexOf(" ");
+                    instructionList.add(new Instruction(s.substring(startOfText + 1),
+                            Integer.parseInt(s.substring(1, startOfText)),
+                            type.equals("R") ? MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT,
+                            mountainView
+                    ));
+                    //set text and wait to set climber direction
+                }
+            }
+            mountainView.setInstructionList(instructionList);
+
+            br.close();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -9,6 +9,7 @@ import android.widget.Button;
 public class MainActivity extends AppCompatActivity {
 
     private Button startButton;
+    private Button tutorialButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,16 @@ public class MainActivity extends AppCompatActivity {
                 Intent selectLevel = new Intent();
                 selectLevel.setClass(MainActivity.this, LevelSelectActivity.class);
                 startActivity(selectLevel);
+            }
+        });
+
+        tutorialButton = findViewById(R.id.mainTutorialButton);
+        tutorialButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent tutorial = new Intent();
+                tutorial.setClass(MainActivity.this, TutorialActivity.class);
+                startActivity(tutorial);
             }
         });
     }

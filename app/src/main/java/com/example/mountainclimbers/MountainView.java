@@ -29,17 +29,18 @@ public class MountainView extends View {
     public static int PADDING = 150;
     private static int TEXT_SIZE = 1000;
 
-    private Mountain mountain;
-    private Paint mountainPaint, skyPaint, victoryTextPaint;
+    protected Mountain mountain;
+    private Paint mountainPaint, skyPaint;
+    protected Paint victoryTextPaint;
     private ColorFilter arrowFilter, highlightedArrowFilter;
-    private List<MountainClimber> climbers;
-    private Map<MountainClimber, Paint> climberPaints;
-    private Context context;
-    private MountainClimber selectedClimber;
-    private Moving moving;
-    private boolean victory;
-    private Rect r = new Rect();
-    private OnVictoryListener victoryListener;
+    protected List<MountainClimber> climbers;
+    protected Map<MountainClimber, Paint> climberPaints;
+    protected Context context;
+    protected MountainClimber selectedClimber;
+    protected Moving moving;
+    protected boolean victory;
+    protected Rect r = new Rect();
+    protected OnVictoryListener victoryListener;
 
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -83,14 +84,17 @@ public class MountainView extends View {
         invalidate();
     }
 
+    public Mountain getMountain(){
+        return mountain;
+    }
+
     public void setOnVictoryListener(OnVictoryListener v){
         this.victoryListener = v;
     }
 
-    private boolean removeClimbers(){
+    protected boolean removeClimbers(){
         if (climbers.size() == 1){
             victory = true;
-            victoryListener.onVictory();
             return false;
         }
         for (MountainClimber climber : climbers){
@@ -115,7 +119,7 @@ public class MountainView extends View {
         }
     }
 
-    private void drawDirections(Canvas canvas){
+    protected void drawDirections(Canvas canvas){
         if (moving == Moving.UP || moving == Moving.DOWN || victory){
             return;
         }
@@ -148,7 +152,8 @@ public class MountainView extends View {
         }
     }
 
-    private void drawCenter(Canvas canvas, Paint paint, String text) {
+    protected void drawCenter(Canvas canvas, Paint paint, String text) {
+        TEXT_SIZE = 1000;
         canvas.getClipBounds(r);
         int cHeight = r.height();
         int cWidth = r.width();
@@ -190,7 +195,7 @@ public class MountainView extends View {
         drawClimbers(canvas);
         drawDirections(canvas);
 
-        if (victory){
+        if (victory && moving == Moving.NONE){
             drawCenter(canvas, victoryTextPaint, "YOU WIN!");
         }
 
@@ -211,6 +216,9 @@ public class MountainView extends View {
                 return;
             } else {
                 moving = Moving.NONE;
+                if (victory) {
+                    victoryListener.onVictory();
+                }
                 invalidate();
             }
         }
@@ -262,11 +270,14 @@ public class MountainView extends View {
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (selectedClimber == null){
+                    int width = getWidth() - 2 * PADDING;
+                    int height = getHeight() - 2 * PADDING;
+
                     MountainClimber bestClimber = null;
-                    int bestDistance = Integer.MAX_VALUE;
+                    int bestDistance = 50;
                     for (MountainClimber climber : climbers){
-                        int cx = climber.getPosition() * getWidth() / mountain.getWidth();
-                        int cy = getHeight() - mountain.getHeightAt(climber.getPosition()) * getHeight() / mountain.getMaxHeight();
+                        int cx = climber.getPosition() * width / mountain.getWidth() + PADDING;
+                        int cy = getHeight() - PADDING - mountain.getHeightAt(climber.getPosition()) * height / mountain.getMaxHeight();
                         if (Math.abs(cx - x) + Math.abs(cy - y) < bestDistance){
                             bestClimber = climber;
                             bestDistance = (int) (Math.abs(cx - x) + Math.abs(cy - y));

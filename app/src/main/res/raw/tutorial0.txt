@@ -1,0 +1,4 @@
+0 100
+0
+R0 Swipe the climber to the right to set its movement direction
+G Press go
