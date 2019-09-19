@@ -1,11 +1,11 @@
 package com.example.mountainclimbers;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
@@ -46,8 +46,12 @@ public class MountainView extends View {
         super(context, attrs);
         this.context = context;
         Resources r = getResources();
+
         this.mountainPaint = new Paint();
         this.mountainPaint.setColor(r.getColor(R.color.mountainGrey));
+        this.mountainPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        this.mountainPaint.setAntiAlias(true);
+        this.mountainPaint.setStrokeWidth(2);
         this.skyPaint = new Paint();
         this.skyPaint.setColor(r.getColor(R.color.skyBlue));
         this.victoryTextPaint = new Paint();
@@ -55,6 +59,7 @@ public class MountainView extends View {
         this.victoryTextPaint.setTextSize(TEXT_SIZE);
         this.arrowFilter = new PorterDuffColorFilter(r.getColor(R.color.guideArrows), PorterDuff.Mode.SRC_ATOP);
         this.highlightedArrowFilter = new PorterDuffColorFilter(r.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
+
         this.climbers = new ArrayList<>();
         this.climberPaints = new HashMap<>();
         this.selectedClimber = null;
@@ -83,10 +88,6 @@ public class MountainView extends View {
         this.selectedClimber = null;
         this.climberPaints = new HashMap<>();
         invalidate();
-    }
-
-    public Mountain getMountain(){
-        return mountain;
     }
 
     public void setOnVictoryListener(OnVictoryListener v){
@@ -153,7 +154,7 @@ public class MountainView extends View {
         }
     }
 
-    protected void drawCenter(Canvas canvas, Paint paint, String text) {
+    protected void drawCenteredText(Canvas canvas, Paint paint, String text) {
         TEXT_SIZE = 1000;
         canvas.getClipBounds(r);
         int cHeight = r.height();
@@ -176,28 +177,38 @@ public class MountainView extends View {
         canvas.drawText(text, x, y, paint);
     }
 
+    protected void drawMountain(Canvas canvas){
+        int height = getHeight() - 2 * PADDING;
+        int width = getWidth() - 2 * PADDING;
+
+        Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
+        path.moveTo(PADDING, height + PADDING);
+        for (int x : mountain.getTurningPoints()) {
+            Log.d("MVIEW", "height " + mountain.getHeightAt(x));
+            int y = -PADDING + mountain.getHeightAt(x) * height / mountain.getMaxHeight();
+            path.lineTo(PADDING + x * width / mountain.getWidth(), height - y);
+        }
+        path.lineTo(width + PADDING, height + PADDING);
+        path.close();
+        canvas.drawPath(path, mountainPaint);
+        canvas.drawRect(0, getHeight(), getWidth(), getHeight() - PADDING, mountainPaint);
+    }
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         while (removeClimbers()){};
 
-        int height = getHeight() - 2 * PADDING;
-        int width = getWidth() - 2 * PADDING;
+        //sky
         canvas.drawRect(0,  getHeight(), getWidth(), 0, skyPaint);
-        canvas.drawRect(0, getHeight(), getWidth(), getHeight() - PADDING, mountainPaint);
-        for (int i = 0; i < STEP_NUMBER; i++){
-            int y = -PADDING + mountain.getHeightAt(
-                    mountain.getWidth() * i / STEP_NUMBER) * height / mountain.getMaxHeight();
-            canvas.drawRect(i * width / STEP_NUMBER + PADDING,
-                    height + PADDING,
-                    (i + 1) * width / STEP_NUMBER + PADDING,
-                    height - y, mountainPaint);
-        }
+
+        drawMountain(canvas);
         drawClimbers(canvas);
         drawDirections(canvas);
 
         if (victory && moving == Moving.NONE){
-            drawCenter(canvas, victoryTextPaint, "YOU WIN!");
+            drawCenteredText(canvas, victoryTextPaint, "YOU WIN!");
         }
 
         if (moving != Moving.NONE){
