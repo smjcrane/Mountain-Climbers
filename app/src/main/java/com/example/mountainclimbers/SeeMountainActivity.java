@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -16,8 +17,9 @@ public class SeeMountainActivity extends AppCompatActivity {
 
     private MountainView mountainView;
     public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberBlue};
-    private Button buttonBack, buttonNextLevel, buttonReset;
-    private TextView goButton;
+    private Button buttonBack, buttonNextLevel;
+    private ImageView buttonReset;
+    private TextView goButton, levelNumberText;
     private int levelID;
     private int levelPos;
 
@@ -38,6 +40,8 @@ public class SeeMountainActivity extends AppCompatActivity {
             }
         }
 
+        levelNumberText = findViewById(R.id.mountainLevelNumber);
+
         goButton = findViewById(R.id.mountainGoButton);
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,7 +58,7 @@ public class SeeMountainActivity extends AppCompatActivity {
             }
         });
 
-        buttonReset = findViewById(R.id.mountainReplayButton);
+        buttonReset = findViewById(R.id.mountainResetButton);
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +80,6 @@ public class SeeMountainActivity extends AppCompatActivity {
             @Override
             public void onVictory() {
                 buttonBack.setVisibility(View.VISIBLE);
-                buttonReset.setVisibility(View.VISIBLE);
 
                 if (levelPos < LevelSelectActivity.levelIDs.length - 1){
                     buttonNextLevel.setVisibility(View.VISIBLE);
@@ -90,8 +93,9 @@ public class SeeMountainActivity extends AppCompatActivity {
     }
 
     private void loadLevel(int levelResourceID){
+        levelNumberText.setText(Integer.toString(levelPos));
+
         buttonBack.setVisibility(View.INVISIBLE);
-        buttonReset.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.VISIBLE);
         try {

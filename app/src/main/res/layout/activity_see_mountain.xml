@@ -21,6 +21,16 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
+    <TextView
+        android:id="@+id/mountainLevelNumber"
+        android:textColor="@color/skyTextBlue"
+        android:layout_marginRight="10dp"
+        android:textSize="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <Button
         android:id="@+id/mountainBackButton"
         android:background="@drawable/back"
@@ -39,14 +49,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/mountainReplayButton"
-        android:background="@drawable/reset"
+    <ImageView
+        android:id="@+id/mountainResetButton"
+        android:src="@drawable/reset"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_margin="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="10dp"
+        android:tint="@color/skyTextBlue"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
