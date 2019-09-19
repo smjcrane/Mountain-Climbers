@@ -29,6 +29,21 @@ public class MountainClimber {
     }
 
     public boolean canMoveUp(Mountain mountain){
+        if (position == 0){
+            switch (mountain.getTypeAt(1)){
+                case UP:
+                case MAX:
+                    return direction == Direction.RIGHT;
+            }
+            return false;
+        } else if (position == mountain.getWidth()){
+            switch (mountain.getTypeAt(mountain.getWidth() - 1)){
+                case DOWN:
+                case MIN:
+                    return direction == Direction.LEFT;
+            }
+            return false;
+        }
         Mountain.Slope slope = mountain.getTypeAt(position);
         switch (slope){
             case MIN:
@@ -44,8 +59,20 @@ public class MountainClimber {
     }
 
     public boolean canMoveDown(Mountain mountain){
-        if (position == 0 || position == mountain.getWidth()){
-            return false;
+        if (position == 0){
+            switch (mountain.getTypeAt(1)){
+                case UP:
+                case MAX:
+                    return false;
+            }
+            return direction == Direction.RIGHT;
+        } else if (position == mountain.getWidth()){
+            switch (mountain.getTypeAt(mountain.getWidth() - 1)){
+                case DOWN:
+                case MIN:
+                    return false;
+            }
+            return direction == Direction.LEFT;
         }
         Mountain.Slope slope = mountain.getTypeAt(position);
         switch (slope){
