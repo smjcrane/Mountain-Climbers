@@ -165,11 +165,13 @@ public class TutorialMountainView extends MountainView {
                 if (instruction.getObjectID() == Instruction.ANYWHERE) {
                     instruction.markAsDone();
                 }
-                if (instruction.isDone()){
+                while (instruction.isDone()){
                     instructionIndex = instructionIndex + 1;
                     if (instructionIndex == instructionList.size()){
                         victory = true;
+                        return true;
                     }
+                    instruction = instructionList.get(instructionIndex);
                 }
                 return true;
         }

@@ -1,11 +1,11 @@
 0 100 40 70 0
 0 260
 N Try to get the climbers to meet
-R0 One needs to go to the right
-L1 And the other to the left
+R0 Set one to the right
+L1 Set one to the left
 G Go!
 N You can change the direction of a stationary climber
-L0 The climber on the left needs to go down so they can stay at the same height
+L0 The one on the left needs to go down so they can stay at the same height
 G Go!
-R0 Now they can both get to the mountain peak
+R0 Now they can both reach the mountain peak
 G Go!
