@@ -25,6 +25,7 @@ public class TutorialMountainView extends MountainView {
         textHintPaint = new Paint();
         textHintPaint.setColor(getResources().getColor(R.color.colorPrimaryDark));
         textHintPaint.setTextSize(100);
+        victoryTextPaint.setAlpha(0);
     }
 
     public void setInstructionList(List<Instruction> instructionList){
