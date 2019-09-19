@@ -193,6 +193,12 @@ public class MountainView extends View {
         path.close();
         canvas.drawPath(path, mountainPaint);
         canvas.drawRect(0, getHeight(), getWidth(), getHeight() - PADDING, mountainPaint);
+        canvas.drawRect(0, getHeight(), PADDING,
+                 height + PADDING - mountain.getHeightAt(0) * height / mountain.getMaxHeight(),
+                mountainPaint);
+        canvas.drawRect(width + PADDING, getHeight(), getWidth(),
+                height + PADDING - mountain.getHeightAt(mountain.getWidth()) * height / mountain.getMaxHeight(),
+                mountainPaint);
     }
 
     protected void onDraw(Canvas canvas) {
