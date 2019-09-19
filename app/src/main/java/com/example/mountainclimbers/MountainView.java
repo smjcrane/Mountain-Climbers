@@ -32,7 +32,7 @@ public class MountainView extends View {
     protected Mountain mountain;
     private Paint mountainPaint, skyPaint;
     protected Paint victoryTextPaint;
-    private ColorFilter arrowFilter, highlightedArrowFilter;
+    private ColorFilter arrowFilter;
     protected List<MountainClimber> climbers;
     protected Map<MountainClimber, Paint> climberPaints;
     protected Context context;
@@ -57,8 +57,7 @@ public class MountainView extends View {
         this.victoryTextPaint = new Paint();
         this.victoryTextPaint.setColor(r.getColor(R.color.victoryGold));
         this.victoryTextPaint.setTextSize(TEXT_SIZE);
-        this.arrowFilter = new PorterDuffColorFilter(r.getColor(R.color.guideArrows), PorterDuff.Mode.SRC_ATOP);
-        this.highlightedArrowFilter = new PorterDuffColorFilter(r.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
+        this.arrowFilter = new PorterDuffColorFilter(r.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
 
         this.climbers = new ArrayList<>();
         this.climberPaints = new HashMap<>();
@@ -132,22 +131,25 @@ public class MountainView extends View {
             int cy = getHeight() - PADDING - this.mountain.getHeightAt(climber.getPosition())  * height / mountain.getMaxHeight();
             Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
             d.setColorFilter(arrowFilter);
+            d.setAlpha(100);
 
             MountainClimber.Direction direction = climber.getDirection();
 
             d.setBounds(cx - 80, cy - 30, cx - 35, cy + 30);
             if (direction == MountainClimber.Direction.LEFT){
-                d.setColorFilter(highlightedArrowFilter);
-                d.draw(canvas);
+                d.setAlpha(150);
                 d.setColorFilter(arrowFilter);
+                d.draw(canvas);
+                d.setAlpha(100);
             } else if (climber == selectedClimber){
                 d.draw(canvas);
             }
             d.setBounds(cx + 80, cy - 30, cx + 35, cy + 30);
             if (direction == MountainClimber.Direction.RIGHT){
-                d.setColorFilter(highlightedArrowFilter);
-                d.draw(canvas);
+                d.setAlpha(150);
                 d.setColorFilter(arrowFilter);
+                d.draw(canvas);
+                d.setAlpha(100);
             } else if (climber == selectedClimber){
                 d.draw(canvas);
             }
