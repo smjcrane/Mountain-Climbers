@@ -20,23 +20,31 @@ public class LevelSelectActivity extends AppCompatActivity {
     public static final String LEVELID = "levelID";
     public static final String LEVEL_POS = "levelpos";
 
+    private DataBaseHandler db;
+    private ListView listView;
+    private LevelListAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_select);
 
-        ListView listView = findViewById(R.id.levelList);
-        ListAdapter adapter = new LevelListAdapter(this, R.layout.list_item_level_select, levelIDs);
+        listView = findViewById(R.id.levelList);
+        adapter = new LevelListAdapter(this, R.layout.list_item_level_select, levelIDs);
         listView.setAdapter(adapter);
+
+        db = new DataBaseHandler(this);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent playLevel = new Intent();
-                playLevel.setClass(LevelSelectActivity.this, SeeMountainActivity.class);
-                playLevel.putExtra(LEVELID, levelIDs[position]);
-                playLevel.putExtra(LEVEL_POS, position);
-                startActivity(playLevel);
+                if (!db.isLocked(levelIDs[position])){
+                    Intent playLevel = new Intent();
+                    playLevel.setClass(LevelSelectActivity.this, SeeMountainActivity.class);
+                    playLevel.putExtra(LEVELID, levelIDs[position]);
+                    playLevel.putExtra(LEVEL_POS, position);
+                    startActivity(playLevel);
+                }
             }
         });
 
@@ -47,5 +55,19 @@ public class LevelSelectActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        adapter.notifyDataSetInvalidated();
+    }
+
+    @Override
+    protected void onDestroy(){
+        if (db != null){
+            db.close();
+        }
+        super.onDestroy();
     }
 }

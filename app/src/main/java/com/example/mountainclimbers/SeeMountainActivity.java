@@ -22,6 +22,7 @@ public class SeeMountainActivity extends AppCompatActivity {
     private TextView goButton, levelNumberText;
     private int levelID;
     private int levelPos;
+    private DataBaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,13 +80,17 @@ public class SeeMountainActivity extends AppCompatActivity {
         mountainView.setOnVictoryListener(new MountainView.OnVictoryListener() {
             @Override
             public void onVictory() {
-                buttonBack.setVisibility(View.VISIBLE);
+                goButton.setVisibility(View.INVISIBLE);
+
+                db = new DataBaseHandler(SeeMountainActivity.this);
+                db.markCompleted(levelID);
 
                 if (levelPos < LevelSelectActivity.levelIDs.length - 1){
+                    db.unlock(LevelSelectActivity.levelIDs[levelPos + 1]);
                     buttonNextLevel.setVisibility(View.VISIBLE);
                 }
-
-                goButton.setVisibility(View.INVISIBLE);
+                db.close();
+                buttonBack.setVisibility(View.VISIBLE);
             }
         });
 
@@ -122,5 +127,13 @@ public class SeeMountainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onDestroy(){
+        if (db != null){
+            db.close();
+        }
+        super.onDestroy();
     }
 }
