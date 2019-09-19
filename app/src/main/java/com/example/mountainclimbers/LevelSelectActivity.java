@@ -6,17 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 public class LevelSelectActivity extends AppCompatActivity {
 
     public static final Integer[] levelIDs = new Integer[] {
-            R.raw.lvl00, R.raw.lvl01, R.raw.lvl02, R.raw.lvl03, R.raw.lvl04,
-            R.raw.lvl05, R.raw.lvl06, R.raw.lvl07, R.raw.lvl08, R.raw.lvl09,
-            R.raw.lvl10, R.raw.lvl11, R.raw.lvl12, R.raw.lvl13, R.raw.lvl14,
-            R.raw.lvl15, R.raw.lvl16, R.raw.lvl17, R.raw.lvl18, R.raw.lvl19,
-            R.raw.lvl20};
+            R.raw.lvl_00, R.raw.lvl_01, R.raw.lvl_02, R.raw.lvl_03, R.raw.lvl_04,
+            R.raw.lvl_05, R.raw.lvl_06, R.raw.lvl_07, R.raw.lvl_08, R.raw.lvl_09,
+            R.raw.lvl_10, R.raw.lvl_11, R.raw.lvl_12, R.raw.lvl_13, R.raw.lvl_14,
+            R.raw.lvl_15, R.raw.lvl_16, R.raw.lvl_17, R.raw.lvl_18, R.raw.lvl_19,
+            R.raw.lvl_20};
     public static final String LEVELID = "levelID";
     public static final String LEVEL_POS = "levelpos";
 

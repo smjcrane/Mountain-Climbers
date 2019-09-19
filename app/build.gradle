@@ -16,6 +16,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src/main/java','.apt_generated']
+            aidl.srcDirs = ['src/main/aidl','.apt_generated']
+            assets.srcDirs = ['src/main/assets']
+            res.srcDirs =
+                    [
+                            'src/main/res/levels/testpack',
+                            'src/main/res/levels/tutorial',
+                            'src/main/res/levels/pack_1',
+                            'src/main/res/levels',
+                            'src/main/res'
+                    ]
+        }
+    }
 }
 
 dependencies {

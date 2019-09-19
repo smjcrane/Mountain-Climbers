@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TutorialActivity extends AppCompatActivity {
 
-    public static int[] levelIDs = new int[] {R.raw.tutorial0, R.raw.tutorial1, R.raw.tutorial2, R.raw.tutorial3, R.raw.tutorial4};
+    public static int[] levelIDs = new int[] {R.raw.tutorial_0, R.raw.tutorial_1, R.raw.tutorial_2, R.raw.tutorial_3, R.raw.tutorial_4};
 
     private TutorialMountainView mountainView;
     private TextView goButton;
