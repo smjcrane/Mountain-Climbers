@@ -61,7 +61,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public boolean getCompleted(int id){
+    public boolean isCompleted(int id){
         SQLiteDatabase db = getReadableDatabase();
         Cursor res = db.rawQuery(
                 "SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,

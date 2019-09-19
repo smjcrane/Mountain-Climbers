@@ -39,7 +39,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
 
         ImageView completedImage = v.findViewById(R.id.listItemCompletedImage);
 
-        boolean completed = db.getCompleted(levelID);
+        boolean completed = db.isCompleted(levelID);
         boolean locked = db.isLocked(levelID);
 
         if (completed){
