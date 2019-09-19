@@ -1,6 +1,7 @@
-0 100 0
-0 200
-N This time there are two climbers.  They have to keep the same height at all times.
-R0 Set the climber on the left to go to the right
-L1 Set the one on the right to go to the left
-G Press GO
+0 70 30 100
+0
+N The climber will stop when it reaches a peak or a valley
+R0 Get the climber to the right
+G Go!
+G Go again!
+G Go again!

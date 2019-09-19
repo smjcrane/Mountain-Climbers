@@ -71,6 +71,9 @@ public class TutorialMountainView extends MountainView {
     protected void drawTextHint(Canvas canvas, String text) {
         int width = getWidth() - 2 * PADDING;
         ArrayList<String> words = new ArrayList<>(Arrays.asList(text.split(" ")));
+        if (words.size() == 0){
+            return;
+        }
         List<String> lines = new ArrayList<>();
         String line = words.get(0);
         Log.d("HINT", line + line.length());
