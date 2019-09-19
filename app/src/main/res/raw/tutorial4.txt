@@ -1,0 +1,10 @@
+0 100 40 70 0
+0 260
+N Try to get the climbers to meet
+R0 Set the climbers to go towards the middle
+L1 Set the climbers to go towards the middle
+G Go!
+L0 The one on the left needs to go down so they can stay at the same height
+G Go!
+R0 Now they can meet at the mountain peak
+G Go!

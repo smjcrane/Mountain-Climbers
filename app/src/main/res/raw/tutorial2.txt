@@ -1,6 +1,8 @@
-0 100 0
-0 200
-N This time there are two climbers.  They have to keep the same height at all times.
-R0 Set the climber on the left to go to the right
-L1 Set the one on the right to go to the left
-G Press GO
+0 60 30 100 0
+0
+R0 Go up the mountain
+G Go!
+G Go!
+N When the climber is stationary, you can change its direction
+L0 Set the climber to go to the left
+G Go!
