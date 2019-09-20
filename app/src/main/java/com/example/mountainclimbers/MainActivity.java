@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button playButton, levelSelectButton, tutorialButton;
+    private ImageView settingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,16 @@ public class MainActivity extends AppCompatActivity {
                 Intent tutorial = new Intent();
                 tutorial.setClass(MainActivity.this, TutorialActivity.class);
                 startActivity(tutorial);
+            }
+        });
+
+        settingsButton = findViewById(R.id.mainSettingsButton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settings = new Intent();
+                settings.setClass(MainActivity.this, SettingsActivity.class);
+                startActivity(settings);
             }
         });
     }

@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PackSelectActivity"></activity>
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".PackSelectActivity" />
         <activity
             android:name=".TutorialActivity"
             android:screenOrientation="landscape" />

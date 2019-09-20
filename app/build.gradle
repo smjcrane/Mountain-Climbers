@@ -24,11 +24,11 @@ android {
             assets.srcDirs = ['src/main/assets']
             res.srcDirs =
                     [
+                            'src/main/res',
                             'src/main/res/levels/testpack',
                             'src/main/res/levels/tutorial',
                             'src/main/res/levels/pack_1',
-                            'src/main/res/levels',
-                            'src/main/res'
+                            'src/main/res/levels'
                     ]
         }
     }
