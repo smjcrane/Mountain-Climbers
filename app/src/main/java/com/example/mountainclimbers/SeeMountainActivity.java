@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 public class SeeMountainActivity extends AppCompatActivity {
 
     private MountainView mountainView;
-    public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberBlue};
+    public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberOrange};
     private Button buttonBack, buttonNextLevel;
     private ImageView buttonReset;
     private TextView goButton, levelNumberText;
@@ -65,7 +65,7 @@ public class SeeMountainActivity extends AppCompatActivity {
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadLevel(SeeMountainActivity.this.levelID);
+                loadLevel();
             }
         });
 
@@ -75,7 +75,7 @@ public class SeeMountainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 levelPos++;
                 levelID = levelIDs[levelPos];
-                loadLevel(levelID);
+                loadLevel();
             }
         });
 
@@ -96,17 +96,17 @@ public class SeeMountainActivity extends AppCompatActivity {
             }
         });
 
-        loadLevel(levelID);
+        loadLevel();
     }
 
-    private void loadLevel(int levelResourceID){
-        levelNumberText.setText(Integer.toString(levelPos));
+    private void loadLevel(){
+        levelNumberText.setText(Integer.toString(levelPos + 1));
 
         buttonBack.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.VISIBLE);
         try {
-            InputStream stream = getResources().openRawResource(levelResourceID);
+            InputStream stream = getResources().openRawResource(levelID);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(stream));
             String[] heightStrings = br.readLine().split(" ");

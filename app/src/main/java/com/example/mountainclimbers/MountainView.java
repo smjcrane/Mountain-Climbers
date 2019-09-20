@@ -48,16 +48,16 @@ public class MountainView extends View {
         Resources r = getResources();
 
         this.mountainPaint = new Paint();
-        this.mountainPaint.setColor(r.getColor(R.color.mountainGrey));
+        this.mountainPaint.setColor(context.getColor(R.color.mountainGrey));
         this.mountainPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         this.mountainPaint.setAntiAlias(true);
         this.mountainPaint.setStrokeWidth(2);
         this.skyPaint = new Paint();
-        this.skyPaint.setColor(r.getColor(R.color.skyBlue));
+        this.skyPaint.setColor(context.getColor(R.color.skyBlue));
         this.victoryTextPaint = new Paint();
-        this.victoryTextPaint.setColor(r.getColor(R.color.victoryGold));
+        this.victoryTextPaint.setColor(context.getColor(R.color.victoryGold));
         this.victoryTextPaint.setTextSize(TEXT_SIZE);
-        this.arrowFilter = new PorterDuffColorFilter(r.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
+        this.arrowFilter = new PorterDuffColorFilter(context.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
 
         this.climbers = new ArrayList<>();
         this.climberPaints = new HashMap<>();
@@ -74,7 +74,7 @@ public class MountainView extends View {
     public void addClimber(MountainClimber climber, int colorId){
         this.climbers.add(climber);
         Paint paint = new Paint();
-        paint.setColor(getResources().getColor(colorId));
+        paint.setColor(context.getColor(colorId));
         this.climberPaints.put(climber, paint);
     }
 

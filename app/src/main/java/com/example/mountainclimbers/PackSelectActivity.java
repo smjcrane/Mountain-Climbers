@@ -5,17 +5,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 public class PackSelectActivity extends AppCompatActivity {
 
     private ListView listView;
     private PackListAdapter adapter;
+    private Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_select);
+
+        backButton = findViewById(R.id.levelSelectBackButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         listView = findViewById(R.id.levelList);
         adapter = new PackListAdapter(this, R.layout.list_item_level_select);

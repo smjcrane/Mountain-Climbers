@@ -24,7 +24,7 @@
         <item name="android:tickMark">@drawable/seekbar_tickmark</item>
     </style>
 
-    <style name="SwitchSetting" parent="AppTheme">
+    <style name="SwitchSetting" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="colorControlActivated">@color/darkTextBlue</item>
         <item name="android:track">@drawable/switch_track</item>
         <item name="android:thumb">@drawable/switch_thumb</item>

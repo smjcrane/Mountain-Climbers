@@ -37,7 +37,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
 
         TextView nameText = v.findViewById(R.id.listItemLevelText);
 
-        nameText.setText("Level " + Integer.toString(position));
+        nameText.setText("Level " + Integer.toString(position + 1));
 
         ImageView completedImage = v.findViewById(R.id.listItemCompletedImage);
 
