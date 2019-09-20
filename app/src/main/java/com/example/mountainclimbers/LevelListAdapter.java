@@ -13,11 +13,13 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
 
     private Context context;
     private DataBaseHandler db;
+    private Integer[] levelIDs;
 
     public LevelListAdapter(Context context, int layoutID, Integer[] levelIDs){
         super(context, layoutID, levelIDs);
         this.context = context;
         this.db = new DataBaseHandler(context);
+        this.levelIDs = levelIDs;
     }
 
     @Override
@@ -29,11 +31,11 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
             v = vi.inflate(R.layout.list_item_level_select, null);
         }
 
-        int levelID = LevelSelectActivity.levelIDs[position];
+        int levelID = levelIDs[position];
 
         Resources resources = v.getResources();
 
-        TextView nameText = v.findViewById(R.id.listItemText);
+        TextView nameText = v.findViewById(R.id.listItemLevelText);
 
         nameText.setText("Level " + Integer.toString(position));
 

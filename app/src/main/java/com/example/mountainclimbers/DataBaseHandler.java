@@ -34,20 +34,23 @@ class DataBaseHandler extends SQLiteOpenHelper {
                 COLUMN_BEST_MOVES + " INTEGER, " +
                 COLUMN_BEST_TIME + " INTEGER " +
                 ")");
-        for (int id : LevelSelectActivity.levelIDs){
-            Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES +
-                    " WHERE " + COLUMN_ID + "=" + Integer.toString(id),
-                    null);
-            if (res != null && res.getCount() == 0){
-                ContentValues row = new ContentValues();
-                row.put(COLUMN_ID, id);
-                row.put(COLUMN_COMPLETED, 0);
-                row.put(COLUMN_LOCKED, (id == LevelSelectActivity.levelIDs[0] ? 0 : 1));
-                row.put(COLUMN_BEST_MOVES, -1);
-                row.put(COLUMN_BEST_TIME, -1);
-                db.insert(TABLE_SCORES, null, row);
+        for (Levels.Pack pack : Levels.packs){
+            for (int id : pack.getLevelIDs()){
+                Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES +
+                                " WHERE " + COLUMN_ID + "=" + Integer.toString(id),
+                        null);
+                if (res != null && res.getCount() == 0){
+                    ContentValues row = new ContentValues();
+                    row.put(COLUMN_ID, id);
+                    row.put(COLUMN_COMPLETED, 0);
+                    row.put(COLUMN_LOCKED, (id == pack.getLevelIDs()[0] ? 0 : 1));
+                    row.put(COLUMN_BEST_MOVES, -1);
+                    row.put(COLUMN_BEST_TIME, -1);
+                    db.insert(TABLE_SCORES, null, row);
+                }
             }
         }
+
     }
 
     @Override

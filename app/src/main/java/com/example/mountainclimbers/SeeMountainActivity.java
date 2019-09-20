@@ -31,15 +31,12 @@ public class SeeMountainActivity extends AppCompatActivity {
 
         mountainView = findViewById(R.id.mountainView);
 
-        levelID = -1;
         Intent caller = getIntent();
-        Bundle extras = caller.getExtras();
-        if (extras != null) {
-            if (extras.containsKey(LevelSelectActivity.LEVELID)) {
-                levelID = extras.getInt(LevelSelectActivity.LEVELID, -1);
-                levelPos = extras.getInt(LevelSelectActivity.LEVEL_POS, -1);
-            }
-        }
+        final int packPos = caller.getIntExtra(Levels.PACK_POS, -1);
+        levelPos = caller.getIntExtra(Levels.LEVEL_POS, -1);
+        Levels.Pack pack = Levels.packs[packPos];
+        final Integer[] levelIDs = pack.getLevelIDs();
+        levelID = levelIDs[levelPos];
 
         levelNumberText = findViewById(R.id.mountainLevelNumber);
 
@@ -72,7 +69,7 @@ public class SeeMountainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 levelPos++;
-                levelID = LevelSelectActivity.levelIDs[levelPos];
+                levelID = levelIDs[levelPos];
                 loadLevel(levelID);
             }
         });
@@ -85,8 +82,8 @@ public class SeeMountainActivity extends AppCompatActivity {
                 db = new DataBaseHandler(SeeMountainActivity.this);
                 db.markCompleted(levelID);
 
-                if (levelPos < LevelSelectActivity.levelIDs.length - 1){
-                    db.unlock(LevelSelectActivity.levelIDs[levelPos + 1]);
+                if (levelPos < levelIDs.length - 1){
+                    db.unlock(levelIDs[levelPos + 1]);
                     buttonNextLevel.setVisibility(View.VISIBLE);
                 }
                 db.close();

@@ -19,7 +19,7 @@
 
     <Button
         android:id="@+id/mainLevelSelectButton"
-        android:text="Select Level"
+        android:text="Levels"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

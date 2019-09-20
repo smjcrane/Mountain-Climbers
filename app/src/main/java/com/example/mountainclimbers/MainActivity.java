@@ -19,20 +19,37 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent selectPack = new Intent();
+                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
+                startActivity(selectPack);
+
                 Intent selectLevel = new Intent();
                 selectLevel.setClass(MainActivity.this, LevelSelectActivity.class);
-                startActivity(selectLevel);
                 Intent playGame = new Intent();
-                int levelPos = 0;
-                int levelID = LevelSelectActivity.levelIDs[levelPos];
-                DataBaseHandler db = new DataBaseHandler(MainActivity.this);
-                while (db.isCompleted(levelID) && levelPos < LevelSelectActivity.levelIDs.length - 1){
-                    levelPos ++;
-                    levelID = LevelSelectActivity.levelIDs[levelPos];
-                }
-                playGame.putExtra(LevelSelectActivity.LEVEL_POS, levelPos);
-                playGame.putExtra(LevelSelectActivity.LEVELID, levelID);
                 playGame.setClass(MainActivity.this, SeeMountainActivity.class);
+
+                int packPos = 0;
+                int levelPos = 0;
+                Integer[] levelIDs = Levels.packs[packPos].getLevelIDs();
+                int levelID = levelIDs[levelPos];
+
+                DataBaseHandler db = new DataBaseHandler(MainActivity.this);
+                while (db.isCompleted(levelID) && packPos < Levels.packs.length - 1){
+                    if (levelPos == levelIDs.length - 1){
+                        packPos ++;
+                        levelIDs = Levels.packs[packPos].getLevelIDs();
+                        levelPos = 0;
+                    } else {
+                        levelPos ++;
+                    }
+                    levelID = levelIDs[levelPos];
+                }
+
+                selectLevel.putExtra(Levels.PACK_POS, packPos);
+                startActivity(selectLevel);
+
+                playGame.putExtra(Levels.PACK_POS, packPos);
+                playGame.putExtra(Levels.LEVEL_POS, levelPos);
                 startActivity(playGame);
             }
         });
@@ -41,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
         levelSelectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent selectLevel = new Intent();
-                selectLevel.setClass(MainActivity.this, LevelSelectActivity.class);
-                startActivity(selectLevel);
+                Intent selectPack = new Intent();
+                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
+                startActivity(selectPack);
             }
         });
 
