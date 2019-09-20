@@ -1,6 +1,7 @@
 package com.example.mountainclimbers;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -23,11 +24,15 @@ public class SeeMountainActivity extends AppCompatActivity {
     private int levelID;
     private int levelPos;
     private DataBaseHandler db;
+    private int speed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_see_mountain);
+
+        SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
+        speed = preferences.getInt(SettingsActivity.SPEED, 0);
 
         mountainView = findViewById(R.id.mountainView);
 
@@ -109,7 +114,7 @@ public class SeeMountainActivity extends AppCompatActivity {
 
             int[] heights = new int[heightStrings.length];
             for (int i = 0; i < heightStrings.length; i++) {
-                heights[i] = Integer.parseInt(heightStrings[i]);
+                heights[i] = Integer.parseInt(heightStrings[i]) / (1 + speed);
             }
 
             Mountain mountain = new Mountain(heights);
@@ -117,7 +122,7 @@ public class SeeMountainActivity extends AppCompatActivity {
 
             for (int i = 0; i < climberString.length; i++) {
                 MountainClimber climber = new MountainClimber();
-                climber.setPosition(Integer.parseInt(climberString[i]));
+                climber.setPosition(Integer.parseInt(climberString[i]) / (1 + speed));
                 mountainView.addClimber(climber, colorIDs[i]);
             }
 
