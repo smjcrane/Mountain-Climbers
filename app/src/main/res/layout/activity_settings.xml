@@ -64,7 +64,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
             <SeekBar
-                android:id="@+id/seekBar"
+                android:id="@+id/settingSpeedSeekBar"
                 style="@style/SpeedSetting"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
