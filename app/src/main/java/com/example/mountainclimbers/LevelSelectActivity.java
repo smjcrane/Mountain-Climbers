@@ -16,6 +16,7 @@ public class LevelSelectActivity extends AppCompatActivity {
     private DataBaseHandler db;
     private ListView listView;
     private LevelListAdapter adapter;
+    private int mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +26,10 @@ public class LevelSelectActivity extends AppCompatActivity {
         Intent caller = getIntent();
         final int packPos = caller.getIntExtra(Levels.PACK_POS, -1);
         final Integer[] levelIDs = Levels.packs[packPos].getLevelIDs();
+        mode = caller.getIntExtra(MainActivity.MODE, MainActivity.MODE_DEFAULT);
 
         listView = findViewById(R.id.levelList);
-        adapter = new LevelListAdapter(this, R.layout.list_item_level_select, levelIDs);
+        adapter = new LevelListAdapter(this, R.layout.list_item_level_select, levelIDs, mode);
         listView.setAdapter(adapter);
 
         db = new DataBaseHandler(this);
@@ -40,6 +42,7 @@ public class LevelSelectActivity extends AppCompatActivity {
                     playLevel.setClass(LevelSelectActivity.this, SeeMountainActivity.class);
                     playLevel.putExtra(PACK_POS, packPos);
                     playLevel.putExtra(LEVEL_POS, position);
+                    playLevel.putExtra(MainActivity.MODE, mode);
                     startActivity(playLevel);
                 }
             }

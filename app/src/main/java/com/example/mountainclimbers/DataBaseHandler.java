@@ -133,7 +133,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getBestTimeMilliseconds(int id){
+    public int getBestTimeSeconds(int id){
         SQLiteDatabase db = getReadableDatabase();
         Cursor res = db.rawQuery(
                 "SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,
@@ -148,7 +148,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
         return bestTime;
     }
 
-    public void setBestTimeMilliseconds(int id, int bestTime) {
+    public void setBestTimeSeconds(int id, int bestTime) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues row = new ContentValues();
         row.put(COLUMN_BEST_TIME, bestTime);

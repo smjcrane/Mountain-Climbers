@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Timer;
 
 public class SeeMountainActivity extends AppCompatActivity {
 
@@ -20,11 +21,14 @@ public class SeeMountainActivity extends AppCompatActivity {
     public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberOrange};
     private Button buttonBack, buttonNextLevel;
     private ImageView buttonReset;
-    private TextView goButton, levelNumberText;
+    private TextView goButton, levelNumberText, timerText;
     private int levelID;
     private int levelPos;
     private DataBaseHandler db;
     private int speed;
+    private int mode;
+    private CountUpTimer timer;
+    private int seconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +46,14 @@ public class SeeMountainActivity extends AppCompatActivity {
         Levels.Pack pack = Levels.packs[packPos];
         final Integer[] levelIDs = pack.getLevelIDs();
         levelID = levelIDs[levelPos];
+        mode = caller.getIntExtra(MainActivity.MODE, MainActivity.MODE_DEFAULT);
 
         levelNumberText = findViewById(R.id.mountainLevelNumber);
+
+        timerText = findViewById(R.id.mountainTimerText);
+        if (mode == MainActivity.MODE_TIMED){
+            timerText.setVisibility(View.VISIBLE);
+        }
 
         goButton = findViewById(R.id.mountainGoButton);
         goButton.setOnClickListener(new View.OnClickListener() {
@@ -84,12 +94,21 @@ public class SeeMountainActivity extends AppCompatActivity {
             public void onVictory() {
                 goButton.setVisibility(View.INVISIBLE);
 
+                timer.cancel();
+
                 db = new DataBaseHandler(SeeMountainActivity.this);
                 db.markCompleted(levelID);
 
                 if (levelPos < levelIDs.length - 1){
                     db.unlock(levelIDs[levelPos + 1]);
                     buttonNextLevel.setVisibility(View.VISIBLE);
+                }
+                if (mode == MainActivity.MODE_TIMED){
+                    int previousBest = db.getBestTimeSeconds(levelID);
+                    if (seconds < previousBest || previousBest == -1){
+                        db.setBestTimeSeconds(levelID, seconds);
+                        //TODO show a well done message
+                    }
                 }
                 db.close();
                 buttonBack.setVisibility(View.VISIBLE);
@@ -128,6 +147,15 @@ public class SeeMountainActivity extends AppCompatActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (mode == MainActivity.MODE_TIMED){
+            timer = new CountUpTimer() {
+                public void onTick(int second) {
+                    timerText.setText(String.valueOf(second));
+                    seconds = second;
+                }
+            };
+            timer.start();
         }
     }
 

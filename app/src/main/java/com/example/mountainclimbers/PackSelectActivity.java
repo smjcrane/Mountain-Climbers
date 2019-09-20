@@ -13,6 +13,7 @@ public class PackSelectActivity extends AppCompatActivity {
     private ListView listView;
     private PackListAdapter adapter;
     private Button backButton;
+    private int mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,9 @@ public class PackSelectActivity extends AppCompatActivity {
             }
         });
 
+        Intent caller = getIntent();
+        mode = caller.getIntExtra(MainActivity.MODE, MainActivity.MODE_DEFAULT);
+
         listView = findViewById(R.id.levelList);
         adapter = new PackListAdapter(this, R.layout.list_item_level_select);
         listView.setAdapter(adapter);
@@ -37,6 +41,7 @@ public class PackSelectActivity extends AppCompatActivity {
                 Intent selectLevel = new Intent();
                 selectLevel.setClass(PackSelectActivity.this, LevelSelectActivity.class);
                 selectLevel.putExtra(Levels.PACK_POS, position);
+                selectLevel.putExtra(MainActivity.MODE, mode);
                 startActivity(selectLevel);
             }
         });
