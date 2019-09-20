@@ -94,8 +94,6 @@ public class SeeMountainActivity extends AppCompatActivity {
             public void onVictory() {
                 goButton.setVisibility(View.INVISIBLE);
 
-                timer.cancel();
-
                 db = new DataBaseHandler(SeeMountainActivity.this);
                 db.markCompleted(levelID);
 
@@ -104,6 +102,7 @@ public class SeeMountainActivity extends AppCompatActivity {
                     buttonNextLevel.setVisibility(View.VISIBLE);
                 }
                 if (mode == MainActivity.MODE_TIMED){
+                    timer.cancel();
                     int previousBest = db.getBestTimeSeconds(levelID);
                     if (seconds < previousBest || previousBest == -1){
                         db.setBestTimeSeconds(levelID, seconds);
@@ -120,6 +119,7 @@ public class SeeMountainActivity extends AppCompatActivity {
 
     private void loadLevel(){
         levelNumberText.setText(Integer.toString(levelPos + 1));
+        mountainView.setSeed((long) levelID);
 
         buttonBack.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);
