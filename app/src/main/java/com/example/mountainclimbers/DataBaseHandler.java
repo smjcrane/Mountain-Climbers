@@ -50,7 +50,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
                 }
             }
         }
-
     }
 
     @Override
@@ -88,12 +87,13 @@ class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     public boolean isLocked(int id){
-        SQLiteDatabase db = getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor res = db.rawQuery(
                 "SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,
                 null);
         if (res == null || res.getCount() == 0){
-            return false;
+            onCreate(db);
+            return true;
         }
         res.moveToFirst();
         boolean locked = res.getInt(res.getColumnIndex(COLUMN_LOCKED)) == 1;
