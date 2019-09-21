@@ -26,6 +26,7 @@ public class MountainView extends View {
     public static int PADDING = 150;
     private static int TEXT_SIZE = 1000;
     private static int HINT_FLASH_TIME = 500;
+    public static String victoryMessage = "YOU WIN!";
 
     private Paint mountainPaint, skyPaint, cloudPaint;
     protected Paint victoryTextPaint;
@@ -260,7 +261,7 @@ public class MountainView extends View {
         drawHint(canvas);
 
         if (game.victory && game.moving == Game.Moving.NONE){
-            drawCenteredText(canvas, victoryTextPaint, "YOU WIN!");
+            drawCenteredText(canvas, victoryTextPaint, victoryMessage);
         }
 
         boolean moved = game.moveStep();

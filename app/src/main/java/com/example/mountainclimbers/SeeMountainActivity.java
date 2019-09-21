@@ -118,7 +118,6 @@ public class SeeMountainActivity extends AppCompatActivity {
         if (mode == MainActivity.MODE_DEFAULT){
             buttonHint.setVisibility(View.VISIBLE);
         }
-        buttonReset.setVisibility(View.VISIBLE);
         try {
             InputStream stream = getResources().openRawResource(levelID);
 
@@ -137,7 +136,6 @@ public class SeeMountainActivity extends AppCompatActivity {
                 @Override
                 public void onVictory() {
                     goButton.setVisibility(View.INVISIBLE);
-                    buttonReset.setVisibility(View.INVISIBLE);
                     buttonHint.setVisibility(View.INVISIBLE);
 
                     db = new DataBaseHandler(SeeMountainActivity.this);
@@ -152,7 +150,9 @@ public class SeeMountainActivity extends AppCompatActivity {
                         int previousBest = db.getBestTimeSeconds(levelID);
                         if (seconds < previousBest || previousBest == -1){
                             db.setBestTimeSeconds(levelID, seconds);
-                            //TODO show a well done message
+                            MountainView.victoryMessage = "NEW RECORD!";
+                        } else {
+                            MountainView.victoryMessage = "YOU WIN!";
                         }
                     }
                     db.close();

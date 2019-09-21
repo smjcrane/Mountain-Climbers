@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 public class Game {
 
@@ -32,10 +33,6 @@ public class Game {
         this.climbers = new ArrayList<>();
         this.victory = false;
         this.solver = null;
-    }
-
-    public void setSpeed(int speed){
-        speed = speed;
     }
 
     public void setOnVictoryListener(OnVictoryListener v){
