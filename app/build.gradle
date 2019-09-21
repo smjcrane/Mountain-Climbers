@@ -28,7 +28,9 @@ android {
                             'src/main/res/levels/testpack',
                             'src/main/res/levels/tutorial',
                             'src/main/res/levels/pack_1',
-                            'src/main/res/levels/then_there_were_3'
+                            'src/main/res/levels/then_there_were_3',
+                            'src/main/res/levels/easy_pack',
+                            'src/main/res/levels/hard_pack'
                     ]
         }
     }

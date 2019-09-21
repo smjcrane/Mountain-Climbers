@@ -39,7 +39,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
                 Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES +
                                 " WHERE " + COLUMN_ID + "=" + Integer.toString(id),
                         null);
-                if (res != null && res.getCount() == 0){
+                if (res == null || res.getCount() == 0){
                     ContentValues row = new ContentValues();
                     row.put(COLUMN_ID, id);
                     row.put(COLUMN_COMPLETED, 0);
@@ -92,7 +92,19 @@ class DataBaseHandler extends SQLiteOpenHelper {
                 "SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,
                 null);
         if (res == null || res.getCount() == 0){
-            onCreate(db);
+            boolean isFirstInPack = false;
+            for(int i = 0; i < Levels.packs.length; i++){
+                if (id == Levels.packs[i].getLevelIDs()[0]){
+                    isFirstInPack = true;
+                }
+            }
+            ContentValues row = new ContentValues();
+            row.put(COLUMN_ID, id);
+            row.put(COLUMN_COMPLETED, 0);
+            row.put(COLUMN_LOCKED, (isFirstInPack ? 0 : 1));
+            row.put(COLUMN_BEST_MOVES, -1);
+            row.put(COLUMN_BEST_TIME, -1);
+            db.insert(TABLE_SCORES, null, row);
             return true;
         }
         res.moveToFirst();
