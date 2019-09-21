@@ -15,4 +15,5 @@
     <color name="hintingArrow">#FF2000</color>
     <color name="skyTextBlue">#479EAB</color>
     <color name="darkTextBlue">#174E7B</color>
+    <color name="darkTextGrey">#36454f</color>
 </resources>

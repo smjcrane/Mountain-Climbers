@@ -4,5 +4,5 @@ R0 Go up the mountain
 G Go!
 G Go!
 N When the climber is stationary, you can change its direction
-L0 Set the climber to go to the left
+L0 Swipe the climber to the left
 G Go!

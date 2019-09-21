@@ -9,6 +9,7 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/darkTextGrey</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textSize">40dp</item>
         <item name="colorButtonNormal">@color/mountainGrey</item>
@@ -28,6 +29,12 @@
         <item name="colorControlActivated">@color/darkTextBlue</item>
         <item name="android:track">@drawable/switch_track</item>
         <item name="android:thumb">@drawable/switch_thumb</item>
+    </style>
+
+    <style name="MainButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/darkTextGrey</item>
+        <item name="android:backgroundTint">@color/darkTextGrey</item>
     </style>
 
 </resources>

@@ -3,6 +3,8 @@ package com.example.mountainclimbers;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,15 +16,16 @@ import java.util.List;
 public class TutorialMountainView extends MountainView {
 
     private boolean actionInProgress;
-    protected Paint textHintPaint;
+    protected TextPaint textHintPaint;
     TutorialGame game;
 
     public TutorialMountainView(Context context, AttributeSet attrs) {
         super(context, attrs);
         actionInProgress = false;
-        textHintPaint = new Paint();
-        textHintPaint.setColor(getResources().getColor(R.color.colorPrimaryDark));
+        textHintPaint = new TextPaint();
+        textHintPaint.setColor(context.getColor(R.color.darkTextGrey));
         textHintPaint.setTextSize(100);
+        textHintPaint.setTypeface(Typeface.create("Roboto", Typeface.NORMAL));
         victoryTextPaint.setAlpha(0);
     }
 
@@ -68,7 +71,7 @@ public class TutorialMountainView extends MountainView {
         Log.d("HINT", "A" + lines.get(0).substring(0, 1) + "B");
         float y = PADDING;
         for (String s : lines){
-            canvas.drawText(s, PADDING, y, textHintPaint);
+            canvas.drawText(s, 100, y, textHintPaint);
             y = y + textHintPaint.descent() - textHintPaint.ascent();
         }
     }

@@ -123,7 +123,6 @@ public class MountainView extends View {
                 if (direction == MountainClimber.Direction.LEFT) {
                     leftArrow.setAlpha(150);
                 }
-                leftArrow.setColorFilter(arrowFilter);
                 leftArrow.draw(canvas);
             }
             if (direction == MountainClimber.Direction.RIGHT) {
@@ -131,7 +130,7 @@ public class MountainView extends View {
                 rightArrow.setBounds(cx + 35, cy - 30, cx + 80, cy + 30);
                 rightArrow.setColorFilter(arrowFilter);
                 rightArrow.setAlpha(100);
-                if (direction == MountainClimber.Direction.LEFT) {
+                if (direction == MountainClimber.Direction.RIGHT) {
                     rightArrow.setAlpha(150);
                 }
                 rightArrow.draw(canvas);
