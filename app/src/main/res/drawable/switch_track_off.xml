@@ -4,5 +4,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:gravity="center_vertical|fill_horizontal">
     <corners android:radius="7dp" />
-    <stroke android:width="15dp" android:color="@color/guideArrows" />
+    <stroke android:width="15dp" android:color="@color/guideArrow" />
 </shape>

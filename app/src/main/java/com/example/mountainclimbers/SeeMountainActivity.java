@@ -102,6 +102,7 @@ public class SeeMountainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Solver.Move hint = game.getHint();
                 Log.d("MTN", hint.toString());
+                mountainView.showHint();
             }
         });
 
@@ -114,7 +115,9 @@ public class SeeMountainActivity extends AppCompatActivity {
         buttonBack.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.VISIBLE);
-        buttonHint.setVisibility(View.VISIBLE);
+        if (mode == MainActivity.MODE_DEFAULT){
+            buttonHint.setVisibility(View.VISIBLE);
+        }
         buttonReset.setVisibility(View.VISIBLE);
         try {
             InputStream stream = getResources().openRawResource(levelID);
@@ -169,6 +172,9 @@ public class SeeMountainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if (mode == MainActivity.MODE_TIMED){
+            if (timer != null){
+                timer.cancel();
+            }
             timer = new CountUpTimer() {
                 public void onTick(int second) {
                     timerText.setText(String.valueOf(second));

@@ -39,7 +39,7 @@ public class LevelSelectActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!db.isLocked(levelIDs[position])){
+                if (!db.isLocked(levelIDs[position])) {
                     Intent playLevel = new Intent();
                     playLevel.setClass(LevelSelectActivity.this, SeeMountainActivity.class);
                     playLevel.putExtra(PACK_POS, packPos);
@@ -60,11 +60,17 @@ public class LevelSelectActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy(){
-        if (db != null){
+    protected void onDestroy() {
+        if (db != null) {
             db.close();
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        adapter.notifyDataSetInvalidated();
     }
 
 }

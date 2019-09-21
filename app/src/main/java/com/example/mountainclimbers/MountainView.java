@@ -25,10 +25,14 @@ public class MountainView extends View {
 
     public static int PADDING = 150;
     private static int TEXT_SIZE = 1000;
+    private static int HINT_FLASH_TIME = 500;
 
     private Paint mountainPaint, skyPaint, cloudPaint;
     protected Paint victoryTextPaint;
     private ColorFilter arrowFilter;
+    private ColorFilter hintFilter;
+    private Solver.Move hint;
+    private boolean hintFlashOn;
     protected Map<MountainClimber, Paint> climberPaints;
     protected Context context;
     protected MountainClimber selectedClimber;
@@ -57,6 +61,7 @@ public class MountainView extends View {
         this.victoryTextPaint.setColor(context.getColor(R.color.victoryGold));
         this.victoryTextPaint.setTextSize(TEXT_SIZE);
         this.arrowFilter = new PorterDuffColorFilter(context.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
+        this.hintFilter = new PorterDuffColorFilter(context.getColor(R.color.hintingArrow), PorterDuff.Mode.SRC_ATOP);
 
         this.climberPaints = new HashMap<>();
         this.selectedClimber = null;
@@ -89,6 +94,12 @@ public class MountainView extends View {
                             height / game.mountain.getMaxHeight(),
                     30, climberPaints.get(climber));
         }
+    }
+
+    public void showHint(){
+        hint = game.getHint();
+        hintFlashOn = true;
+        invalidate();
     }
 
     protected void drawDirections(Canvas canvas){
@@ -127,6 +138,40 @@ public class MountainView extends View {
             }
         }
     }
+
+    protected void drawHint(Canvas canvas){
+        if (hint == null){
+            return;
+        }
+        if (!hintFlashOn){
+            hintFlashOn = true;
+            postInvalidateDelayed(HINT_FLASH_TIME);
+            return;
+        }
+        Log.d("MVIEW", "Drawing hint");
+        int width = getWidth() - 2 * PADDING;
+        int height = getHeight() - 2 * PADDING;
+        MountainClimber.Direction[] directions = hint.getDirections();
+        for (int i = 0; i < game.climbers.size(); i++) {
+            MountainClimber climber = game.climbers.get(i);
+            int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
+            int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
+                    height / game.mountain.getMaxHeight();
+            Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
+            d.setColorFilter(hintFilter);
+            d.setAlpha(150);
+
+            MountainClimber.Direction direction = directions[i];
+            if (direction == MountainClimber.Direction.LEFT) {
+                d.setBounds(cx - 80, cy - 30, cx - 35, cy + 30);
+            } else if (direction == MountainClimber.Direction.RIGHT){
+                d.setBounds(cx + 80, cy - 30, cx + 35, cy + 30);
+            }
+            d.draw(canvas);
+        }
+        hintFlashOn = false;
+        postInvalidateDelayed(HINT_FLASH_TIME);
+        }
 
     protected void drawCenteredText(Canvas canvas, Paint paint, String text) {
         TEXT_SIZE = 1000;
@@ -208,6 +253,7 @@ public class MountainView extends View {
         drawMountain(canvas);
         drawClimbers(canvas);
         drawDirections(canvas);
+        drawHint(canvas);
 
         if (game.victory && game.moving == Game.Moving.NONE){
             drawCenteredText(canvas, victoryTextPaint, "YOU WIN!");
@@ -222,6 +268,8 @@ public class MountainView extends View {
     public boolean go(){
         boolean gone = game.go();
         if (gone){
+            hint = null;
+            hintFlashOn = false;
             invalidate();
         }
         return gone;
@@ -241,6 +289,8 @@ public class MountainView extends View {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                hint = null;
+                hintFlashOn = false;
                 if (selectedClimber == null){
                     MountainClimber bestClimber = null;
                     int bestDistance = 50;
