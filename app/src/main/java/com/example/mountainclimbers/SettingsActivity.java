@@ -1,9 +1,11 @@
 package com.example.mountainclimbers;
 
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -65,5 +67,15 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onPause(){
         super.onPause();
         editor.commit();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
+        boolean isLandscapeLocked = preferences.getBoolean(SettingsActivity.LANDSCAPE_LOCKED, false);
+        if (isLandscapeLocked){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        }
     }
 }
