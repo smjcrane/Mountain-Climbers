@@ -39,6 +39,7 @@ public class SeeMountainActivity extends AppCompatActivity {
         speed = preferences.getInt(SettingsActivity.SPEED, 0);
 
         mountainView = findViewById(R.id.mountainView);
+        mountainView.setSpeed(speed);
 
         Intent caller = getIntent();
         final int packPos = caller.getIntExtra(Levels.PACK_POS, -1);
@@ -133,7 +134,7 @@ public class SeeMountainActivity extends AppCompatActivity {
 
             int[] heights = new int[heightStrings.length];
             for (int i = 0; i < heightStrings.length; i++) {
-                heights[i] = Integer.parseInt(heightStrings[i]) / (1 + speed);
+                heights[i] = Integer.parseInt(heightStrings[i]);
             }
 
             Mountain mountain = new Mountain(heights);
@@ -141,7 +142,7 @@ public class SeeMountainActivity extends AppCompatActivity {
 
             for (int i = 0; i < climberString.length; i++) {
                 MountainClimber climber = new MountainClimber();
-                climber.setPosition(Integer.parseInt(climberString[i]) / (1 + speed));
+                climber.setPosition(Integer.parseInt(climberString[i]));
                 mountainView.addClimber(climber, colorIDs[i]);
             }
 

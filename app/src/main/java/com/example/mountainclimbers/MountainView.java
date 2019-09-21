@@ -44,6 +44,7 @@ public class MountainView extends View {
     protected OnVictoryListener victoryListener;
     protected Random random;
     protected long seed;
+    private int speed;
 
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -76,10 +77,15 @@ public class MountainView extends View {
                 return;
             }
         };
+        this.speed = 0;
     }
 
     public void setSeed(long seed){
         this.seed = seed;
+    }
+
+    public void setSpeed(int speed){
+        this.speed = speed;
     }
 
     public void addClimber(MountainClimber climber, int colorId){
@@ -249,28 +255,33 @@ public class MountainView extends View {
             drawCenteredText(canvas, victoryTextPaint, "YOU WIN!");
         }
 
-        if (moving != Moving.NONE){
-            boolean canGoUp = (moving == Moving.UP);
-            for (MountainClimber climber : climbers){
-                canGoUp = canGoUp && climber.canMoveUp(mountain);
-            }
-            boolean canGoDown = (moving == Moving.DOWN);
-            for (MountainClimber climber : climbers){
-                canGoDown = canGoDown && climber.canMoveDown(mountain);
-            }
-            if (canGoUp || canGoDown){
+        boolean moved = false;
+        for (int i = 0; i <= speed; i++){
+            if (moving != Moving.NONE){
+                boolean canGoUp = (moving == Moving.UP);
                 for (MountainClimber climber : climbers){
-                    climber.move();
+                    canGoUp = canGoUp && climber.canMoveUp(mountain);
                 }
-                postInvalidateDelayed(2);
-                return;
-            } else {
-                moving = Moving.NONE;
-                if (victory) {
-                    victoryListener.onVictory();
+                boolean canGoDown = (moving == Moving.DOWN);
+                for (MountainClimber climber : climbers){
+                    canGoDown = canGoDown && climber.canMoveDown(mountain);
                 }
-                invalidate();
+                if (canGoUp || canGoDown){
+                    for (MountainClimber climber : climbers){
+                        climber.move();
+                    }
+                    moved = true;
+                } else {
+                    moving = Moving.NONE;
+                    if (victory) {
+                        victoryListener.onVictory();
+                    }
+                    invalidate();
+                }
             }
+        }
+        if (moved){
+            postInvalidateDelayed(2);
         }
     }
 
