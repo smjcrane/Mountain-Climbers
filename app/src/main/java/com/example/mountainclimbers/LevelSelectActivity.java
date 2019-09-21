@@ -67,14 +67,4 @@ public class LevelSelectActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-        adapter.notifyDataSetInvalidated();
-        SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
-        boolean isLandscapeLocked = preferences.getBoolean(SettingsActivity.LANDSCAPE_LOCKED, false);
-        if (isLandscapeLocked){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        }
-    }
 }

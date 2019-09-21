@@ -16,6 +16,8 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String SPEED = "speed";
     public static final String LANDSCAPE_LOCKED = "landscape_locked";
 
+    private static final int[] speeds = new int[] {1, 2, Integer.MAX_VALUE};
+
     private SeekBar speedBar;
     private Switch landscapeLockSwitch;
     private SharedPreferences preferences;
@@ -38,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
         speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                speed = progress;
+                speed = speeds[progress];
             }
 
             @Override
@@ -67,15 +69,5 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onPause(){
         super.onPause();
         editor.commit();
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
-        boolean isLandscapeLocked = preferences.getBoolean(SettingsActivity.LANDSCAPE_LOCKED, false);
-        if (isLandscapeLocked){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        }
     }
 }

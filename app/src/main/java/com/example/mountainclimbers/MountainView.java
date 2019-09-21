@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.media.midi.MidiOutputPort;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -256,29 +257,27 @@ public class MountainView extends View {
         }
 
         boolean moved = false;
-        for (int i = 0; i <= speed; i++){
-            if (moving != Moving.NONE){
-                boolean canGoUp = (moving == Moving.UP);
+        for (int i = 0; i < speed && moving != Moving.NONE; i++){
+            boolean canGoUp = (moving == Moving.UP);
+            for (MountainClimber climber : climbers){
+                canGoUp = canGoUp && climber.canMoveUp(mountain);
+            }
+            boolean canGoDown = (moving == Moving.DOWN);
+            for (MountainClimber climber : climbers){
+                canGoDown = canGoDown && climber.canMoveDown(mountain);
+            }
+            if (canGoUp || canGoDown){
                 for (MountainClimber climber : climbers){
-                    canGoUp = canGoUp && climber.canMoveUp(mountain);
+                    climber.move();
                 }
-                boolean canGoDown = (moving == Moving.DOWN);
-                for (MountainClimber climber : climbers){
-                    canGoDown = canGoDown && climber.canMoveDown(mountain);
+                moved = true;
+            } else {
+                moving = Moving.NONE;
+                while (removeClimbers()){};
+                if (victory) {
+                    victoryListener.onVictory();
                 }
-                if (canGoUp || canGoDown){
-                    for (MountainClimber climber : climbers){
-                        climber.move();
-                    }
-                    moved = true;
-                } else {
-                    moving = Moving.NONE;
-                    while (removeClimbers()){};
-                    if (victory) {
-                        victoryListener.onVictory();
-                    }
-                    invalidate();
-                }
+                invalidate();
             }
         }
         if (moved){

@@ -105,17 +105,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
-        boolean isLandscapeLocked = preferences.getBoolean(SettingsActivity.LANDSCAPE_LOCKED, false);
-        Log.d("MAIN", "locked " + isLandscapeLocked);
-        if (isLandscapeLocked){
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        } else {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        }
-    }
 }
