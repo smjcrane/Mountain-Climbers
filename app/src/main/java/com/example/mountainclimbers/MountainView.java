@@ -273,6 +273,7 @@ public class MountainView extends View {
                     moved = true;
                 } else {
                     moving = Moving.NONE;
+                    while (removeClimbers()){};
                     if (victory) {
                         victoryListener.onVictory();
                     }
