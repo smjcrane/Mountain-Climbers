@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Game {
 
-    private static int speed = 1;
+    public static int speed;
 
     Mountain mountain;
     List<MountainClimber> climbers;
@@ -18,6 +18,9 @@ public class Game {
     private Solver solver;
 
     public Game(Mountain mountain){
+        if (speed < 1){
+            speed = 1;
+        }
         this.mountain = mountain;
         this.moving = Moving.NONE;
         this.victoryListener = new OnVictoryListener() {
@@ -28,7 +31,7 @@ public class Game {
         };
         this.climbers = new ArrayList<>();
         this.victory = false;
-        this.solver = new Solver(mountain);
+        this.solver = null;
     }
 
     public void setSpeed(int speed){
@@ -125,6 +128,9 @@ public class Game {
     }
 
     public Solver.Move getHint(){
+        if (solver == null || solver.numClimbers != climbers.size()){
+            solver = new Solver(mountain, climbers.size());
+        }
         int[] positions = new int[climbers.size()];
         for (int i = 0; i < climbers.size(); i++){
             positions[i] = climbers.get(i).getPosition();

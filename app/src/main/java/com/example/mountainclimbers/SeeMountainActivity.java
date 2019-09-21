@@ -41,7 +41,8 @@ public class SeeMountainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_see_mountain);
 
         SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
-        speed = preferences.getInt(SettingsActivity.SPEED, 0);
+        speed = preferences.getInt(SettingsActivity.SPEED, 1);
+        Game.speed = speed;
 
         mountainView = findViewById(R.id.mountainView);
         buttonHint = findViewById(R.id.mountainHintButton);
@@ -104,7 +105,6 @@ public class SeeMountainActivity extends AppCompatActivity {
             }
         });
 
-        game.setSpeed(speed);
     }
 
     private void loadLevel(){
@@ -156,7 +156,6 @@ public class SeeMountainActivity extends AppCompatActivity {
                     buttonBack.setVisibility(View.VISIBLE);
                 }
             });
-
 
             mountainView.setGame(game);
 

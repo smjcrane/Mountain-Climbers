@@ -10,13 +10,16 @@ import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class SettingsActivity extends AppCompatActivity {
 
     public static final String PREFERENCES = "preferences";
     public static final String SPEED = "speed";
     public static final String LANDSCAPE_LOCKED = "landscape_locked";
 
-    private static final int[] speeds = new int[] {1, 2, Integer.MAX_VALUE};
+    private static final List<Integer> speeds = Arrays.asList(new Integer[] {1, 2, Integer.MAX_VALUE});
 
     private SeekBar speedBar;
     private Switch landscapeLockSwitch;
@@ -35,12 +38,12 @@ public class SettingsActivity extends AppCompatActivity {
         editor = preferences.edit();
 
         speedBar = findViewById(R.id.settingSpeedSeekBar);
-        speed = preferences.getInt(SPEED, 0);
-        speedBar.setProgress(speed);
+        speed = preferences.getInt(SPEED, 1);
+        speedBar.setProgress(speeds.indexOf(speed));
         speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                speed = speeds[progress];
+                speed = speeds.get(progress);
             }
 
             @Override

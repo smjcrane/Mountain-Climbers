@@ -14,9 +14,11 @@ public class Solver {
 
     private Mountain mountain;
     private Graph graph;
+    int numClimbers;
 
-    public Solver(Mountain mountain){
+    public Solver(Mountain mountain, int numClimbers){
         this.mountain = mountain;
+        this.numClimbers = numClimbers;
         this.graph = makeGraph();
     }
 
@@ -37,12 +39,16 @@ public class Solver {
         List<Vertex> vertices = new ArrayList<>();
 
         for (int x1 : mountain.getTurningPoints()){
-            for (int x2 : getAllX(mountain.getHeightAt(x1))){
-                //TODO work for arbitrary numbers of climbers
-                int y1 = Math.min(x1, x2);
-                int y2 = Math.max(x1, x2);
-                Vertex v = new Vertex(new int[] {y1, y2});
-                vertices.add(v);
+            for (Vertex v : getAllVerticesAtHeight(mountain.getHeightAt(x1))){
+                boolean good = true;
+                for (int i = 0; i < numClimbers - 1; i++){
+                    if (v.coords[i] > v.coords[i + 1]){
+                        good = false;
+                    }
+                }
+                if (good){
+                    vertices.add(v);
+                }
             }
         }
         List<Pair<Vertex, Vertex>> edges = new ArrayList<>();
@@ -75,6 +81,24 @@ public class Solver {
             }
         }
         return xs;
+    }
+
+    private List<Vertex> getAllVerticesAtHeight(int height){
+        List<Integer> possibleXs = getAllX(height);
+        int n = possibleXs.size();
+
+        List<Vertex> vertices = new ArrayList<>();
+
+        for (int i = 0; i < (int) Math.pow(n, numClimbers); i++){
+            int[] coords = new int[numClimbers];
+            for (int c = 0; c < numClimbers; c++){
+                coords[c] = possibleXs.get((i % (int) Math.pow(n, c + 1)) / (int) Math.pow(n, c));
+            }
+            Vertex v = new Vertex(coords);
+            vertices.add(v);
+        }
+
+        return vertices;
     }
 
     private class Vertex implements Comparable<Vertex> {
