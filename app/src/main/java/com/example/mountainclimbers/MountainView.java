@@ -108,33 +108,33 @@ public class MountainView extends View {
         }
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
-        for (MountainClimber climber : game.climbers){
+        for (MountainClimber climber : game.climbers) {
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
-            int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition())  *
+            int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
-            Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
-            d.setColorFilter(arrowFilter);
-            d.setAlpha(100);
 
             MountainClimber.Direction direction = climber.getDirection();
 
-            d.setBounds(cx - 80, cy - 30, cx - 35, cy + 30);
-            if (direction == MountainClimber.Direction.LEFT){
-                d.setAlpha(150);
-                d.setColorFilter(arrowFilter);
-                d.draw(canvas);
-                d.setAlpha(100);
-            } else if (climber == selectedClimber){
-                d.draw(canvas);
+            if (direction == MountainClimber.Direction.LEFT || climber == selectedClimber) {
+                Drawable leftArrow = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
+                leftArrow.setBounds(cx - 80, cy - 30, cx - 35, cy + 30);
+                leftArrow.setColorFilter(arrowFilter);
+                leftArrow.setAlpha(100);
+                if (direction == MountainClimber.Direction.LEFT) {
+                    leftArrow.setAlpha(150);
+                }
+                leftArrow.setColorFilter(arrowFilter);
+                leftArrow.draw(canvas);
             }
-            d.setBounds(cx + 80, cy - 30, cx + 35, cy + 30);
-            if (direction == MountainClimber.Direction.RIGHT){
-                d.setAlpha(150);
-                d.setColorFilter(arrowFilter);
-                d.draw(canvas);
-                d.setAlpha(100);
-            } else if (climber == selectedClimber){
-                d.draw(canvas);
+            if (direction == MountainClimber.Direction.RIGHT) {
+                Drawable rightArrow = ContextCompat.getDrawable(this.context, R.drawable.arrow_right);
+                rightArrow.setBounds(cx + 35, cy - 30, cx + 80, cy + 30);
+                rightArrow.setColorFilter(arrowFilter);
+                rightArrow.setAlpha(100);
+                if (direction == MountainClimber.Direction.LEFT) {
+                    rightArrow.setAlpha(150);
+                }
+                rightArrow.draw(canvas);
             }
         }
     }
@@ -157,17 +157,22 @@ public class MountainView extends View {
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
-            Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
-            d.setColorFilter(hintFilter);
-            d.setAlpha(150);
+
 
             MountainClimber.Direction direction = directions[i];
             if (direction == MountainClimber.Direction.LEFT) {
+                Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
+                d.setColorFilter(hintFilter);
+                d.setAlpha(150);
                 d.setBounds(cx - 80, cy - 30, cx - 35, cy + 30);
+                d.draw(canvas);
             } else if (direction == MountainClimber.Direction.RIGHT){
-                d.setBounds(cx + 80, cy - 30, cx + 35, cy + 30);
+                Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_right);
+                d.setColorFilter(hintFilter);
+                d.setAlpha(150);
+                d.setBounds(cx + 35, cy - 30, cx + 80, cy + 30);
+                d.draw(canvas);
             }
-            d.draw(canvas);
         }
         hintFlashOn = false;
         postInvalidateDelayed(HINT_FLASH_TIME);
