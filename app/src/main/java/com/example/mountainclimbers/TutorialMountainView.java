@@ -13,14 +13,12 @@ import java.util.List;
 
 public class TutorialMountainView extends MountainView {
 
-    private List<Instruction> instructionList;
-    private int instructionIndex;
     private boolean actionInProgress;
     protected Paint textHintPaint;
+    TutorialGame game;
 
     public TutorialMountainView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        instructionIndex = 0;
         actionInProgress = false;
         textHintPaint = new Paint();
         textHintPaint.setColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -28,44 +26,23 @@ public class TutorialMountainView extends MountainView {
         victoryTextPaint.setAlpha(0);
     }
 
-    public void setInstructionList(List<Instruction> instructionList){
-        Log.d("TUT", "there are " + instructionList.size() + " instructions");
-        this.instructionList = instructionList;
-        this.instructionIndex = 0;
+    public void setGame(TutorialGame game){
+        super.setGame(game);
+        this.game = game;
     }
 
-    public void go(){
-        if (victory) {
-            return;
+    public boolean go(){
+        if (game.getInstruction().getObjectID() != Instruction.GO_BUTTON){
+            return false;
         }
-        if (instructionList.get(instructionIndex).getObjectID() != Instruction.GO_BUTTON){
-            return;
-        }
-        super.go();
-        instructionList.get(instructionIndex).markAsDone();
-        instructionIndex = instructionIndex + 1;
-        if (instructionIndex == instructionList.size()){
-            victory = true;
-        }
-    }
-
-    protected boolean removeClimbers(){
-        for (MountainClimber climber : climbers){
-            for (MountainClimber c2 : climbers) {
-                if (c2 != climber && Math.abs(c2.getPosition() - climber.getPosition()) < 1.5) {
-                    this.climbers.remove(c2);
-                    climber.setDirection(null);
-                    return true;
-                }
-            }
+        if (super.go()){
+            game.markAsDone();
+            return true;
         }
         return false;
     }
 
     protected void drawDirections(Canvas canvas){
-        if (victory){
-            return;
-        }
         super.drawDirections(canvas);
     }
 
@@ -98,31 +75,30 @@ public class TutorialMountainView extends MountainView {
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (moving != Moving.NONE){
+        if (game.moving != Game.Moving.NONE){
             return;
         }
-        if (victory) {
+        if (game.victory) {
             drawTextHint(canvas, "Good!");
         } else {
-            Instruction instruction = instructionList.get(instructionIndex);
+            Instruction instruction = game.getInstruction();
             drawTextHint(canvas, instruction.getText());
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        if (victory) {
+        if (game.victory) {
             return true;
         }
 
         float x = e.getX();
         float y = e.getY();
 
-        Instruction instruction = instructionList.get(instructionIndex);
+        Instruction instruction = game.getInstruction();
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.d("TUT", instructionIndex + " " + instruction.isDone());
                 if (actionInProgress){
                     return false;
                 }
@@ -132,9 +108,11 @@ public class TutorialMountainView extends MountainView {
 
                     MountainClimber bestClimber = null;
                     int bestDistance = 200;
-                    for (MountainClimber climber : climbers){
-                        int cx = climber.getPosition() * width / mountain.getWidth() + PADDING;
-                        int cy = getHeight() - PADDING - mountain.getHeightAt(climber.getPosition()) * height / mountain.getMaxHeight();
+                    for (MountainClimber climber : game.climbers){
+                        int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
+                        int cy = getHeight() - PADDING -
+                                game.mountain.getHeightAt(climber.getPosition()) *
+                                        height / game.mountain.getMaxHeight();
                         if (Math.abs(cx - x) + Math.abs(cy - y) < bestDistance){
                             bestClimber = climber;
                             bestDistance = (int) (Math.abs(cx - x) + Math.abs(cy - y));
@@ -151,8 +129,9 @@ public class TutorialMountainView extends MountainView {
                 if (selectedClimber == null){
                     return false;
                 }
-                int cx = selectedClimber.getPosition() * getWidth() / mountain.getWidth();
-                int cy = getHeight() - mountain.getHeightAt(selectedClimber.getPosition()) * getHeight() / mountain.getMaxHeight();
+                int cx = selectedClimber.getPosition() * getWidth() / game.mountain.getWidth();
+                int cy = getHeight() - game.mountain.getHeightAt(selectedClimber.getPosition()) *
+                        getHeight() / game.mountain.getMaxHeight();
                 if (x > cx){
                     selectedClimber.setDirection(MountainClimber.Direction.RIGHT);
                 } else {
@@ -167,15 +146,11 @@ public class TutorialMountainView extends MountainView {
                     invalidate();
                 }
                 if (instruction.getObjectID() == Instruction.ANYWHERE) {
-                    instruction.markAsDone();
+                    game.markAsDone();
                 }
-                while (instruction.isDone()){
-                    instructionIndex = instructionIndex + 1;
-                    if (instructionIndex == instructionList.size()){
-                        victory = true;
-                        return true;
-                    }
-                    instruction = instructionList.get(instructionIndex);
+                while (game.getInstruction().isDone()){
+                    game.markAsDone();
+                    game.updateVictory();
                 }
                 return true;
         }

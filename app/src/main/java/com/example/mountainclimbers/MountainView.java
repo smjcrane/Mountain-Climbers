@@ -1,7 +1,6 @@
 package com.example.mountainclimbers;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
@@ -10,16 +9,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.media.midi.MidiOutputPort;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import java.lang.Math;
@@ -27,25 +23,19 @@ import java.util.Random;
 
 public class MountainView extends View {
 
-    public static int STEP_NUMBER = 1000;
     public static int PADDING = 150;
     private static int TEXT_SIZE = 1000;
 
-    protected Mountain mountain;
     private Paint mountainPaint, skyPaint, cloudPaint;
     protected Paint victoryTextPaint;
     private ColorFilter arrowFilter;
-    protected List<MountainClimber> climbers;
     protected Map<MountainClimber, Paint> climberPaints;
     protected Context context;
     protected MountainClimber selectedClimber;
-    protected Moving moving;
-    protected boolean victory;
     protected Rect r = new Rect();
-    protected OnVictoryListener victoryListener;
     protected Random random;
     protected long seed;
-    private int speed;
+    Game game;
 
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -68,85 +58,49 @@ public class MountainView extends View {
         this.victoryTextPaint.setTextSize(TEXT_SIZE);
         this.arrowFilter = new PorterDuffColorFilter(context.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
 
-        this.climbers = new ArrayList<>();
         this.climberPaints = new HashMap<>();
         this.selectedClimber = null;
-        this.moving = Moving.NONE;
-        this.victoryListener = new OnVictoryListener() {
-            @Override
-            public void onVictory() {
-                return;
-            }
-        };
-        this.speed = 0;
     }
 
     public void setSeed(long seed){
         this.seed = seed;
     }
 
-    public void setSpeed(int speed){
-        this.speed = speed;
-    }
-
     public void addClimber(MountainClimber climber, int colorId){
-        this.climbers.add(climber);
+        this.game.climbers.add(climber);
         Paint paint = new Paint();
         paint.setColor(context.getColor(colorId));
         this.climberPaints.put(climber, paint);
     }
 
-    public void setMountain(Mountain mountain){
-        Log.d("MVIEW", "width " + mountain.getWidth());
-        this.mountain = mountain;
-        this.victory = false;
-        this.moving = Moving.NONE;
-        this.climbers = new ArrayList<>();
+    public void setGame(Game game){
+        this.game = game;
         this.selectedClimber = null;
         this.climberPaints = new HashMap<>();
         invalidate();
     }
 
-    public void setOnVictoryListener(OnVictoryListener v){
-        this.victoryListener = v;
-    }
-
-    protected boolean removeClimbers(){
-        if (climbers.size() == 1){
-            victory = true;
-            return false;
-        }
-        for (MountainClimber climber : climbers){
-            for (MountainClimber c2 : climbers) {
-                if (c2 != climber && Math.abs(c2.getPosition() - climber.getPosition()) < 1.5) {
-                    this.climbers.remove(c2);
-                    climber.setDirection(null);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     private void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
-        for (MountainClimber climber : climbers){
-            canvas.drawCircle(climber.getPosition() * width / mountain.getWidth() + PADDING,
-                    getHeight() - PADDING - mountain.getHeightAt(climber.getPosition()) * height / mountain.getMaxHeight(),
+        for (MountainClimber climber : game.climbers){
+            canvas.drawCircle(climber.getPosition() * width / game.mountain.getWidth() + PADDING,
+                    getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
+                            height / game.mountain.getMaxHeight(),
                     30, climberPaints.get(climber));
         }
     }
 
     protected void drawDirections(Canvas canvas){
-        if (moving == Moving.UP || moving == Moving.DOWN || victory){
+        if (game.moving == Game.Moving.UP || game.moving == Game.Moving.DOWN || game.victory){
             return;
         }
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
-        for (MountainClimber climber : climbers){
-            int cx = climber.getPosition() * width / mountain.getWidth() + PADDING;
-            int cy = getHeight() - PADDING - this.mountain.getHeightAt(climber.getPosition())  * height / mountain.getMaxHeight();
+        for (MountainClimber climber : game.climbers){
+            int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
+            int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition())  *
+                    height / game.mountain.getMaxHeight();
             Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
             d.setColorFilter(arrowFilter);
             d.setAlpha(100);
@@ -204,20 +158,21 @@ public class MountainView extends View {
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
         path.moveTo(PADDING, height + PADDING);
-        for (int x : mountain.getTurningPoints()) {
-            Log.d("MVIEW", "height " + mountain.getHeightAt(x));
-            int y = -PADDING + mountain.getHeightAt(x) * height / mountain.getMaxHeight();
-            path.lineTo(PADDING + x * width / mountain.getWidth(), height - y);
+        for (int x : game.mountain.getTurningPoints()) {
+            int y = -PADDING + game.mountain.getHeightAt(x) * height / game.mountain.getMaxHeight();
+            path.lineTo(PADDING + x * width / game.mountain.getWidth(), height - y);
         }
         path.lineTo(width + PADDING, height + PADDING);
         path.close();
         canvas.drawPath(path, mountainPaint);
         canvas.drawRect(0, getHeight(), getWidth(), getHeight() - PADDING, mountainPaint);
         canvas.drawRect(0, getHeight(), PADDING,
-                 height + PADDING - mountainPaint.getStrokeWidth() - mountain.getHeightAt(0) * height / mountain.getMaxHeight(),
+                 height + PADDING - mountainPaint.getStrokeWidth() -
+                         game.mountain.getHeightAt(0) * height / game.mountain.getMaxHeight(),
                 mountainPaint);
         canvas.drawRect(width + PADDING, getHeight(), getWidth(),
-                height + PADDING - mountainPaint.getStrokeWidth() - mountain.getHeightAt(mountain.getWidth()) * height / mountain.getMaxHeight(),
+                height + PADDING - mountainPaint.getStrokeWidth() -
+                        game.mountain.getHeightAt(game.mountain.getWidth()) * height / game.mountain.getMaxHeight(),
                 mountainPaint);
     }
 
@@ -242,7 +197,9 @@ public class MountainView extends View {
         super.onDraw(canvas);
         random.setSeed(seed);
 
-        while (removeClimbers()){};
+        while (game.removeClimbers()){
+            game.updateVictory();
+        };
 
         //sky
         canvas.drawRect(0,  getHeight(), getWidth(), 0, skyPaint);
@@ -252,76 +209,27 @@ public class MountainView extends View {
         drawClimbers(canvas);
         drawDirections(canvas);
 
-        if (victory && moving == Moving.NONE){
+        if (game.victory && game.moving == Game.Moving.NONE){
             drawCenteredText(canvas, victoryTextPaint, "YOU WIN!");
         }
 
-        boolean moved = false;
-        for (int i = 0; i < speed && moving != Moving.NONE; i++){
-            boolean canGoUp = (moving == Moving.UP);
-            for (MountainClimber climber : climbers){
-                canGoUp = canGoUp && climber.canMoveUp(mountain);
-            }
-            boolean canGoDown = (moving == Moving.DOWN);
-            for (MountainClimber climber : climbers){
-                canGoDown = canGoDown && climber.canMoveDown(mountain);
-            }
-            if (canGoUp || canGoDown){
-                for (MountainClimber climber : climbers){
-                    climber.move();
-                }
-                moved = true;
-            } else {
-                moving = Moving.NONE;
-                while (removeClimbers()){};
-                if (victory) {
-                    victoryListener.onVictory();
-                }
-                invalidate();
-            }
-        }
+        boolean moved = game.moveStep();
         if (moved){
             postInvalidateDelayed(2);
         }
     }
 
-    public void go(){
-        if (victory){
-            return;
-        }
-
-        boolean allSelected = true;
-        for (MountainClimber climber : climbers){
-            if (climber.getDirection() == null){
-                allSelected = false;
-            }
-        }
-        if (allSelected == false){
-            return;
-        }
-        boolean canGoUp = true;
-        for (MountainClimber climber : climbers){
-            canGoUp = canGoUp && climber.canMoveUp(mountain);
-        }
-        if (canGoUp){
-            Log.d("MVIEW", "Going up");
-            moving = Moving.UP;
+    public boolean go(){
+        boolean gone = game.go();
+        if (gone){
             invalidate();
         }
-        boolean canGoDown = true;
-        for (MountainClimber climber : climbers){
-            canGoDown = canGoDown && climber.canMoveDown(mountain);
-        }
-        if (canGoDown){
-            Log.d("MVIEW", "Going down");
-            moving = Moving.DOWN;
-            invalidate();
-        }
+        return gone;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e){
-        if (victory){
+        if (game.victory){
             return true;
         }
 
@@ -336,9 +244,10 @@ public class MountainView extends View {
                 if (selectedClimber == null){
                     MountainClimber bestClimber = null;
                     int bestDistance = 50;
-                    for (MountainClimber climber : climbers){
-                        int cx = climber.getPosition() * width / mountain.getWidth() + PADDING;
-                        int cy = getHeight() - PADDING - mountain.getHeightAt(climber.getPosition()) * height / mountain.getMaxHeight();
+                    for (MountainClimber climber : game.climbers){
+                        int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
+                        int cy = getHeight() - PADDING -
+                                game.mountain.getHeightAt(climber.getPosition()) * height / game.mountain.getMaxHeight();
                         if (Math.abs(cx - x) + Math.abs(cy - y) < bestDistance){
                             bestClimber = climber;
                             bestDistance = (int) (Math.abs(cx - x) + Math.abs(cy - y));
@@ -354,7 +263,7 @@ public class MountainView extends View {
                 if (selectedClimber == null){
                     return false;
                 }
-                int cx = selectedClimber.getPosition() * width / mountain.getWidth() + PADDING;
+                int cx = selectedClimber.getPosition() * width / game.mountain.getWidth() + PADDING;
                 if (x > cx){
                     selectedClimber.setDirection(MountainClimber.Direction.RIGHT);
                 } else {
@@ -371,13 +280,5 @@ public class MountainView extends View {
                 return false;
         }
         return false;
-    }
-
-    public enum Moving{
-        UP, DOWN, NONE
-    }
-
-    public interface OnVictoryListener {
-        public void onVictory();
     }
 }

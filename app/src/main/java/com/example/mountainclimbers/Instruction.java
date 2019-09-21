@@ -1,5 +1,7 @@
 package com.example.mountainclimbers;
 
+import android.util.Log;
+
 import static com.example.mountainclimbers.MountainView.PADDING;
 
 public class Instruction {
@@ -8,28 +10,34 @@ public class Instruction {
 
     private int objectID;
     private String text;
-    private MountainView mountainView;
     private MountainClimber.Direction direction;
     private boolean done;
+    private MountainClimber climber;
 
-    public Instruction(String text, int objectID, MountainClimber.Direction direction, TutorialMountainView mountainView){
+    public Instruction(String text, int objectID, MountainClimber.Direction direction){
         this.text = text;
         this.objectID = objectID;
-        this.mountainView = mountainView;
         this.direction = direction;
-        done = false;
+        this.done = false;
+    }
+
+    public void setClimber(MountainClimber climber){
+        this.climber = climber;
     }
 
     public boolean isDone(){
         if (objectID == ANYWHERE || objectID == GO_BUTTON){
             return done;
         } else {
-            return mountainView.climbers.get(objectID).getDirection() == direction;
+            Log.d("TUT", "I want " + direction + " and it is " + climber.getDirection());
+            return climber.getDirection() == direction;
         }
     }
 
     public void markAsDone(){
-        done = true;
+        if (objectID == ANYWHERE || objectID == GO_BUTTON){
+            done = true;
+        }
     }
 
     public String getText(){

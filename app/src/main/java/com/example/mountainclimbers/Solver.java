@@ -1,0 +1,201 @@
+package com.example.mountainclimbers;
+
+import android.util.Log;
+import android.util.Pair;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Solver {
+
+    private Mountain mountain;
+    private Graph graph;
+
+    public Solver(Mountain mountain){
+        this.mountain = mountain;
+        this.graph = makeGraph();
+    }
+
+    public List<Move> solve(int[] initialCoords) {
+        Vertex start = new Vertex(initialCoords);
+        List<Vertex> path = graph.getBreadthFirstPathFrom(start);
+        if (path == null){
+            return null;
+        }
+        List<Move> moves = new ArrayList<>();
+        for (int i = 0; i < path.size() - 1; i++){
+            moves.add(new Move(path.get(i), path.get(i + 1)));
+        }
+        return moves;
+    }
+
+    private Graph makeGraph(){
+        List<Vertex> vertices = new ArrayList<>();
+
+        for (int x1 : mountain.getTurningPoints()){
+            for (int x2 : getAllX(mountain.getHeightAt(x1))){
+                //TODO work for arbitrary numbers of climbers
+                int y1 = Math.min(x1, x2);
+                int y2 = Math.max(x1, x2);
+                Vertex v = new Vertex(new int[] {y1, y2});
+                vertices.add(v);
+            }
+        }
+        List<Pair<Vertex, Vertex>> edges = new ArrayList<>();
+        for (Vertex v : vertices){
+            for (Vertex w : vertices) {
+                if (v.compareTo(w) != 0){
+                    int diff = Math.abs(mountain.getHeightAt(v.coords[0]) -  mountain.getHeightAt(w.coords[0]));
+                    boolean reachable = true;
+                    for (int i = 0; i < v.coords.length; i ++){
+
+                        if (Math.abs(v.coords[i] - w.coords[i]) != diff){
+                            reachable = false;
+                        }
+                    }
+                    if (reachable){
+                        edges.add(new Pair<Vertex, Vertex>(v, w));
+                    }
+                }
+            }
+        }
+        Graph graph = new Graph(vertices, edges);
+        return graph;
+    }
+
+    private List<Integer> getAllX(int height){
+        List xs = new ArrayList();
+        for (int x = 0; x <= mountain.getWidth(); x++){
+            if (mountain.getHeightAt(x) == height){
+                xs.add(x);
+            }
+        }
+        return xs;
+    }
+
+    private class Vertex implements Comparable<Vertex> {
+        private int[] coords;
+
+        public Vertex(int[] coords){
+            this.coords = coords;
+        }
+
+        @Override
+        public int compareTo(Vertex o) {
+            for (int i = 0; i < coords.length; i++){
+                if (coords[i] < o.coords[i]){
+                    return -1;
+                } else if (coords[i] > o.coords[i]){
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+        public boolean isGoal(){
+            for (int i = 0; i < coords.length; i++){
+                for (int j = i + 1; j < coords.length; j++){
+                    if (coords[i] == coords[j]){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public boolean equals(Object other){
+            return Arrays.equals(((Vertex) other).coords, coords);
+        }
+
+        public String toString(){
+            String s = Integer.toString(coords[0]);
+            for (int i = 1; i < coords.length; i++){
+                s = s + ", " + coords[i];
+            }
+            return s;
+        }
+    }
+
+    private class Graph{
+        public List<Vertex> vertices;
+        public List<Pair<Vertex, Vertex>> edges;
+
+        public Graph(List<Vertex> vertices, List<Pair<Vertex, Vertex>> edges){
+            this.vertices = vertices;
+            this.edges = edges;
+            for (int i = 0; i < vertices.size(); i ++){
+            }
+            for (int i = 0; i < edges.size(); i++){
+            }
+        }
+
+        public List<Vertex> getBreadthFirstPathFrom(Vertex startVertex){
+            if (!vertices.contains(startVertex)){
+                return null;
+            }
+            List<Vertex> exploring = new ArrayList<>();
+            Map<Vertex, Vertex> parents = new HashMap<>();
+            exploring.add(startVertex);
+            while (exploring.size() > 0){
+                Vertex v = exploring.get(0);
+                for (Pair<Vertex, Vertex> edge : edges){
+                    Vertex neighbour = null;
+                    if (v.equals(edge.first)){
+                        neighbour = edge.second;
+                    } else if (v.equals(edge.second)){
+                        neighbour = edge.first;
+                    }
+                    if (neighbour != null && !neighbour.equals(startVertex)){
+                        if (!parents.containsKey(neighbour)){
+                            parents.put(neighbour, v);
+                            if (neighbour.isGoal()){
+                                List<Vertex> path = new ArrayList<>();
+                                Vertex pos = neighbour;
+                                while (pos != startVertex){
+                                    path.add(pos);
+                                    pos = parents.get(pos);
+                                }
+                                path.add(startVertex);
+                                Collections.reverse(path);
+                                return path;
+                            }
+                            if (!exploring.contains(neighbour)){
+                                exploring.add(neighbour);
+                            }
+                        }
+                    }
+                }
+                exploring.remove(v);
+            }
+            return null;
+        }
+    }
+
+    public class Move {
+        private MountainClimber.Direction[] directions;
+
+        public Move(Vertex start, Vertex end){
+            directions = new MountainClimber.Direction[start.coords.length];
+            for (int i = 0; i < start.coords.length; i++){
+                directions[i] = (start.coords[i] < end.coords[i]) ?
+                        MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT;
+            }
+        }
+
+        public MountainClimber.Direction[] getDirections(){
+            return directions;
+        }
+
+        public String toString(){
+            String s = "";
+            for (int i = 0; i < directions.length; i++){
+                s = s + ((directions[i] == MountainClimber.Direction.RIGHT) ? "R" : "L");
+            }
+            return s;
+        }
+    }
+}

@@ -25,6 +25,8 @@ public class TutorialActivity extends AppCompatActivity {
     private int levelID;
     private int levelPos;
 
+    private TutorialGame game;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,19 +71,6 @@ public class TutorialActivity extends AppCompatActivity {
             }
         });
 
-        mountainView.setOnVictoryListener(new MountainView.OnVictoryListener() {
-            @Override
-            public void onVictory() {
-                buttonBack.setVisibility(View.VISIBLE);
-                buttonReset.setVisibility(View.VISIBLE);
-
-                if (levelPos < levelIDs.length - 1){
-                    buttonNextLevel.setVisibility(View.VISIBLE);
-                }
-
-                goButton.setVisibility(View.INVISIBLE);            }
-        });
-
         loadLevel();
 
     }
@@ -104,12 +93,12 @@ public class TutorialActivity extends AppCompatActivity {
             }
 
             Mountain mountain = new Mountain(heights);
-            mountainView.setMountain(mountain);
 
+            List<MountainClimber> climbers = new ArrayList<>();
             for (int i = 0; i < climberStrings.length; i++) {
                 MountainClimber climber = new MountainClimber();
                 climber.setPosition(Integer.parseInt(climberStrings[i]));
-                mountainView.addClimber(climber, SeeMountainActivity.colorIDs[i]);
+                climbers.add(climber);
             }
 
             List<Instruction> instructionList = new ArrayList<>();
@@ -118,25 +107,44 @@ public class TutorialActivity extends AppCompatActivity {
                 String type = s.substring(0, 1);
                 if (type.equals("N")){
                     instructionList.add(new Instruction(
-                            s.substring(2), Instruction.ANYWHERE, null, mountainView
+                            s.substring(2), Instruction.ANYWHERE, null
                     ));
                     //set text and wait for any tap
                 } else if (type.equals("G")){
                     instructionList.add(new Instruction(
-                            s.substring(2), Instruction.GO_BUTTON, null, mountainView
+                            s.substring(2), Instruction.GO_BUTTON, null
                     ));
                     //set text and wait for go button
                 } else {
                     int startOfText = s.indexOf(" ");
                     instructionList.add(new Instruction(s.substring(startOfText + 1),
                             Integer.parseInt(s.substring(1, startOfText)),
-                            type.equals("R") ? MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT,
-                            mountainView
+                            type.equals("R") ? MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT
                     ));
                     //set text and wait to set climber direction
                 }
             }
-            mountainView.setInstructionList(instructionList);
+
+            game = new TutorialGame(mountain, instructionList);
+
+            game.setOnVictoryListener(new Game.OnVictoryListener() {
+                @Override
+                public void onVictory() {
+                    buttonBack.setVisibility(View.VISIBLE);
+                    buttonReset.setVisibility(View.VISIBLE);
+
+                    if (levelPos < levelIDs.length - 1){
+                        buttonNextLevel.setVisibility(View.VISIBLE);
+                    }
+
+                    goButton.setVisibility(View.INVISIBLE);            }
+            });
+
+            mountainView.setGame(game);
+
+            for (int i = 0; i < climbers.size(); i++){
+                mountainView.addClimber(climbers.get(i), SeeMountainActivity.colorIDs[i]);
+            }
 
             br.close();
 

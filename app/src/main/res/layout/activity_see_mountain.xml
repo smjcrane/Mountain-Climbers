@@ -70,4 +70,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
+    <ImageView
+        android:id="@+id/mountainHintButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:src="@drawable/question"
+        android:tint="@color/skyTextBlue"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/mountainResetButton" />
+
 </android.support.constraint.ConstraintLayout>
