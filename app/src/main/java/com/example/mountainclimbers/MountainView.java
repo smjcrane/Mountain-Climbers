@@ -44,7 +44,7 @@ public class MountainView extends View {
     Game game;
 
     private Drawable climberDrawable;
-    static final int[] climberDrawableIDs = new int[] {R.drawable.circle, R.drawable.peg_person};
+    static final int[] climberDrawableIDs = new int[] {R.drawable.circle, R.drawable.peg_person, R.drawable.hollow};
 
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -72,7 +72,7 @@ public class MountainView extends View {
         this.selectedClimber = null;
 
         SharedPreferences preferences = context.getSharedPreferences(SettingsActivity.PREFERENCES, Context.MODE_PRIVATE);
-        int climberAppearance = preferences.getInt(SettingsActivity.CLIMBER_APPEARANCE, 0);
+        int climberAppearance = preferences.getInt(SettingsActivity.CLIMBER_APPEARANCE, SettingsActivity.CLIMBER_CIRCLE);
         this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
     }
 
@@ -265,9 +265,9 @@ public class MountainView extends View {
         drawClouds(canvas);
 
         drawMountain(canvas);
-        drawClimbers(canvas);
         drawDirections(canvas);
         drawHint(canvas);
+        drawClimbers(canvas);
 
         if (game.victory && game.moving == Game.Moving.NONE){
             drawCenteredText(canvas, victoryTextPaint, victoryMessage);
