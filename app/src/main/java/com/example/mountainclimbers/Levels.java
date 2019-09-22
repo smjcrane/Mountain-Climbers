@@ -2,9 +2,6 @@ package com.example.mountainclimbers;
 
 public final class Levels {
 
-    public static final String PACK_POS = "packpos";
-    public static final String LEVEL_POS = "levelpos";
-
     public static final Pack[] packs = new Pack[]{
             new Pack("The beginning", new Integer[]{
                     R.raw.lvl_00, R.raw.lvl_01, R.raw.lvl_02, R.raw.lvl_03, R.raw.lvl_04,

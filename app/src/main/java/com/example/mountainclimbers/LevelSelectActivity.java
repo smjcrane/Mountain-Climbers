@@ -1,8 +1,6 @@
 package com.example.mountainclimbers;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,8 +8,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import static com.example.mountainclimbers.Levels.LEVEL_POS;
-import static com.example.mountainclimbers.Levels.PACK_POS;
 
 public class LevelSelectActivity extends AppCompatActivity {
 
@@ -66,6 +62,7 @@ public class LevelSelectActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         adapter.notifyDataSetInvalidated();
+        listView.setSelection(Common.LEVEL_POS);
     }
 
 }
