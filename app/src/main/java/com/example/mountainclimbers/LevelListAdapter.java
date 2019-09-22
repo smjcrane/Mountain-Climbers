@@ -54,7 +54,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         if (db.isLocked(levelID)) {
             completedImage.setImageDrawable(context.getDrawable(R.drawable.padlock));
             timeText.setVisibility(View.INVISIBLE);
-        } else if (mode == MainActivity.MODE_TIMED) {
+        } else if (mode == Common.MODE_TIMED) {
             completedImage.setVisibility(View.INVISIBLE);
             timeText.setVisibility(View.VISIBLE);
             int time = db.getBestTimeSeconds(levelID);

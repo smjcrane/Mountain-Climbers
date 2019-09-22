@@ -12,11 +12,6 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int MODE_DEFAULT = 0;
-    public static final int MODE_TIMED = 1;
-
-    public static final String MODE = "mode";
-
     private Button playButton, levelSelectButton, tutorialButton, timedButton;
     private ImageView settingsButton;
 
@@ -29,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Common.MODE = Common.MODE_DEFAULT;
+
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
                 startActivity(selectPack);
@@ -38,28 +35,19 @@ public class MainActivity extends AppCompatActivity {
                 Intent playGame = new Intent();
                 playGame.setClass(MainActivity.this, SeeMountainActivity.class);
 
-                int packPos = 0;
-                int levelPos = 0;
-                Integer[] levelIDs = Levels.packs[packPos].getLevelIDs();
-                int levelID = levelIDs[levelPos];
+                int length = Levels.packs[Common.PACK_POS].getLength();
 
                 DataBaseHandler db = new DataBaseHandler(MainActivity.this);
-                while (db.isCompleted(levelID) && packPos < Levels.packs.length - 1){
-                    if (levelPos == levelIDs.length - 1){
-                        packPos ++;
-                        levelIDs = Levels.packs[packPos].getLevelIDs();
-                        levelPos = 0;
+                while (db.isCompleted(db.getId(Common.PACK_POS, Common.LEVEL_POS)) && Common.PACK_POS < Levels.packs.length - 1){
+                    if (Common.LEVEL_POS == length - 1){
+                        Common.PACK_POS ++;length = Levels.packs[Common.PACK_POS].getLength();
+                        Common.LEVEL_POS = 0;
                     } else {
-                        levelPos ++;
+                        Common.LEVEL_POS ++;
                     }
-                    levelID = levelIDs[levelPos];
                 }
 
-                selectLevel.putExtra(Levels.PACK_POS, packPos);
                 startActivity(selectLevel);
-
-                playGame.putExtra(Levels.PACK_POS, packPos);
-                playGame.putExtra(Levels.LEVEL_POS, levelPos);
                 startActivity(playGame);
             }
         });
@@ -70,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
+                Common.MODE = Common.MODE_DEFAULT;
                 startActivity(selectPack);
             }
         });
@@ -90,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
-                selectPack.putExtra(MODE, MODE_TIMED);
+                Common.MODE = Common.MODE_TIMED;
                 startActivity(selectPack);
             }
         });

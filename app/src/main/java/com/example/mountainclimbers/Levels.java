@@ -16,7 +16,8 @@ public final class Levels {
                     R.raw.ttw3_06, R.raw.ttw3_07, R.raw.ttw3_08, R.raw.ttw3_09, R.raw.ttw3_10}),
             new Pack("Easy Pack", new Integer[] {
                     R.raw.easy_01, R.raw.easy_02, R.raw.easy_03, R.raw.easy_04, R.raw.easy_05}),
-            new Pack("Hard Pack", new Integer[] {R.raw.hard_01}),
+            new Pack("Hard Pack", new Integer[] {
+                    R.raw.hard_01, R.raw.hard_02}),
             new Pack("Computer Generated Pack", new Integer[]{
                     R.raw.gen_001, R.raw.gen_002, R.raw.gen_003, R.raw.gen_004, R.raw.gen_005,
                     R.raw.gen_006, R.raw.gen_007, R.raw.gen_008, R.raw.gen_009, R.raw.gen_010,

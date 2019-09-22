@@ -2,11 +2,14 @@ package com.example.mountainclimbers;
 
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSeekBar;
 import android.util.Log;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Switch;
 
@@ -21,10 +24,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private static final List<Integer> speeds = Arrays.asList(new Integer[] {1, 2, Integer.MAX_VALUE});
 
-    private SeekBar speedBar;
     private Switch landscapeLockSwitch;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
+    private ImageView imageTortoise, imageHare, imageLightning;
 
     private int speed;
     private boolean isLandscapeLocked;
@@ -37,25 +40,58 @@ public class SettingsActivity extends AppCompatActivity {
         preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
         editor = preferences.edit();
 
-        speedBar = findViewById(R.id.settingSpeedSeekBar);
-        speed = preferences.getInt(SPEED, 1);
-        speedBar.setProgress(speeds.indexOf(speed));
-        speedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                speed = speeds.get(progress);
-            }
+        imageTortoise = findViewById(R.id.speedImageTortoise);
+        imageHare = findViewById(R.id.speedImageHare);
+        imageLightning = findViewById(R.id.speedImageLightning);
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+        final Drawable selected = getDrawable(R.drawable.rectangle_border);
 
-            }
-
+        imageTortoise.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                editor.putInt(SPEED, speed);
+            public void onClick(View v) {
+                Log.d("SETTINGS", "Clicked on tortoise");
+                imageTortoise.setBackground(selected);
+                imageHare.setBackground(null);
+                imageLightning.setBackground(null);
+                editor.putInt(SPEED, 1);
             }
         });
+
+        imageHare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("SETTINGS", "Clicked on hare");
+                imageHare.setBackground(selected);
+                imageTortoise.setBackground(null);
+                imageLightning.setBackground(null);
+                editor.putInt(SPEED, 2);
+            }
+        });
+
+        imageLightning.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("SETTINGS", "Clicked on lightning");
+                imageLightning.setBackground(selected);
+                imageTortoise.setBackground(null);
+                imageHare.setBackground(null);
+                editor.putInt(SPEED, Integer.MAX_VALUE);
+            }
+        });
+
+        speed = preferences.getInt(SPEED, 1);
+        Log.d("SETTINGS", "The speed is "+speed);
+        switch (speed){
+            case 1:
+                imageTortoise.callOnClick();
+                break;
+            case 2:
+                imageHare.callOnClick();
+                break;
+            case Integer.MAX_VALUE:
+                imageLightning.callOnClick();
+                break;
+        }
 
         landscapeLockSwitch = findViewById(R.id.settingsLandscapeSwitch);
         isLandscapeLocked = preferences.getBoolean(LANDSCAPE_LOCKED, true);

@@ -25,13 +25,10 @@ public class LevelSelectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_select);
 
-        Intent caller = getIntent();
-        final int packPos = caller.getIntExtra(Levels.PACK_POS, -1);
-        final Integer[] levelIDs = Levels.packs[packPos].getLevelIDs();
-        mode = caller.getIntExtra(MainActivity.MODE, MainActivity.MODE_DEFAULT);
+        mode = Common.MODE;
 
         listView = findViewById(R.id.levelList);
-        adapter = new LevelListAdapter(this, R.layout.list_item_level_select, packPos, mode);
+        adapter = new LevelListAdapter(this, R.layout.list_item_level_select, Common.PACK_POS, mode);
         listView.setAdapter(adapter);
 
         db = new DataBaseHandler(this);
@@ -39,12 +36,10 @@ public class LevelSelectActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!db.isLocked(db.getId(packPos, position))) {
+                if (!db.isLocked(db.getId(Common.PACK_POS, position))) {
                     Intent playLevel = new Intent();
                     playLevel.setClass(LevelSelectActivity.this, SeeMountainActivity.class);
-                    playLevel.putExtra(PACK_POS, packPos);
-                    SeeMountainActivity.levelPos = position;
-                    playLevel.putExtra(MainActivity.MODE, mode);
+                    Common.LEVEL_POS = position;
                     startActivity(playLevel);
                 }
             }

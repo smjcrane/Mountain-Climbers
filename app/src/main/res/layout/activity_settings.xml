@@ -64,18 +64,29 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
-            <SeekBar
-                android:id="@+id/settingSpeedSeekBar"
-                style="@style/SpeedSetting"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:max="2"
-                android:progress="1"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <ImageView
+                android:id="@+id/speedImageLightning"
+                android:src="@drawable/lightning"
+                style="@style/speedSelectImage"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.555" />
+                app:layout_constraintBottom_toBottomOf="parent" />
 
+            <ImageView
+                android:id="@+id/speedImageHare"
+                android:src="@drawable/hare"
+                style="@style/speedSelectImage"
+                app:layout_constraintRight_toLeftOf="@+id/speedImageLightning"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageView
+                android:id="@+id/speedImageTortoise"
+                android:src="@drawable/tortoise"
+                style="@style/speedSelectImage"
+                app:layout_constraintRight_toLeftOf="@+id/speedImageHare"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 

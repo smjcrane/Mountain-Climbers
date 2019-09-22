@@ -30,8 +30,7 @@ public class PackSelectActivity extends AppCompatActivity {
             }
         });
 
-        Intent caller = getIntent();
-        mode = caller.getIntExtra(MainActivity.MODE, MainActivity.MODE_DEFAULT);
+        mode = Common.MODE;
 
         listView = findViewById(R.id.levelList);
         adapter = new PackListAdapter(this, R.layout.list_item_level_select);
@@ -42,8 +41,7 @@ public class PackSelectActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent selectLevel = new Intent();
                 selectLevel.setClass(PackSelectActivity.this, LevelSelectActivity.class);
-                selectLevel.putExtra(Levels.PACK_POS, position);
-                selectLevel.putExtra(MainActivity.MODE, mode);
+                Common.PACK_POS = position;
                 startActivity(selectLevel);
             }
         });

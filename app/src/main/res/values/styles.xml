@@ -15,16 +15,6 @@
         <item name="colorButtonNormal">@color/mountainGrey</item>
     </style>
 
-    <style name="SpeedSetting" parent="Widget.AppCompat.SeekBar.Discrete">
-        <item name="android:progressBackgroundTint">@color/guideArrow</item>
-        <item name="android:progressTint">@color/darkTextBlue</item>
-        <item name="android:colorControlActivated">@color/darkTextBlue</item>
-        <item name="android:thumbTint">@color/darkTextBlue</item>
-        <item name="android:progressDrawable">@drawable/seekbar</item>
-        <item name="android:thumb">@drawable/seekbar_thumb</item>
-        <item name="android:tickMark">@drawable/seekbar_tickmark</item>
-    </style>
-
     <style name="SwitchSetting" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="colorControlActivated">@color/darkTextBlue</item>
         <item name="android:track">@drawable/switch_track</item>
@@ -35,6 +25,13 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/darkTextGrey</item>
         <item name="android:backgroundTint">@color/darkTextGrey</item>
+    </style>
+
+    <style name="speedSelectImage">
+        <item name="android:layout_width">70dp</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:tint">@color/darkTextGrey</item>
     </style>
 
 </resources>

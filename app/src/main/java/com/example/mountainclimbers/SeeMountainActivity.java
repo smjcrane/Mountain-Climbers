@@ -19,10 +19,7 @@ import java.util.List;
 import java.util.Timer;
 
 public class SeeMountainActivity extends AppCompatActivity {
-
-    public static final int NOT_DEFINED = -1;
-    public static int levelPos = NOT_DEFINED;
-
+    
     private MountainView mountainView;
     private Game game;
     public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberOrange};
@@ -55,17 +52,16 @@ public class SeeMountainActivity extends AppCompatActivity {
         buttonReset = findViewById(R.id.mountainResetButton);
         buttonNextLevel = findViewById(R.id.mountainNextLevelButton);
 
-        Intent caller = getIntent();
-        packPos = caller.getIntExtra(Levels.PACK_POS, -1);
+        packPos = Common.PACK_POS;
         Levels.Pack pack = Levels.packs[packPos];
         levelIDs = pack.getLevelIDs();
-        levelID = levelIDs[levelPos];
-        mode = caller.getIntExtra(MainActivity.MODE, MainActivity.MODE_DEFAULT);
+        levelID = levelIDs[Common.LEVEL_POS];
+        mode = Common.MODE;
 
         loadLevel();
 
         timerText = findViewById(R.id.mountainTimerText);
-        if (mode == MainActivity.MODE_TIMED){
+        if (mode == Common.MODE_TIMED){
             timerText.setVisibility(View.VISIBLE);
         }
 
@@ -93,8 +89,8 @@ public class SeeMountainActivity extends AppCompatActivity {
         buttonNextLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                levelPos++;
-                levelID = levelIDs[levelPos];
+                Common.LEVEL_POS++;
+                levelID = levelIDs[Common.LEVEL_POS];
                 loadLevel();
             }
         });
@@ -111,13 +107,13 @@ public class SeeMountainActivity extends AppCompatActivity {
     }
 
     private void loadLevel(){
-        levelNumberText.setText(Integer.toString(levelPos + 1));
+        levelNumberText.setText(Integer.toString(Common.LEVEL_POS + 1));
         mountainView.setSeed((long) levelID);
 
         buttonBack.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.VISIBLE);
-        if (mode == MainActivity.MODE_DEFAULT){
+        if (mode == Common.MODE_DEFAULT){
             buttonHint.setVisibility(View.VISIBLE);
         }
         try {
@@ -141,13 +137,13 @@ public class SeeMountainActivity extends AppCompatActivity {
                     buttonHint.setVisibility(View.INVISIBLE);
 
                     db = new DataBaseHandler(SeeMountainActivity.this);
-                    db.markCompleted(db.getId(packPos, levelPos));
+                    db.markCompleted(db.getId(packPos, Common.LEVEL_POS));
                     db.close();
 
-                    if (levelPos < levelIDs.length - 1){
+                    if (Common.LEVEL_POS < levelIDs.length - 1){
                         buttonNextLevel.setVisibility(View.VISIBLE);
                     }
-                    if (mode == MainActivity.MODE_TIMED){
+                    if (mode == Common.MODE_TIMED){
                         timer.cancel();
                         int previousBest = db.getBestTimeSeconds(levelID);
                         if (seconds < previousBest || previousBest == -1){
@@ -172,7 +168,7 @@ public class SeeMountainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (mode == MainActivity.MODE_TIMED){
+        if (mode == Common.MODE_TIMED){
             if (timer != null){
                 timer.cancel();
             }
