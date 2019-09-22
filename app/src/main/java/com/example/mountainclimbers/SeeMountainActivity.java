@@ -36,6 +36,7 @@ public class SeeMountainActivity extends AppCompatActivity {
     private int mode;
     private CountUpTimer timer;
     private int seconds;
+    private int packPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class SeeMountainActivity extends AppCompatActivity {
         buttonNextLevel = findViewById(R.id.mountainNextLevelButton);
 
         Intent caller = getIntent();
-        final int packPos = caller.getIntExtra(Levels.PACK_POS, -1);
+        packPos = caller.getIntExtra(Levels.PACK_POS, -1);
         Levels.Pack pack = Levels.packs[packPos];
         levelIDs = pack.getLevelIDs();
         levelID = levelIDs[levelPos];
@@ -140,10 +141,10 @@ public class SeeMountainActivity extends AppCompatActivity {
                     buttonHint.setVisibility(View.INVISIBLE);
 
                     db = new DataBaseHandler(SeeMountainActivity.this);
-                    db.markCompleted(levelID);
+                    db.markCompleted(db.getId(packPos, levelPos));
+                    db.close();
 
                     if (levelPos < levelIDs.length - 1){
-                        db.unlock(levelIDs[levelPos + 1]);
                         buttonNextLevel.setVisibility(View.VISIBLE);
                     }
                     if (mode == MainActivity.MODE_TIMED){
@@ -156,7 +157,6 @@ public class SeeMountainActivity extends AppCompatActivity {
                             MountainView.victoryMessage = "YOU WIN!";
                         }
                     }
-                    db.close();
                     buttonBack.setVisibility(View.VISIBLE);
                 }
             });

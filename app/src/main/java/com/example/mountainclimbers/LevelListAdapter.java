@@ -14,17 +14,18 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
 
     private Context context;
     private DataBaseHandler db;
-    private Integer[] levelIDs;
     private int mode;
     private View[] views;
+    private int packPos;
 
-    public LevelListAdapter(Context context, int layoutID, Integer[] levelIDs, int mode){
-        super(context, layoutID, levelIDs);
+    public LevelListAdapter(Context context, int layoutID, int packPos, int mode){
+        super(context, layoutID, new Integer[Levels.packs[packPos].getLength()]);
+        int length = Levels.packs[packPos].getLength();
         this.context = context;
         this.db = new DataBaseHandler(context);
-        this.levelIDs = levelIDs;
         this.mode = mode;
-        this.views = new View[levelIDs.length];
+        this.views = new View[length];
+        this.packPos = packPos;
     }
 
     @Override
@@ -37,13 +38,11 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
             v = vi.inflate(R.layout.list_item_level_select, null);
         }
 
-        int levelID = levelIDs[position];
-
-        Resources resources = v.getResources();
+        int levelID = db.getId(packPos, position);
 
         TextView nameText = v.findViewById(R.id.listItemLevelText);
 
-        nameText.setText("Level " + Integer.toString(position + 1));
+        nameText.setText("Level " + (position + 1));
 
         ImageView completedImage = v.findViewById(R.id.listItemCompletedImage);
 

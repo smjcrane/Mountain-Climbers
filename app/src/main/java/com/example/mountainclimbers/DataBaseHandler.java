@@ -17,7 +17,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
     //columns
     public static String COLUMN_ID = "columnid";
     public static String COLUMN_COMPLETED = "columncompleted";
-    public static String COLUMN_LOCKED = "columnlocked";
     public static String COLUMN_BEST_MOVES = "columnbestmoves";
     public static String COLUMN_BEST_TIME = "columnbesttime";
 
@@ -25,17 +24,26 @@ class DataBaseHandler extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, 1);
     }
 
+    public int getId(int packpos, int levelpos){
+        return packpos * 1000 + levelpos;
+    }
+
+    public boolean isFirstInPack(int id){
+        return id % 1000 == 0;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SCORES + "(" +
                 COLUMN_ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_COMPLETED + " INTEGER, " +
-                COLUMN_LOCKED + " INTEGER, " +
                 COLUMN_BEST_MOVES + " INTEGER, " +
                 COLUMN_BEST_TIME + " INTEGER " +
                 ")");
-        for (Levels.Pack pack : Levels.packs){
-            for (int id : pack.getLevelIDs()){
+        for (int i = 0; i < Levels.packs.length; i++){
+            Levels.Pack pack = Levels.packs[i];
+            for (int j = 0; j < pack.getLevelIDs().length; j++){
+                int id = getId(i, j);
                 Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES +
                                 " WHERE " + COLUMN_ID + "=" + Integer.toString(id),
                         null);
@@ -43,7 +51,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
                     ContentValues row = new ContentValues();
                     row.put(COLUMN_ID, id);
                     row.put(COLUMN_COMPLETED, 0);
-                    row.put(COLUMN_LOCKED, (id == pack.getLevelIDs()[0] ? 0 : 1));
                     row.put(COLUMN_BEST_MOVES, -1);
                     row.put(COLUMN_BEST_TIME, -1);
                     db.insert(TABLE_SCORES, null, row);
@@ -87,39 +94,10 @@ class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     public boolean isLocked(int id){
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor res = db.rawQuery(
-                "SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,
-                null);
-        if (res == null || res.getCount() == 0){
-            boolean isFirstInPack = false;
-            for(int i = 0; i < Levels.packs.length; i++){
-                if (id == Levels.packs[i].getLevelIDs()[0]){
-                    isFirstInPack = true;
-                }
-            }
-            ContentValues row = new ContentValues();
-            row.put(COLUMN_ID, id);
-            row.put(COLUMN_COMPLETED, 0);
-            row.put(COLUMN_LOCKED, (isFirstInPack ? 0 : 1));
-            row.put(COLUMN_BEST_MOVES, -1);
-            row.put(COLUMN_BEST_TIME, -1);
-            db.insert(TABLE_SCORES, null, row);
-            return true;
+        if (isFirstInPack(id)){
+            return false;
         }
-        res.moveToFirst();
-        boolean locked = res.getInt(res.getColumnIndex(COLUMN_LOCKED)) == 1;
-        res.close();
-        db.close();
-        return locked;
-    }
-
-    public void unlock(int id) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues row = new ContentValues();
-        row.put(COLUMN_LOCKED, 0);
-        db.update(TABLE_SCORES, row, COLUMN_ID + "=" + id, null);
-        db.close();
+        return !isCompleted(id - 1);
     }
 
     public int getBestMoves(int id){
