@@ -1,25 +1,63 @@
 package com.example.mountainclimbers;
 
-import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 
-public abstract class CountUpTimer extends CountDownTimer {
-    private static final long INTERVAL_MS = 1000;
-    private static final long duration = Long.MAX_VALUE;
+public abstract class CountUpTimer {
 
-    protected CountUpTimer() {
-        super(Long.MAX_VALUE, INTERVAL_MS);
+    private boolean cancelled = false;
+    private long millisAtStart;
+    private long interval;
+    private static final int MSG = 1;
+
+    public CountUpTimer(long interval) {
+        this.interval = interval;
     }
 
-    public abstract void onTick(int second);
-
-    @Override
-    public void onTick(long msUntilFinished) {
-        int second = (int) ((duration - msUntilFinished) / 1000);
-        onTick(second);
+    public CountUpTimer(long interval, long millisAtStart){
+        this.interval = interval;
+        this.millisAtStart = millisAtStart;
+        handler.sendMessage(handler.obtainMessage(MSG));
     }
 
-    @Override
-    public void onFinish() {
-        onTick(duration / 1000);
+    public long getMillisAtStart(){
+        return millisAtStart;
     }
+
+    public synchronized final void cancel() {
+        cancelled = true;
+    }
+
+    public synchronized final void start() {
+        millisAtStart = SystemClock.elapsedRealtime();
+        handler.sendMessage(handler.obtainMessage(MSG));
+    }
+
+    public abstract void onTick(long millisElapsed);
+
+    // handles counting down
+    private Handler handler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+
+            synchronized (CountUpTimer.this) {
+                if (cancelled) {
+                    return;
+                }
+
+                final long millisElapsed = SystemClock.elapsedRealtime() - millisAtStart;
+
+                long lastTickStart = SystemClock.elapsedRealtime();
+                onTick(millisElapsed);
+
+                // take into account user's onTick taking time to execute
+                long lastTickDuration = SystemClock.elapsedRealtime() - lastTickStart;
+                long delay = interval - lastTickDuration;
+
+                sendMessageDelayed(obtainMessage(MSG), delay);
+            }
+        }
+    };
 }

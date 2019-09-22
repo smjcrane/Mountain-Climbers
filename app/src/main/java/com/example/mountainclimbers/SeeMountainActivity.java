@@ -18,7 +18,16 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Timer;
 
+import static com.example.mountainclimbers.Common.MODE_TIMED;
+
 public class SeeMountainActivity extends AppCompatActivity {
+
+    private static final String SAVED_POSITIONS = "savedpositions";
+    private static final String SAVED_DIRECTIONS = "saveddirections";
+    private static final MountainClimber.Direction[] DIRECTIONS =
+            new MountainClimber.Direction[] {null, MountainClimber.Direction.LEFT, MountainClimber.Direction.RIGHT
+    };
+    private static final String SAVED_TIME = "savedtime";
     
     private MountainView mountainView;
     private Game game;
@@ -58,10 +67,10 @@ public class SeeMountainActivity extends AppCompatActivity {
         levelID = levelIDs[Common.LEVEL_POS];
         mode = Common.MODE;
 
-        loadLevel();
+        loadLevel(savedInstanceState);
 
         timerText = findViewById(R.id.mountainTimerText);
-        if (mode == Common.MODE_TIMED){
+        if (mode == MODE_TIMED){
             timerText.setVisibility(View.VISIBLE);
         }
 
@@ -82,7 +91,7 @@ public class SeeMountainActivity extends AppCompatActivity {
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadLevel();
+                loadLevel(null);
             }
         });
 
@@ -91,7 +100,7 @@ public class SeeMountainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Common.LEVEL_POS++;
                 levelID = levelIDs[Common.LEVEL_POS];
-                loadLevel();
+                loadLevel(null);
             }
         });
 
@@ -106,7 +115,10 @@ public class SeeMountainActivity extends AppCompatActivity {
 
     }
 
-    private void loadLevel(){
+    private void loadLevel(Bundle savedInstanceState){
+        int[] positions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_POSITIONS);
+        int[] directions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_DIRECTIONS);
+
         levelNumberText.setText(Integer.toString(Common.LEVEL_POS + 1));
         mountainView.setSeed((long) levelID);
 
@@ -143,7 +155,7 @@ public class SeeMountainActivity extends AppCompatActivity {
                     if (Common.LEVEL_POS < levelIDs.length - 1){
                         buttonNextLevel.setVisibility(View.VISIBLE);
                     }
-                    if (mode == Common.MODE_TIMED){
+                    if (mode == MODE_TIMED){
                         timer.cancel();
                         int previousBest = db.getBestTimeSeconds(levelID);
                         if (seconds < previousBest || previousBest == -1){
@@ -161,25 +173,59 @@ public class SeeMountainActivity extends AppCompatActivity {
 
             for (int i = 0; i < climberString.length; i++) {
                 MountainClimber climber = new MountainClimber();
-                climber.setPosition(Integer.parseInt(climberString[i]));
+                if (positions == null){
+                    climber.setPosition(Integer.parseInt(climberString[i]));
+                } else {
+                    climber.setPosition(positions[i]);
+                }
+                if (directions != null){
+                    climber.setDirection(DIRECTIONS[directions[i]]);
+                }
                 mountainView.addClimber(climber, colorIDs[i]);
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (mode == Common.MODE_TIMED){
+        if (mode == MODE_TIMED){
             if (timer != null){
                 timer.cancel();
             }
-            timer = new CountUpTimer() {
-                public void onTick(int second) {
-                    timerText.setText(String.valueOf(second));
-                    seconds = second;
-                }
-            };
-            timer.start();
+            if (savedInstanceState == null){
+                timer = new CountUpTimer(1000) {
+                    public void onTick(long millis) {
+                        int second = (int) millis / 1000;
+                        timerText.setText(String.valueOf(second));
+                        seconds = second;
+                    }
+                };
+                timer.start();
+            } else {
+                timer = new CountUpTimer(1000, savedInstanceState.getLong(SAVED_TIME)) {
+                    @Override
+                    public void onTick(long millisElapsed) {
+                        int second = (int) millisElapsed / 1000;
+                        timerText.setText(String.valueOf(second));
+                        seconds = second;
+                    }
+                };
+            }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState (Bundle outState){
+        outState.putIntArray(SAVED_POSITIONS, game.getPositions());
+        int[] directions = new int[game.climbers.size()];
+        for (int i = 0; i < game.climbers.size(); i++){
+            MountainClimber.Direction d = game.climbers.get(i).getDirection();
+            directions[i] = (d == null) ? 0 : (d == MountainClimber.Direction.LEFT) ? 1 : 2;
+        }
+        outState.putIntArray(SAVED_DIRECTIONS, directions);
+        if (mode == MODE_TIMED){
+            outState.putLong(SAVED_TIME, timer.getMillisAtStart());
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override

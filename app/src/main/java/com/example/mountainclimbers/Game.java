@@ -124,15 +124,19 @@ public class Game {
         return moved;
     }
 
-    public Solver.Move getHint(){
-        if (solver == null || solver.numClimbers != climbers.size()){
-            solver = new Solver(mountain, climbers.size());
-        }
+    public int[] getPositions(){
         int[] positions = new int[climbers.size()];
         for (int i = 0; i < climbers.size(); i++){
             positions[i] = climbers.get(i).getPosition();
         }
-        return solver.solve(positions).get(0);
+        return positions;
+    }
+
+    public Solver.Move getHint(){
+        if (solver == null || solver.numClimbers != climbers.size()){
+            solver = new Solver(mountain, climbers.size());
+        }
+        return solver.solve(getPositions()).get(0);
     }
 
     public enum Moving{
