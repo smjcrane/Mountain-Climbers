@@ -20,6 +20,9 @@ import java.util.Timer;
 
 public class SeeMountainActivity extends AppCompatActivity {
 
+    public static final int NOT_DEFINED = -1;
+    public static int levelPos = NOT_DEFINED;
+
     private MountainView mountainView;
     private Game game;
     public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberOrange};
@@ -28,7 +31,6 @@ public class SeeMountainActivity extends AppCompatActivity {
     private TextView goButton, levelNumberText, timerText;
     private Integer[] levelIDs;
     private int levelID;
-    private int levelPos;
     private DataBaseHandler db;
     private int speed;
     private int mode;
@@ -54,7 +56,6 @@ public class SeeMountainActivity extends AppCompatActivity {
 
         Intent caller = getIntent();
         final int packPos = caller.getIntExtra(Levels.PACK_POS, -1);
-        levelPos = caller.getIntExtra(Levels.LEVEL_POS, -1);
         Levels.Pack pack = Levels.packs[packPos];
         levelIDs = pack.getLevelIDs();
         levelID = levelIDs[levelPos];

@@ -43,7 +43,7 @@ public class LevelSelectActivity extends AppCompatActivity {
                     Intent playLevel = new Intent();
                     playLevel.setClass(LevelSelectActivity.this, SeeMountainActivity.class);
                     playLevel.putExtra(PACK_POS, packPos);
-                    playLevel.putExtra(LEVEL_POS, position);
+                    SeeMountainActivity.levelPos = position;
                     playLevel.putExtra(MainActivity.MODE, mode);
                     startActivity(playLevel);
                 }
