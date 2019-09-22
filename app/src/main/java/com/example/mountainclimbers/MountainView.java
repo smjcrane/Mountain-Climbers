@@ -1,6 +1,7 @@
 package com.example.mountainclimbers;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
@@ -34,13 +35,16 @@ public class MountainView extends View {
     private ColorFilter hintFilter;
     private Solver.Move hint;
     private boolean hintFlashOn;
-    protected Map<MountainClimber, Paint> climberPaints;
+    protected Map<MountainClimber, PorterDuffColorFilter> climberFilters;
     protected Context context;
     protected MountainClimber selectedClimber;
     protected Rect r = new Rect();
     protected Random random;
     protected long seed;
     Game game;
+
+    private Drawable climberDrawable;
+    static final int[] climberDrawableIDs = new int[] {R.drawable.circle, R.drawable.peg_person};
 
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -64,8 +68,12 @@ public class MountainView extends View {
         this.arrowFilter = new PorterDuffColorFilter(context.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
         this.hintFilter = new PorterDuffColorFilter(context.getColor(R.color.hintingArrow), PorterDuff.Mode.SRC_ATOP);
 
-        this.climberPaints = new HashMap<>();
+        this.climberFilters = new HashMap<>();
         this.selectedClimber = null;
+
+        SharedPreferences preferences = context.getSharedPreferences(SettingsActivity.PREFERENCES, Context.MODE_PRIVATE);
+        int climberAppearance = preferences.getInt(SettingsActivity.CLIMBER_APPEARANCE, 0);
+        this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
     }
 
     public void setSeed(long seed){
@@ -74,15 +82,14 @@ public class MountainView extends View {
 
     public void addClimber(MountainClimber climber, int colorId){
         this.game.climbers.add(climber);
-        Paint paint = new Paint();
-        paint.setColor(context.getColor(colorId));
-        this.climberPaints.put(climber, paint);
+        PorterDuffColorFilter filter = new PorterDuffColorFilter(context.getColor(colorId), PorterDuff.Mode.SRC_ATOP);
+        this.climberFilters.put(climber, filter);
     }
 
     public void setGame(Game game){
         this.game = game;
         this.selectedClimber = null;
-        this.climberPaints = new HashMap<>();
+        this.climberFilters = new HashMap<>();
         invalidate();
     }
 
@@ -90,10 +97,12 @@ public class MountainView extends View {
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
         for (MountainClimber climber : game.climbers){
-            canvas.drawCircle(climber.getPosition() * width / game.mountain.getWidth() + PADDING,
-                    getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
-                            height / game.mountain.getMaxHeight(),
-                    30, climberPaints.get(climber));
+            int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
+            int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
+                    height / game.mountain.getMaxHeight();
+            climberDrawable.setColorFilter(climberFilters.get(climber));
+            climberDrawable.setBounds(cx - 50, cy - 50, cx + 50, cy + 50);
+            climberDrawable.draw(canvas);
         }
     }
 

@@ -21,11 +21,13 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String PREFERENCES = "preferences";
     public static final String SPEED = "speed";
     public static final String LANDSCAPE_LOCKED = "landscape_locked";
+    public static final String CLIMBER_APPEARANCE = "climberappearance";
 
     private Switch landscapeLockSwitch;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private ImageView imageTortoise, imageHare, imageLightning, imageInfinity;
+    private ImageView imageCircle, imagePeg;
 
     private int speed;
     private boolean isLandscapeLocked;
@@ -43,7 +45,20 @@ public class SettingsActivity extends AppCompatActivity {
         imageLightning = findViewById(R.id.speedImageLightning);
         imageInfinity = findViewById(R.id.speedImageInfinity);
 
+        imageCircle = findViewById(R.id.climberImageCircle);
+        imagePeg = findViewById(R.id.climberImagePeg);
+
         final Drawable selected = getDrawable(R.drawable.rectangle_border);
+
+        landscapeLockSwitch = findViewById(R.id.settingsLandscapeSwitch);
+        isLandscapeLocked = preferences.getBoolean(LANDSCAPE_LOCKED, true);
+        landscapeLockSwitch.setChecked(isLandscapeLocked);
+        landscapeLockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                editor.putBoolean(LANDSCAPE_LOCKED, isChecked);
+            }
+        });
 
         imageTortoise.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,15 +125,35 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
         }
 
-        landscapeLockSwitch = findViewById(R.id.settingsLandscapeSwitch);
-        isLandscapeLocked = preferences.getBoolean(LANDSCAPE_LOCKED, true);
-        landscapeLockSwitch.setChecked(isLandscapeLocked);
-        landscapeLockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        imageCircle.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editor.putBoolean(LANDSCAPE_LOCKED, isChecked);
+            public void onClick(View v) {
+                imageCircle.setBackground(selected);
+                imagePeg.setBackground(null);
+                editor.putInt(CLIMBER_APPEARANCE, 0);
             }
         });
+
+        imagePeg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageCircle.setBackground(null);
+                imagePeg.setBackground(selected);
+                editor.putInt(CLIMBER_APPEARANCE, 1);
+            }
+        });
+
+        int climberAppearance = preferences.getInt(CLIMBER_APPEARANCE, 0);
+        switch (climberAppearance){
+            case 0:
+                imageCircle.callOnClick();
+                break;
+            case 1:
+                imagePeg.callOnClick();
+                break;
+        }
+
+
     }
 
     @Override
