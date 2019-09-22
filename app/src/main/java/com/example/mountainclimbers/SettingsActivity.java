@@ -21,7 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String PREFERENCES = "preferences";
     public static final String SPEED = "speed";
     public static final String LANDSCAPE_LOCKED = "landscape_locked";
-    
+
     private Switch landscapeLockSwitch;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
