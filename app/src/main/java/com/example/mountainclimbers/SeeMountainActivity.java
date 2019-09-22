@@ -22,9 +22,9 @@ import static com.example.mountainclimbers.Common.MODE_TIMED;
 
 public class SeeMountainActivity extends AppCompatActivity {
 
-    private static final String SAVED_POSITIONS = "savedpositions";
-    private static final String SAVED_DIRECTIONS = "saveddirections";
-    private static final MountainClimber.Direction[] DIRECTIONS =
+    static final String SAVED_POSITIONS = "savedpositions";
+    static final String SAVED_DIRECTIONS = "saveddirections";
+    static final MountainClimber.Direction[] DIRECTIONS =
             new MountainClimber.Direction[] {null, MountainClimber.Direction.LEFT, MountainClimber.Direction.RIGHT
     };
     private static final String SAVED_TIME = "savedtime";
@@ -147,6 +147,7 @@ public class SeeMountainActivity extends AppCompatActivity {
                 public void onVictory() {
                     goButton.setVisibility(View.INVISIBLE);
                     buttonHint.setVisibility(View.INVISIBLE);
+                    buttonBack.setVisibility(View.VISIBLE);
 
                     db = new DataBaseHandler(SeeMountainActivity.this);
                     db.markCompleted(db.getId(packPos, Common.LEVEL_POS));
@@ -165,7 +166,6 @@ public class SeeMountainActivity extends AppCompatActivity {
                             MountainView.victoryMessage = "YOU WIN!";
                         }
                     }
-                    buttonBack.setVisibility(View.VISIBLE);
                 }
             });
 
@@ -175,13 +175,21 @@ public class SeeMountainActivity extends AppCompatActivity {
                 MountainClimber climber = new MountainClimber();
                 if (positions == null){
                     climber.setPosition(Integer.parseInt(climberString[i]));
-                } else {
+                } else if (positions.length > i ){
                     climber.setPosition(positions[i]);
                 }
-                if (directions != null){
+                if (directions != null && directions.length > i){
                     climber.setDirection(DIRECTIONS[directions[i]]);
                 }
-                mountainView.addClimber(climber, colorIDs[i]);
+                if (savedInstanceState == null || positions != null && positions.length > i){
+                    mountainView.addClimber(climber, colorIDs[i]);
+                }
+            }
+
+            while(game.removeClimbers()){}
+            game.updateVictory();
+            if (game.victory){
+                game.callOnVictoryListener();
             }
 
         } catch (IOException e) {

@@ -15,7 +15,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.mountainclimbers.Common.MODE_TIMED;
+import static com.example.mountainclimbers.SeeMountainActivity.DIRECTIONS;
+import static com.example.mountainclimbers.SeeMountainActivity.SAVED_DIRECTIONS;
+import static com.example.mountainclimbers.SeeMountainActivity.SAVED_POSITIONS;
+
 public class TutorialActivity extends AppCompatActivity {
+
+    static final String SAVED_INDEX = "savedindex";
 
     public static int[] levelIDs = new int[] {
             R.raw.tutorial_0, R.raw.tutorial_1, R.raw.tutorial_2, R.raw.tutorial_3, R.raw.tutorial_4
@@ -24,8 +31,8 @@ public class TutorialActivity extends AppCompatActivity {
     private TutorialMountainView mountainView;
     private TextView goButton;
     private Button buttonBack, buttonNextLevel, buttonReset;
-    private int levelID;
-    private int levelPos;
+    private static int levelID;
+    private static int levelPos = -1;
 
     private TutorialGame game;
 
@@ -34,7 +41,9 @@ public class TutorialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
 
-        levelPos = 0;
+        if (levelPos == -1){
+            levelPos = 0;
+        }
         levelID = levelIDs[levelPos];
 
         mountainView = findViewById(R.id.tutorialMountainView);
@@ -59,7 +68,7 @@ public class TutorialActivity extends AppCompatActivity {
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadLevel();
+                loadLevel(null);
             }
         });
 
@@ -69,19 +78,38 @@ public class TutorialActivity extends AppCompatActivity {
             public void onClick(View v) {
                 levelPos++;
                 levelID = levelIDs[levelPos];
-                loadLevel();
+                loadLevel(null);
             }
         });
 
-        loadLevel();
-
+        loadLevel(savedInstanceState);
     }
 
-    private void loadLevel(){
+
+    @Override
+    protected void onSaveInstanceState (Bundle outState){
+        outState.putIntArray(SAVED_POSITIONS, game.getPositions());
+        int[] directions = new int[game.climbers.size()];
+        for (int i = 0; i < game.climbers.size(); i++){
+            MountainClimber.Direction d = game.climbers.get(i).getDirection();
+            directions[i] = (d == null) ? 0 : (d == MountainClimber.Direction.LEFT) ? 1 : 2;
+        }
+        outState.putIntArray(SAVED_DIRECTIONS, directions);
+        outState.putInt(SAVED_INDEX, game.instructionIndex);
+        super.onSaveInstanceState(outState);
+    }
+
+
+    private void loadLevel(Bundle savedInstanceState){
+        int[] positions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_POSITIONS);
+        int[] directions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_DIRECTIONS);
+
         buttonBack.setVisibility(View.INVISIBLE);
         buttonReset.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.VISIBLE);
+
+
         try {
             InputStream stream = getResources().openRawResource(levelID);
 
@@ -99,7 +127,12 @@ public class TutorialActivity extends AppCompatActivity {
             List<MountainClimber> climbers = new ArrayList<>();
             for (int i = 0; i < climberStrings.length; i++) {
                 MountainClimber climber = new MountainClimber();
-                climber.setPosition(Integer.parseInt(climberStrings[i]));
+                if (positions == null){
+                    climber.setPosition(Integer.parseInt(climberStrings[i]));
+                } else {
+                    climber.setPosition(positions[i]);
+                    climber.setDirection(DIRECTIONS[directions[i]]);
+                }
                 climbers.add(climber);
             }
 
@@ -128,6 +161,8 @@ public class TutorialActivity extends AppCompatActivity {
             }
 
             game = new TutorialGame(mountain, instructionList);
+            game.instructionIndex = savedInstanceState == null ? 0 : savedInstanceState.getInt(SAVED_INDEX);
+            game.updateVictory();
 
             game.setOnVictoryListener(new Game.OnVictoryListener() {
                 @Override
@@ -143,6 +178,9 @@ public class TutorialActivity extends AppCompatActivity {
             });
 
             mountainView.setGame(game);
+            if (game.victory){
+                game.callOnVictoryListener();
+            }
 
             for (int i = 0; i < climbers.size(); i++){
                 mountainView.addClimber(climbers.get(i), SeeMountainActivity.colorIDs[i]);

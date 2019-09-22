@@ -39,6 +39,12 @@ public class Game {
         this.victoryListener = v;
     }
 
+    public void callOnVictoryListener(){
+        if (victoryListener != null){
+            victoryListener.onVictory();
+        }
+    }
+
     protected boolean removeClimbers(){
         if (climbers.size() == 1){
             return false;
