@@ -65,10 +65,18 @@
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
             <ImageView
+                android:id="@+id/speedImageInfinity"
+                android:src="@drawable/infinity"
+                style="@style/speedSelectImage"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageView
                 android:id="@+id/speedImageLightning"
                 android:src="@drawable/lightning"
                 style="@style/speedSelectImage"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/speedImageInfinity"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 

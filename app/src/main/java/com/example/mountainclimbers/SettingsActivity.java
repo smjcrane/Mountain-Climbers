@@ -21,13 +21,11 @@ public class SettingsActivity extends AppCompatActivity {
     public static final String PREFERENCES = "preferences";
     public static final String SPEED = "speed";
     public static final String LANDSCAPE_LOCKED = "landscape_locked";
-
-    private static final List<Integer> speeds = Arrays.asList(new Integer[] {1, 2, Integer.MAX_VALUE});
-
+    
     private Switch landscapeLockSwitch;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
-    private ImageView imageTortoise, imageHare, imageLightning;
+    private ImageView imageTortoise, imageHare, imageLightning, imageInfinity;
 
     private int speed;
     private boolean isLandscapeLocked;
@@ -43,6 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         imageTortoise = findViewById(R.id.speedImageTortoise);
         imageHare = findViewById(R.id.speedImageHare);
         imageLightning = findViewById(R.id.speedImageLightning);
+        imageInfinity = findViewById(R.id.speedImageInfinity);
 
         final Drawable selected = getDrawable(R.drawable.rectangle_border);
 
@@ -53,6 +52,7 @@ public class SettingsActivity extends AppCompatActivity {
                 imageTortoise.setBackground(selected);
                 imageHare.setBackground(null);
                 imageLightning.setBackground(null);
+                imageInfinity.setBackground(null);
                 editor.putInt(SPEED, 1);
             }
         });
@@ -64,6 +64,7 @@ public class SettingsActivity extends AppCompatActivity {
                 imageHare.setBackground(selected);
                 imageTortoise.setBackground(null);
                 imageLightning.setBackground(null);
+                imageInfinity.setBackground(null);
                 editor.putInt(SPEED, 2);
             }
         });
@@ -75,6 +76,19 @@ public class SettingsActivity extends AppCompatActivity {
                 imageLightning.setBackground(selected);
                 imageTortoise.setBackground(null);
                 imageHare.setBackground(null);
+                imageInfinity.setBackground(null);
+                editor.putInt(SPEED, 3);
+            }
+        });
+
+        imageInfinity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("SETTINGS", "Clicked on infinity");
+                imageLightning.setBackground(null);
+                imageTortoise.setBackground(null);
+                imageHare.setBackground(null);
+                imageInfinity.setBackground(selected);
                 editor.putInt(SPEED, Integer.MAX_VALUE);
             }
         });
@@ -87,6 +101,9 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case 2:
                 imageHare.callOnClick();
+                break;
+            case 3:
+                imageLightning.callOnClick();
                 break;
             case Integer.MAX_VALUE:
                 imageLightning.callOnClick();
