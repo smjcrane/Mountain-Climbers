@@ -9,4 +9,7 @@ public class Common {
 
     public static int PACK_POS = 0;
     public static int LEVEL_POS = 0;
+    public static int TUTORIAL_POS = 0;
+
+    public static boolean tutorial = true;
 }

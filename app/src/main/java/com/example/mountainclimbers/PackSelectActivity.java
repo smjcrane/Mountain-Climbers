@@ -46,4 +46,11 @@ public class PackSelectActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        Common.LEVEL_POS = 0;
+        Common.tutorial = true;
+    }
 }

@@ -2,6 +2,7 @@ package com.example.mountainclimbers;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,27 +11,27 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.logging.Level;
+
 public class LevelListAdapter extends ArrayAdapter<Integer> {
 
     private Context context;
     private DataBaseHandler db;
-    private int mode;
-    private View[] views;
-    private int packPos;
+    private Levels.Pack pack;
+    private Drawable completedDrawable;
+    private Drawable lockedDrawable;
 
-    public LevelListAdapter(Context context, int layoutID, int packPos, int mode){
-        super(context, layoutID, new Integer[Levels.packs[packPos].getLength()]);
-        int length = Levels.packs[packPos].getLength();
+    public LevelListAdapter(Context context, int layoutID){
+        super(context, layoutID, new Integer[Levels.packs[Common.PACK_POS].getLength() + Levels.packs[Common.PACK_POS].getNumTutorials()]);
+        this.pack = Levels.packs[Common.PACK_POS];
         this.context = context;
         this.db = new DataBaseHandler(context);
-        this.mode = mode;
-        this.views = new View[length];
-        this.packPos = packPos;
+        completedDrawable = context.getDrawable(R.drawable.tick);
+        lockedDrawable = context.getDrawable(R.drawable.padlock);
     }
 
     @Override
     public View getView(int position, View v, ViewGroup parent) {
-        v = views[position];
 
         if (v == null) {
             LayoutInflater vi;
@@ -38,33 +39,36 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
             v = vi.inflate(R.layout.list_item_level_select, null);
         }
 
-        int levelID = db.getId(packPos, position);
-
         TextView nameText = v.findViewById(R.id.listItemLevelText);
-
-        nameText.setText("Level " + (position + 1));
-
         ImageView completedImage = v.findViewById(R.id.listItemCompletedImage);
-
         TextView timeText = v.findViewById(R.id.listItemLevelTime);
 
-        boolean completed = db.isCompleted(levelID);
-        Log.d("LIST", position + " " + levelID + " " + db.isLocked(levelID));
-
-        if (db.isLocked(levelID)) {
-            completedImage.setImageDrawable(context.getDrawable(R.drawable.padlock));
-            timeText.setVisibility(View.INVISIBLE);
-        } else if (mode == Common.MODE_TIMED) {
-            completedImage.setVisibility(View.INVISIBLE);
-            timeText.setVisibility(View.VISIBLE);
-            int time = db.getBestTimeSeconds(levelID);
-            timeText.setText(formatTimeSeconds(time));
-        } else if (completed){
-            completedImage.setImageDrawable(context.getDrawable(R.drawable.tick));
-        } else {
+        String displayName;
+        if (position < pack.getNumTutorials()){
+            displayName = "Tutorial " + (position + 1);
             completedImage.setImageDrawable(null);
+            timeText.setText("");
+        } else {
+            displayName = "Level " + (position - pack.getNumTutorials() + 1);
+            int levelID = db.getId(Common.PACK_POS, position - pack.getNumTutorials());
+            switch (Common.MODE){
+                case Common.MODE_DEFAULT:
+                    timeText.setText("");
+                    if (db.isCompleted(levelID)){
+                        completedImage.setImageDrawable(completedDrawable);
+                    } else if (db.isLocked(levelID)) {
+                        completedImage.setImageDrawable(lockedDrawable);
+                    } else {
+                        completedImage.setImageDrawable(null);
+                    }
+                    break;
+                case Common.MODE_TIMED:
+                    timeText.setText(formatTimeSeconds(db.getBestTimeSeconds(levelID)));
+                    completedImage.setImageDrawable(null);
+            }
         }
 
+        nameText.setText(displayName);
         return v;
     }
 
@@ -74,6 +78,6 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         }
         String s = Integer.toString(seconds / 60);
         int r = seconds % 60;
-        return s + ":" + (r < 10 ? "0" : "") + Integer.toString(r);
+        return s + ":" + (r < 10 ? "0" : "") + r;
     }
 }

@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button playButton, levelSelectButton, tutorialButton, timedButton;
+    private Button playButton, levelSelectButton, timedButton;
     private ImageView settingsButton;
 
     @Override
@@ -60,16 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
                 Common.MODE = Common.MODE_DEFAULT;
                 startActivity(selectPack);
-            }
-        });
-
-        tutorialButton = findViewById(R.id.mainTutorialButton);
-        tutorialButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent tutorial = new Intent();
-                tutorial.setClass(MainActivity.this, TutorialActivity.class);
-                startActivity(tutorial);
             }
         });
 

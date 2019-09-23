@@ -1,0 +1,15 @@
+0 50 0 100 0
+0 100 300
+N Some levels have more than 2 climbers
+N All the climbers stay at the same level
+R0 Get the climbers on the left to meet
+L1 Get the climbers on the left to meet
+L2 Get the climbers on the left to meet
+G Go!
+N When 2 climbers meet, they merge
+N Your goal is to merge all the climbers into 1
+R0 Send both climbers to the right
+R1 Send both climbers to the right
+G Go!
+L1 Send them up the big mountain
+G Go!

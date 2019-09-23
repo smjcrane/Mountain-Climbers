@@ -49,6 +49,8 @@ public class SeeMountainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_see_mountain);
 
+        Common.tutorial = false;
+
         SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
         speed = preferences.getInt(SettingsActivity.SPEED, 1);
         Game.speed = speed;
@@ -158,9 +160,10 @@ public class SeeMountainActivity extends AppCompatActivity {
                     }
                     if (mode == MODE_TIMED){
                         timer.cancel();
-                        int previousBest = db.getBestTimeSeconds(levelID);
+                        int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
+                        int previousBest = db.getBestTimeSeconds(levelDBID);
                         if (seconds < previousBest || previousBest == -1){
-                            db.setBestTimeSeconds(levelID, seconds);
+                            db.setBestTimeSeconds(levelDBID, seconds);
                             MountainView.victoryMessage = "NEW RECORD!";
                         } else {
                             MountainView.victoryMessage = "YOU WIN!";

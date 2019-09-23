@@ -24,10 +24,7 @@ public class TutorialActivity extends AppCompatActivity {
 
     static final String SAVED_INDEX = "savedindex";
 
-    public static int[] levelIDs = new int[] {
-            R.raw.tutorial_0, R.raw.tutorial_1, R.raw.tutorial_2, R.raw.tutorial_3, R.raw.tutorial_4
-    };
-
+    private Integer[] levelIDs;
     private TutorialMountainView mountainView;
     private TextView goButton;
     private Button buttonBack, buttonNextLevel, buttonReset;
@@ -41,9 +38,10 @@ public class TutorialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
 
-        if (levelPos == -1){
-            levelPos = 0;
-        }
+        Common.tutorial = true;
+
+        levelIDs = Levels.packs[Common.PACK_POS].getTutorialLevelIDs();
+        levelPos = Common.TUTORIAL_POS;
         levelID = levelIDs[levelPos];
 
         mountainView = findViewById(R.id.tutorialMountainView);
