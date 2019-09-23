@@ -63,8 +63,13 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                     }
                     break;
                 case Common.MODE_TIMED:
-                    timeText.setText(formatTimeSeconds(db.getBestTimeSeconds(levelID)));
-                    completedImage.setImageDrawable(null);
+                    if (db.isLocked(levelID)){
+                        completedImage.setImageDrawable(lockedDrawable);
+                        timeText.setText("");
+                    } else {
+                        completedImage.setImageDrawable(null);
+                        timeText.setText(formatTimeSeconds(db.getBestTimeSeconds(levelID)));
+                    }
             }
         }
 
