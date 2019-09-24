@@ -96,12 +96,13 @@ public class MountainView extends View {
     private void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
+        int climberSize = Math.max(30, Math.max(width, height) / 35);
         for (MountainClimber climber : game.climbers){
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
             climberDrawable.setColorFilter(climberFilters.get(climber));
-            climberDrawable.setBounds(cx - 50, cy - 50, cx + 50, cy + 50);
+            climberDrawable.setBounds(cx - climberSize, cy - climberSize, cx + climberSize, cy + climberSize);
             climberDrawable.draw(canvas);
         }
     }
@@ -118,6 +119,7 @@ public class MountainView extends View {
         }
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
+        int arrowSize = Math.max(20, Math.max(width, height) / 40);
         for (MountainClimber climber : game.climbers) {
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
@@ -127,7 +129,7 @@ public class MountainView extends View {
 
             if (direction == MountainClimber.Direction.LEFT || climber == selectedClimber) {
                 Drawable leftArrow = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
-                leftArrow.setBounds(cx - 80, cy - 30, cx - 35, cy + 30);
+                leftArrow.setBounds(cx - (int) (arrowSize * 2), cy - arrowSize, cx - arrowSize, cy + arrowSize);
                 leftArrow.setColorFilter(arrowFilter);
                 leftArrow.setAlpha(100);
                 if (direction == MountainClimber.Direction.LEFT) {
@@ -137,7 +139,7 @@ public class MountainView extends View {
             }
             if (direction == MountainClimber.Direction.RIGHT) {
                 Drawable rightArrow = ContextCompat.getDrawable(this.context, R.drawable.arrow_right);
-                rightArrow.setBounds(cx + 35, cy - 30, cx + 80, cy + 30);
+                rightArrow.setBounds(cx + arrowSize, cy - arrowSize, cx + (int) (arrowSize * 2), cy + arrowSize);
                 rightArrow.setColorFilter(arrowFilter);
                 rightArrow.setAlpha(100);
                 if (direction == MountainClimber.Direction.RIGHT) {
