@@ -33,7 +33,7 @@ public class SeeMountainActivity extends AppCompatActivity {
     private Game game;
     public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberOrange};
     private Button buttonBack, buttonNextLevel;
-    private ImageView buttonReset, buttonHint;
+    private ImageView buttonReset, buttonHint, settingsButton;
     private TextView goButton, levelNumberText, timerText;
     private Integer[] levelIDs;
     private int levelID;
@@ -112,6 +112,17 @@ public class SeeMountainActivity extends AppCompatActivity {
                 Solver.Move hint = game.getHint();
                 Log.d("MTN", hint.toString());
                 mountainView.showHint();
+            }
+        });
+
+        settingsButton = findViewById(R.id.mainSettingsButton);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mountainView.resetClimberDrawableColor();
+                Intent settings = new Intent();
+                settings.setClass(SeeMountainActivity.this, SettingsActivity.class);
+                startActivity(settings);
             }
         });
 
@@ -256,6 +267,7 @@ public class SeeMountainActivity extends AppCompatActivity {
         if (isLandscapeLocked){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         }
+        mountainView.updateClimberDrawable();
     }
 
 }

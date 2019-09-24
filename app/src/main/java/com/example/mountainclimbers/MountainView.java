@@ -280,6 +280,17 @@ public class MountainView extends View {
         return gone;
     }
 
+    public void updateClimberDrawable(){
+        SharedPreferences preferences = context.getSharedPreferences(SettingsActivity.PREFERENCES, Context.MODE_PRIVATE);
+        int climberAppearance = preferences.getInt(SettingsActivity.CLIMBER_APPEARANCE, SettingsActivity.CLIMBER_CIRCLE);
+        this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
+        invalidate();
+    }
+
+    public void resetClimberDrawableColor(){
+        climberDrawable.setColorFilter(new PorterDuffColorFilter(context.getColor(R.color.darkTextGrey), PorterDuff.Mode.SRC_ATOP));
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent e){
         if (game.victory){

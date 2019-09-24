@@ -1,20 +1,15 @@
 package com.example.mountainclimbers;
 
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatSeekBar;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.Switch;
 
-import java.util.Arrays;
-import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 

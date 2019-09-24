@@ -9,12 +9,17 @@
 
     <TextView
         android:id="@+id/listItemPackText"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:textSize="40dp"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
+        android:maxLines="2"
+        android:ellipsize="middle"
+        android:scrollHorizontally="false"
+        android:text="a really incredibly long name for a pack indeed"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
 
 </android.support.constraint.ConstraintLayout>
