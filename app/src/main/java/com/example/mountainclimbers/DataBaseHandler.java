@@ -87,9 +87,21 @@ class DataBaseHandler extends SQLiteOpenHelper {
 
     public void markCompleted(int id) {
         SQLiteDatabase db = getWritableDatabase();
-        ContentValues row = new ContentValues();
-        row.put(COLUMN_COMPLETED, 1);
-        db.update(TABLE_SCORES, row, COLUMN_ID + "=" + id, null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES +
+                        " WHERE " + COLUMN_ID + "=" + id,
+                null);
+        if (res == null || res.getCount() == 0){
+            ContentValues row = new ContentValues();
+            row.put(COLUMN_ID, id);
+            row.put(COLUMN_COMPLETED, 1);
+            row.put(COLUMN_BEST_MOVES, -1);
+            row.put(COLUMN_BEST_TIME, -1);
+            db.insert(TABLE_SCORES, null, row);
+        } else {
+            ContentValues row = new ContentValues();
+            row.put(COLUMN_COMPLETED, 1);
+            db.update(TABLE_SCORES, row, COLUMN_ID + "=" + id, null);
+        }
         db.close();
     }
 

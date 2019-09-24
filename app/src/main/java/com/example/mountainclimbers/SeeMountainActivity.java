@@ -152,7 +152,7 @@ public class SeeMountainActivity extends AppCompatActivity {
                     buttonBack.setVisibility(View.VISIBLE);
 
                     db = new DataBaseHandler(SeeMountainActivity.this);
-                    db.markCompleted(db.getId(packPos, Common.LEVEL_POS));
+                    db.markCompleted(db.getId(Common.PACK_POS, Common.LEVEL_POS));
                     db.close();
 
                     if (Common.LEVEL_POS < levelIDs.length - 1){
@@ -161,6 +161,7 @@ public class SeeMountainActivity extends AppCompatActivity {
                     if (mode == MODE_TIMED){
                         timer.cancel();
                         int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
+                        db.markCompleted(levelDBID);
                         int previousBest = db.getBestTimeSeconds(levelDBID);
                         if (seconds < previousBest || previousBest == -1){
                             db.setBestTimeSeconds(levelDBID, seconds);

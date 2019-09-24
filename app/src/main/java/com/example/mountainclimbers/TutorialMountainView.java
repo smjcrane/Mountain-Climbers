@@ -24,7 +24,6 @@ public class TutorialMountainView extends MountainView {
         actionInProgress = false;
         textHintPaint = new TextPaint();
         textHintPaint.setColor(context.getColor(R.color.darkTextGrey));
-        textHintPaint.setTextSize(100);
         textHintPaint.setTypeface(Typeface.create("Roboto", Typeface.NORMAL));
         victoryTextPaint.setAlpha(0);
     }
@@ -51,6 +50,7 @@ public class TutorialMountainView extends MountainView {
 
     protected void drawTextHint(Canvas canvas, String text) {
         int width = getWidth() - 2 * PADDING;
+        textHintPaint.setTextSize(width / 20);
         ArrayList<String> words = new ArrayList<>(Arrays.asList(text.split(" ")));
         if (words.size() == 0){
             return;

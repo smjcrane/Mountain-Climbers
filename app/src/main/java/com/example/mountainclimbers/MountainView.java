@@ -188,25 +188,16 @@ public class MountainView extends View {
         }
 
     protected void drawCenteredText(Canvas canvas, Paint paint, String text) {
-        TEXT_SIZE = 1000;
+        TEXT_SIZE = (int) ((getWidth() - 2 * PADDING) / text.length() * 1.8);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(TEXT_SIZE);
         canvas.getClipBounds(r);
-        int cHeight = r.height();
-        int cWidth = r.width();
+        float cHeight = r.height();
+        float cWidth = r.width();
         paint.setTextAlign(Paint.Align.LEFT);
         paint.getTextBounds(text, 0, text.length(), r);
         float x = cWidth / 2f - r.width() / 2f - r.left;
         float y = cHeight / 2f + r.height() / 2f - r.bottom;
-        while (x < PADDING){
-            TEXT_SIZE = TEXT_SIZE - 50;
-            paint.setTextSize(TEXT_SIZE);
-            canvas.getClipBounds(r);
-            cHeight = r.height();
-            cWidth = r.width();
-            paint.setTextAlign(Paint.Align.LEFT);
-            paint.getTextBounds(text, 0, text.length(), r);
-            x = cWidth / 2f - r.width() / 2f - r.left;
-            y = cHeight / 2f + r.height() / 2f - r.bottom;
-        }
         canvas.drawText(text, x, y, paint);
     }
 
