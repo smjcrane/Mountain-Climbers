@@ -34,7 +34,8 @@ public class SeeMountainActivity extends AppCompatActivity {
     
     private MountainView mountainView;
     private Game game;
-    public static int[] colorIDs = new int[] {R.color.climberGreen, R.color.climberPurple, R.color.climberOrange};
+    public static int[] colorIDs = new int[] {
+            R.color.climberGreen, R.color.climberPurple, R.color.climberOrange, R.color.climberRed};
     private Button buttonBack, buttonNextLevel;
     private ImageView buttonReset, buttonHint, settingsButton;
     private TextView goButton, levelNumberText, timerText;
