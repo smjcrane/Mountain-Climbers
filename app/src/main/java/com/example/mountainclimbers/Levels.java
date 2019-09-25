@@ -9,7 +9,8 @@ public final class Levels {
                     R.raw.lvl_10, R.raw.lvl_11, R.raw.lvl_12, R.raw.lvl_13, R.raw.lvl_14,
                     R.raw.lvl_15, R.raw.lvl_16, R.raw.lvl_17, R.raw.lvl_18, R.raw.lvl_19},
                     new Integer[] {
-                            R.raw.tutorial_0, R.raw.tutorial_1, R.raw.tutorial_2, R.raw.tutorial_3, R.raw.tutorial_4}),
+                            R.raw.tutorial_0, R.raw.tutorial_1, R.raw.tutorial_2, R.raw.tutorial_3,
+                            R.raw.tutorial_4, R.raw.tutorial_5}),
             new Pack("Then there were 3", new Integer[] {
                     R.raw.ttw3_01, R.raw.ttw3_02, R.raw.ttw3_03, R.raw.ttw3_04, R.raw.ttw3_05,
                     R.raw.ttw3_06, R.raw.ttw3_07, R.raw.ttw3_08, R.raw.ttw3_09, R.raw.ttw3_10},

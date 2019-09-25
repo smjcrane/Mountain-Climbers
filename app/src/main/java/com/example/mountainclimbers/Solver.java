@@ -199,7 +199,7 @@ public class Solver {
         }
     }
 
-    public class Move {
+    public static class Move {
         private MountainClimber.Direction[] directions;
 
         public Move(Vertex start, Vertex end){
@@ -208,6 +208,10 @@ public class Solver {
                 directions[i] = (start.coords[i] < end.coords[i]) ?
                         MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT;
             }
+        }
+
+        public Move(MountainClimber.Direction[] directions){
+            this.directions = directions;
         }
 
         public MountainClimber.Direction[] getDirections(){

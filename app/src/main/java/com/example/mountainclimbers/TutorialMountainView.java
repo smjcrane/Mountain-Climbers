@@ -50,7 +50,8 @@ public class TutorialMountainView extends MountainView {
 
     protected void drawTextHint(Canvas canvas, String text) {
         int width = getWidth() - 2 * PADDING;
-        textHintPaint.setTextSize(width / 20);
+        int height = getHeight() - 2 * PADDING;
+        textHintPaint.setTextSize(Math.max(width, height) / 20);
         ArrayList<String> words = new ArrayList<>(Arrays.asList(text.split(" ")));
         if (words.size() == 0){
             return;
@@ -81,8 +82,10 @@ public class TutorialMountainView extends MountainView {
         if (game.moving != Game.Moving.NONE){
             return;
         }
+        game.updateVictory();
         if (game.victory) {
             drawTextHint(canvas, "Good!");
+            game.callOnVictoryListener();
         } else {
             Instruction instruction = game.getInstruction();
             drawTextHint(canvas, instruction.getText());
@@ -91,6 +94,7 @@ public class TutorialMountainView extends MountainView {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        game.updateVictory();
         if (game.victory) {
             return true;
         }
@@ -105,6 +109,7 @@ public class TutorialMountainView extends MountainView {
                 if (actionInProgress){
                     return false;
                 }
+                hint = null;
                 if (selectedClimber == null){
                     int width = getWidth() - 2 * PADDING;
                     int height = getHeight() - 2 * PADDING;
@@ -153,8 +158,9 @@ public class TutorialMountainView extends MountainView {
                 }
                 while (game.getInstruction().isDone()){
                     game.markAsDone();
-                    game.updateVictory();
                 }
+                hint = game.getInstruction().getHint();
+                invalidate();
                 return true;
         }
         return false;

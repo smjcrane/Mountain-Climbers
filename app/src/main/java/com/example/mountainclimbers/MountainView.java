@@ -33,7 +33,7 @@ public class MountainView extends View {
     protected Paint victoryTextPaint;
     private ColorFilter arrowFilter;
     private ColorFilter hintFilter;
-    private Solver.Move hint;
+    protected Solver.Move hint;
     private boolean hintFlashOn;
     protected Map<MountainClimber, PorterDuffColorFilter> climberFilters;
     protected Context context;

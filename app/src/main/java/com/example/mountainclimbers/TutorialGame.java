@@ -27,10 +27,13 @@ public class TutorialGame extends Game {
     }
 
     public void markAsDone(){
-        instructionList.get(instructionIndex).markAsDone();
-        Log.d("TUT", instructionList.get(instructionIndex).getText());
-        instructionIndex = instructionIndex + 1;
         updateVictory();
+        if (!victory){
+            instructionList.get(instructionIndex).markAsDone();
+            Log.d("TUT", instructionList.get(instructionIndex).getText());
+            instructionIndex = instructionIndex + 1;
+            updateVictory();
+        }
     }
 
     @Override

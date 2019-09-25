@@ -150,10 +150,16 @@ public class TutorialActivity extends AppCompatActivity {
                     //set text and wait for go button
                 } else {
                     int startOfText = s.indexOf(" ");
-                    instructionList.add(new Instruction(s.substring(startOfText + 1),
-                            Integer.parseInt(s.substring(1, startOfText)),
-                            type.equals("R") ? MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT
-                    ));
+                    String text = s.substring(startOfText + 1);
+                    boolean isHint = s.substring(startOfText - 1, startOfText).equals("H");
+                    MountainClimber.Direction d = type.equals("R") ? MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT;
+                    int objectID;
+                    if (isHint) {
+                        objectID = Integer.parseInt(s.substring(1, startOfText - 1));
+                    } else {
+                        objectID = Integer.parseInt(s.substring(1, startOfText));
+                    }
+                    instructionList.add(new Instruction(text, objectID, d, isHint));
                     //set text and wait to set climber direction
                 }
             }
