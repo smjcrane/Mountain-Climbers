@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 
@@ -27,6 +28,10 @@ public class LevelSelectActivity extends AppCompatActivity {
         listView = findViewById(R.id.levelList);
         adapter = new LevelListAdapter(this, R.layout.list_item_level_select);
         listView.setAdapter(adapter);
+
+        View footer = new ImageView(this);
+        footer.setMinimumHeight(1000);
+        listView.addFooterView(footer);
 
         db = new DataBaseHandler(this);
 
