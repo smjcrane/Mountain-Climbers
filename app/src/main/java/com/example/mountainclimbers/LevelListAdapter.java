@@ -1,7 +1,6 @@
 package com.example.mountainclimbers;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.logging.Level;
 
 public class LevelListAdapter extends ArrayAdapter<Integer> {
 
@@ -70,6 +67,20 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                         completedImage.setImageDrawable(null);
                         timeText.setText(formatTimeSeconds(db.getBestTimeSeconds(levelID)));
                     }
+                    break;
+                case Common.MODE_PUZZLE:
+                    if (db.isLocked(levelID)){
+                        completedImage.setImageDrawable(lockedDrawable);
+                        timeText.setText("");
+                    } else {
+                        completedImage.setImageDrawable(null);
+                        String movesString = "-";
+                        int bestMoves = db.getBestMoves(levelID);
+                        if (bestMoves != -1){
+                            movesString = Integer.toString(bestMoves);
+                        }
+                        timeText.setText(movesString);
+                    }
             }
         }
 
@@ -77,7 +88,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         return v;
     }
 
-    private String formatTimeSeconds(int seconds){
+    public static String formatTimeSeconds(int seconds){
         if (seconds < 0){
             return "-";
         }

@@ -17,6 +17,8 @@ public class Game {
     Moving moving;
     private OnVictoryListener victoryListener;
     private Solver solver;
+    private int movesTaken;
+    private OnGo onGo;
 
     public Game(Mountain mountain){
         if (speed < 1){
@@ -33,6 +35,25 @@ public class Game {
         this.climbers = new ArrayList<>();
         this.victory = false;
         this.solver = null;
+        this.movesTaken = 0;
+        this.onGo = new OnGo() {
+            @Override
+            public void onGo() {
+                return;
+            }
+        };
+    }
+
+    public void setOnGo(OnGo onGo){
+        this.onGo = onGo;
+    }
+
+    public int getMovesTaken(){
+        return movesTaken;
+    }
+
+    public void setMoves(int moves){
+        movesTaken = moves;
     }
 
     public void setOnVictoryListener(OnVictoryListener v){
@@ -68,7 +89,7 @@ public class Game {
     }
 
     public boolean go() {
-        if (victory) {
+        if (victory || moving != Moving.NONE) {
             return false;
         }
 
@@ -88,6 +109,8 @@ public class Game {
         if (canGoUp) {
             Log.d("GAME", "Going up");
             moving = Moving.UP;
+            movesTaken ++;
+            onGo.onGo();
             return true;
         }
         boolean canGoDown = true;
@@ -97,6 +120,8 @@ public class Game {
         if (canGoDown) {
             Log.d("GAME", "Going down");
             moving = Moving.DOWN;
+            movesTaken ++;
+            onGo.onGo();
             return true;
         }
         return false;
@@ -151,6 +176,10 @@ public class Game {
 
     public interface OnVictoryListener {
         void onVictory();
+    }
+
+    public interface OnGo {
+        void onGo();
     }
 
 }

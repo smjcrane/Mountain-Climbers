@@ -18,12 +18,15 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Timer;
 
+import static com.example.mountainclimbers.Common.MODE_DEFAULT;
+import static com.example.mountainclimbers.Common.MODE_PUZZLE;
 import static com.example.mountainclimbers.Common.MODE_TIMED;
 
 public class SeeMountainActivity extends AppCompatActivity {
 
     static final String SAVED_POSITIONS = "savedpositions";
     static final String SAVED_DIRECTIONS = "saveddirections";
+    static final String SAVED_MOVES = "savedmoves";
     static final MountainClimber.Direction[] DIRECTIONS =
             new MountainClimber.Direction[] {null, MountainClimber.Direction.LEFT, MountainClimber.Direction.RIGHT
     };
@@ -69,12 +72,12 @@ public class SeeMountainActivity extends AppCompatActivity {
         levelID = levelIDs[Common.LEVEL_POS];
         mode = Common.MODE;
 
-        loadLevel(savedInstanceState);
-
         timerText = findViewById(R.id.mountainTimerText);
-        if (mode == MODE_TIMED){
+        if (mode == MODE_TIMED || mode == MODE_PUZZLE){
             timerText.setVisibility(View.VISIBLE);
         }
+
+        loadLevel(savedInstanceState);
 
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,14 +109,18 @@ public class SeeMountainActivity extends AppCompatActivity {
             }
         });
 
-        buttonHint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Solver.Move hint = game.getHint();
-                Log.d("MTN", hint.toString());
-                mountainView.showHint();
-            }
-        });
+        if (mode == MODE_DEFAULT){
+            buttonHint.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Solver.Move hint = game.getHint();
+                    Log.d("MTN", hint.toString());
+                    mountainView.showHint();
+                }
+            });
+        } else {
+            buttonHint.setVisibility(View.INVISIBLE);
+        }
 
         settingsButton = findViewById(R.id.mainSettingsButton);
         settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +160,7 @@ public class SeeMountainActivity extends AppCompatActivity {
                 heights[i] = Integer.parseInt(heightStrings[i]);
             }
 
-            Mountain mountain = new Mountain(heights);
+            final Mountain mountain = new Mountain(heights);
             game = new Game(mountain);
             game.setOnVictoryListener(new Game.OnVictoryListener() {
                 @Override
@@ -180,9 +187,35 @@ public class SeeMountainActivity extends AppCompatActivity {
                         } else {
                             MountainView.victoryMessage = "YOU WIN!";
                         }
+                    } else if (mode == MODE_PUZZLE){
+                        int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
+                        db.markCompleted(levelDBID);
+                        int previousBest = db.getBestMoves(levelDBID);
+                        int moves = game.getMovesTaken();
+                        if (moves < previousBest || previousBest == -1){
+                            db.setBestMoves(levelDBID, moves);
+                            MountainView.victoryMessage = "NEW RECORD!";
+                        } else {
+                            MountainView.victoryMessage = "YOU WIN!";
+                        }
                     }
                 }
             });
+
+            if (mode == MODE_PUZZLE){
+                int moves = 0;
+                if (savedInstanceState != null){
+                    moves = savedInstanceState.getInt(SAVED_MOVES);
+                }
+                timerText.setText("Moves: " + moves);
+                game.setMoves(moves);
+                game.setOnGo(new Game.OnGo() {
+                    @Override
+                    public void onGo() {
+                        timerText.setText("Moves: " + game.getMovesTaken());
+                    }
+                });
+            }
 
             mountainView.setGame(game);
 
@@ -218,7 +251,7 @@ public class SeeMountainActivity extends AppCompatActivity {
                 timer = new CountUpTimer(1000) {
                     public void onTick(long millis) {
                         int second = (int) millis / 1000;
-                        timerText.setText(String.valueOf(second));
+                        timerText.setText(LevelListAdapter.formatTimeSeconds(second));
                         seconds = second;
                     }
                 };
@@ -247,6 +280,8 @@ public class SeeMountainActivity extends AppCompatActivity {
         outState.putIntArray(SAVED_DIRECTIONS, directions);
         if (mode == MODE_TIMED){
             outState.putLong(SAVED_TIME, timer.getMillisAtStart());
+        } else if (mode == MODE_PUZZLE) {
+            outState.putInt(SAVED_MOVES, game.getMovesTaken());
         }
         super.onSaveInstanceState(outState);
     }

@@ -38,7 +38,18 @@
         app:layout_constraintTop_toBottomOf="@id/mainLevelSelectButton"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/mainPuzzleModeButton" />
+
+    <Button
+        android:id="@+id/mainPuzzleModeButton"
+        android:text="Puzzle mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/MainButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainTimedModeButton" />
 
     <ImageView
         android:id="@+id/mainSettingsButton"

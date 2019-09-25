@@ -4,6 +4,7 @@ public class Common {
 
     public static final int MODE_DEFAULT = 0;
     public static final int MODE_TIMED = 1;
+    public static final int MODE_PUZZLE = 2;
 
     public static int MODE = MODE_DEFAULT;
 

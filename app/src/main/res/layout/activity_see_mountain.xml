@@ -69,12 +69,12 @@
         android:id="@+id/mountainTimerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:color="@color/skyTextBlue"
+        android:textColor="@color/darkTextBlue"
         android:text="0:00"
+        android:layout_marginRight="15dp"
         android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/mountainLevelNumber"
+        app:layout_constraintRight_toRightOf="parent" />
 
     <ImageView
         android:id="@+id/mountainHintButton"
@@ -84,7 +84,7 @@
         android:src="@drawable/question"
         android:tint="@color/skyTextBlue"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/mountainResetButton" />
+        app:layout_constraintLeft_toRightOf="@+id/mainSettingsButton" />
 
     <ImageView
         android:id="@+id/mainSettingsButton"
@@ -94,6 +94,6 @@
         android:layout_height="50dp"
         android:layout_marginTop="15dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/mountainHintButton" />
+        app:layout_constraintLeft_toRightOf="@+id/mountainResetButton" />
 
 </android.support.constraint.ConstraintLayout>

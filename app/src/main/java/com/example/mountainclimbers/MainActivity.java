@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button playButton, levelSelectButton, timedButton;
+    private Button playButton, levelSelectButton, timedButton, puzzleButton;
     private ImageView settingsButton;
 
     @Override
@@ -70,6 +70,17 @@ public class MainActivity extends AppCompatActivity {
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
                 Common.MODE = Common.MODE_TIMED;
+                startActivity(selectPack);
+            }
+        });
+
+        puzzleButton = findViewById(R.id.mainPuzzleModeButton);
+        puzzleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent selectPack = new Intent();
+                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
+                Common.MODE = Common.MODE_PUZZLE;
                 startActivity(selectPack);
             }
         });

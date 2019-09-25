@@ -108,9 +108,11 @@ public class MountainView extends View {
     }
 
     public void showHint(){
-        hint = game.getHint();
-        hintFlashOn = true;
-        invalidate();
+        if (hint == null){
+            hint = game.getHint();
+            hintFlashOn = true;
+            invalidate();
+        }
     }
 
     protected void drawDirections(Canvas canvas){
