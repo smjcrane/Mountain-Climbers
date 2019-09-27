@@ -1,14 +1,21 @@
 package com.example.mountainclimbers;
 
+import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.mountainclimbers.SeeMountainActivity.DIRECTIONS;
 
 public class Solver {
 
@@ -20,6 +27,37 @@ public class Solver {
         this.mountain = mountain;
         this.numClimbers = numClimbers;
         this.graph = makeGraph();
+    }
+
+    public static int solveFromResourceID(Context context, int resourceID) {
+        try {
+            InputStream stream = context.getResources().openRawResource(resourceID);
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+            String[] heightStrings = br.readLine().split(" ");
+            String[] climberString = br.readLine().split(" ");
+
+            int[] heights = new int[heightStrings.length];
+            int[] climberPositions = new int[climberString.length];
+            for (int i = 0; i < heightStrings.length; i++) {
+                heights[i] = Integer.parseInt(heightStrings[i]);
+            }
+
+            final Mountain mountain = new Mountain(heights);
+
+            for (int i = 0; i < climberString.length; i++) {
+                climberPositions[i] = Integer.parseInt(climberString[i]);
+            }
+
+            Solver solver = new Solver(mountain, climberString.length);
+
+            // TODO work for more than 2 climbers
+            return solver.solve(climberPositions).size();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     public List<Move> solve(int[] initialCoords) {

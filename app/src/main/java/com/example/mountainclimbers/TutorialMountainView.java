@@ -58,7 +58,6 @@ public class TutorialMountainView extends MountainView {
         }
         List<String> lines = new ArrayList<>();
         String line = words.get(0);
-        Log.d("HINT", line + line.length());
         words.remove(line);
         for (String word : words) {
             if (textHintPaint.measureText(line + " " + word) < width) {
@@ -69,7 +68,6 @@ public class TutorialMountainView extends MountainView {
             }
         }
         lines.add(line);
-        Log.d("HINT", "A" + lines.get(0).substring(0, 1) + "B");
         float y = PADDING;
         for (String s : lines){
             canvas.drawText(s, 100, y, textHintPaint);
@@ -159,7 +157,10 @@ public class TutorialMountainView extends MountainView {
                 while (game.getInstruction().isDone()){
                     game.markAsDone();
                 }
-                hint = game.getInstruction().getHint();
+                if (game.getInstruction().isHint()){
+                    hint = game.getInstruction().getHint();
+                    Log.d("HINT", hint == null ? "null" : hint.toString());
+                }
                 invalidate();
                 return true;
         }

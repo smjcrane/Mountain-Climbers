@@ -2,12 +2,15 @@ package com.example.mountainclimbers;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.provider.ContactsContract;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class LevelListAdapter extends ArrayAdapter<Integer> {
@@ -39,15 +42,20 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         TextView nameText = v.findViewById(R.id.listItemLevelText);
         ImageView completedImage = v.findViewById(R.id.listItemCompletedImage);
         TextView timeText = v.findViewById(R.id.listItemLevelTime);
+        RelativeLayout starLayout = v.findViewById(R.id.levelStars);
+        ImageView[] starFills = new ImageView[] {
+                v.findViewById(R.id.starFill1), v.findViewById(R.id.starFill2), v.findViewById(R.id.starFill3)};
 
         String displayName;
         if (position < pack.getNumTutorials()){
             displayName = "Tutorial " + (position + 1);
             completedImage.setImageDrawable(null);
+            starLayout.setVisibility(View.INVISIBLE);
             timeText.setText("");
         } else {
             displayName = "Level " + (position - pack.getNumTutorials() + 1);
-            int levelID = db.getId(Common.PACK_POS, position - pack.getNumTutorials());
+            int levelPos = position - pack.getNumTutorials();
+            int levelID = db.getId(Common.PACK_POS, levelPos);
             switch (Common.MODE){
                 case Common.MODE_DEFAULT:
                     timeText.setText("");
@@ -71,15 +79,19 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                 case Common.MODE_PUZZLE:
                     if (db.isLocked(levelID)){
                         completedImage.setImageDrawable(lockedDrawable);
-                        timeText.setText("");
+                        starLayout.setVisibility(View.INVISIBLE);
                     } else {
                         completedImage.setImageDrawable(null);
-                        String movesString = "-";
+                        starLayout.setVisibility(View.VISIBLE);
                         int bestMoves = db.getBestMoves(levelID);
-                        if (bestMoves != -1){
-                            movesString = Integer.toString(bestMoves);
+                        int stars = howManyStars(context, Common.PACK_POS, levelPos, bestMoves);
+                        for (int i = 0; i < 3; i++){
+                            if (i < stars){
+                                starFills[i].setVisibility(View.VISIBLE);
+                            } else {
+                                starFills[i].setVisibility(View.INVISIBLE);
+                            }
                         }
-                        timeText.setText(movesString);
                     }
             }
         }
@@ -95,5 +107,19 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         String s = Integer.toString(seconds / 60);
         int r = seconds % 60;
         return s + ":" + (r < 10 ? "0" : "") + r;
+    }
+
+    public static int howManyStars(Context context, int packpos, int levelpos, int moves){
+        if (moves == -1){
+            return 0;
+        } else {
+            int bestPossibleMoves = Solver.solveFromResourceID(context, Levels.packs[packpos].getLevelIDs()[levelpos]);
+            if (moves == bestPossibleMoves){
+                return 3;
+            } else if (moves <= Math.max(bestPossibleMoves + 2, (int) bestPossibleMoves * 1.3)) {
+                return 2;
+            }
+        }
+        return 1;
     }
 }

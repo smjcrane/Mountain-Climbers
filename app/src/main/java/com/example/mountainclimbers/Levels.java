@@ -16,7 +16,10 @@ public final class Levels {
                     R.raw.ttw3_06, R.raw.ttw3_07, R.raw.ttw3_08, R.raw.ttw3_09, R.raw.ttw3_10},
                     new Integer[] {R.raw.tutorial_ttw3_1}),
             new Pack("Easy Pack", new Integer[] {
-                    R.raw.easy_01, R.raw.easy_02, R.raw.easy_03, R.raw.easy_04, R.raw.easy_05}),
+                    R.raw.easy_01, R.raw.easy_02, R.raw.easy_03, R.raw.easy_04, R.raw.easy_05,
+                    R.raw.easy_06, R.raw.easy_07, R.raw.easy_08, R.raw.easy_09, R.raw.easy_10,
+                    R.raw.easy_11, R.raw.easy_12, R.raw.easy_13, R.raw.easy_14, R.raw.easy_15,
+                    R.raw.easy_16, R.raw.easy_17}),
             new Pack("Hard Pack", new Integer[] {
                     R.raw.hard_01, R.raw.hard_02, R.raw.hard_03, R.raw.hard_04, R.raw.hard_05,
                     R.raw.hard_06, R.raw.hard_07, R.raw.hard_08, R.raw.hard_09, R.raw.hard_10,
@@ -42,8 +45,10 @@ public final class Levels {
                     R.raw.gen_081, R.raw.gen_082, R.raw.gen_083, R.raw.gen_084, R.raw.gen_085,
                     R.raw.gen_086, R.raw.gen_087, R.raw.gen_088, R.raw.gen_089, R.raw.gen_090,
                     R.raw.gen_091, R.raw.gen_092, R.raw.gen_093, R.raw.gen_094, R.raw.gen_095,
-                    R.raw.gen_096, R.raw.gen_097, R.raw.gen_098, R.raw.gen_099, R.raw.gen_100
-            })
+                    R.raw.gen_096, R.raw.gen_097, R.raw.gen_098, R.raw.gen_099, R.raw.gen_100}),
+            new Pack("Wolf Pack", new Integer[] {
+                    R.raw.wolf_01, R.raw.wolf_02, R.raw.wolf_03, R.raw.wolf_04, R.raw.wolf_05,
+                    R.raw.wolf_06})
     };
 
     public static class Pack {

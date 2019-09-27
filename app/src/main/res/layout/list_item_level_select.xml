@@ -32,4 +32,62 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
+    <RelativeLayout
+        android:id="@+id/levelStars"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/starOutline1"
+            android:src="@drawable/star_outline"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <ImageView
+            android:id="@+id/starFill1"
+            android:src="@drawable/star_fill"
+            android:layout_alignEnd="@+id/starOutline1"
+            android:layout_alignStart="@+id/starOutline1"
+            android:tint="@color/victoryGold"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <ImageView
+            android:id="@+id/starOutline2"
+            android:src="@drawable/star_outline"
+            android:layout_toRightOf="@+id/starOutline1"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <ImageView
+            android:id="@+id/starFill2"
+            android:src="@drawable/star_fill"
+            android:layout_alignEnd="@+id/starOutline2"
+            android:layout_alignStart="@+id/starOutline2"
+            android:tint="@color/victoryGold"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <ImageView
+            android:id="@+id/starOutline3"
+            android:src="@drawable/star_outline"
+            android:layout_toRightOf="@+id/starOutline2"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+        <ImageView
+            android:id="@+id/starFill3"
+            android:src="@drawable/star_fill"
+            android:layout_alignEnd="@+id/starOutline3"
+            android:layout_alignStart="@+id/starOutline3"
+            android:tint="@color/victoryGold"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
+    </RelativeLayout>
+
 </android.support.constraint.ConstraintLayout>
