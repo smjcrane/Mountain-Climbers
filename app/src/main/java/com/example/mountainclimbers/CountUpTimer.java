@@ -6,7 +6,7 @@ import android.os.SystemClock;
 
 public abstract class CountUpTimer {
 
-    private boolean cancelled = false;
+    boolean cancelled = false;
     private long millisAtStart;
     private long interval;
     private static final int MSG = 1;

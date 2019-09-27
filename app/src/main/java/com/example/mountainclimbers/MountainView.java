@@ -42,6 +42,7 @@ public class MountainView extends View {
     protected Random random;
     protected long seed;
     Game game;
+    private boolean clickable;
 
     private Drawable climberDrawable;
     static final int[] climberDrawableIDs = new int[] {R.drawable.circle, R.drawable.peg_person, R.drawable.hollow};
@@ -50,6 +51,7 @@ public class MountainView extends View {
         super(context, attrs);
         this.context = context;
         this.random = new Random();
+        this.clickable = true;
 
         this.mountainPaint = new Paint();
         this.mountainPaint.setColor(context.getColor(R.color.mountainGrey));
@@ -74,6 +76,14 @@ public class MountainView extends View {
         SharedPreferences preferences = context.getSharedPreferences(SettingsActivity.PREFERENCES, Context.MODE_PRIVATE);
         int climberAppearance = preferences.getInt(SettingsActivity.CLIMBER_APPEARANCE, SettingsActivity.CLIMBER_CIRCLE);
         this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
+    }
+
+    public void deActivate(){
+        clickable = false;
+    }
+
+    public void activate() {
+        clickable = true;
     }
 
     public void setSeed(long seed){
@@ -297,7 +307,7 @@ public class MountainView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent e){
-        if (game.victory){
+        if (game.victory || !clickable){
             return true;
         }
 

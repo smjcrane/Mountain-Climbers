@@ -15,9 +15,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Timer;
 
+import static com.example.mountainclimbers.Common.MODE;
 import static com.example.mountainclimbers.Common.MODE_DEFAULT;
 import static com.example.mountainclimbers.Common.MODE_PUZZLE;
 import static com.example.mountainclimbers.Common.MODE_TIMED;
@@ -47,6 +46,7 @@ public class SeeMountainActivity extends AppCompatActivity {
     private CountUpTimer timer;
     private int seconds;
     private int packPos;
+    private CountDownView countDownView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +66,7 @@ public class SeeMountainActivity extends AppCompatActivity {
         buttonBack = findViewById(R.id.mountainBackButton);
         buttonReset = findViewById(R.id.mountainResetButton);
         buttonNextLevel = findViewById(R.id.mountainNextLevelButton);
+        countDownView = findViewById(R.id.mountainCountdown);
 
         packPos = Common.PACK_POS;
         Levels.Pack pack = Levels.packs[packPos];
@@ -73,9 +74,16 @@ public class SeeMountainActivity extends AppCompatActivity {
         levelID = levelIDs[Common.LEVEL_POS];
         mode = Common.MODE;
 
+        if (savedInstanceState == null && mode == MODE_TIMED){
+            mountainView.deActivate();
+        }
+
         timerText = findViewById(R.id.mountainTimerText);
         if (mode == MODE_TIMED || mode == MODE_PUZZLE){
             timerText.setVisibility(View.VISIBLE);
+        }
+        if (mode == MODE_TIMED) {
+            countDownView.setVisibility(View.VISIBLE);
         }
 
         loadLevel(savedInstanceState);
@@ -248,21 +256,29 @@ public class SeeMountainActivity extends AppCompatActivity {
             if (timer != null){
                 timer.cancel();
             }
-            if (savedInstanceState == null){
-                timer = new CountUpTimer(1000) {
-                    public void onTick(long millis) {
-                        int second = (int) millis / 1000;
-                        timerText.setText(LevelListAdapter.formatTimeSeconds(second));
-                        seconds = second;
+            timerText.setText("0:00");
+            if (savedInstanceState == null || !savedInstanceState.containsKey(SAVED_TIME)){
+                countDownView.setOnCounted(new CountDownView.OnCounted() {
+                    @Override
+                    public void onCounted() {
+                        timer = new CountUpTimer(1000) {
+                            public void onTick(long millis) {
+                                int second = (int) millis / 1000;
+                                timerText.setText(LevelListAdapter.formatTimeSeconds(second));
+                                seconds = second;
+                            }
+                        };
+                        mountainView.activate();
+                        timer.start();
                     }
-                };
-                timer.start();
+                });
+                countDownView.start(3);
             } else {
                 timer = new CountUpTimer(1000, savedInstanceState.getLong(SAVED_TIME)) {
                     @Override
                     public void onTick(long millisElapsed) {
                         int second = (int) millisElapsed / 1000;
-                        timerText.setText(String.valueOf(second));
+                        timerText.setText(LevelListAdapter.formatTimeSeconds(second));
                         seconds = second;
                     }
                 };
@@ -279,8 +295,9 @@ public class SeeMountainActivity extends AppCompatActivity {
             directions[i] = (d == null) ? 0 : (d == MountainClimber.Direction.LEFT) ? 1 : 2;
         }
         outState.putIntArray(SAVED_DIRECTIONS, directions);
-        if (mode == MODE_TIMED){
+        if (mode == MODE_TIMED && timer!=null && !timer.cancelled){
             outState.putLong(SAVED_TIME, timer.getMillisAtStart());
+            timer.cancel();
         } else if (mode == MODE_PUZZLE) {
             outState.putInt(SAVED_MOVES, game.getMovesTaken());
         }

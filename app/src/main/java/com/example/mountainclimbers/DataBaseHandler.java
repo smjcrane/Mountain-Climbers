@@ -19,6 +19,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
     public static String COLUMN_COMPLETED = "columncompleted";
     public static String COLUMN_BEST_MOVES = "columnbestmoves";
     public static String COLUMN_BEST_TIME = "columnbesttime";
+    public static String COLUMN_OPTIMAL_MOVES = "columnoptimalmoves";
 
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -38,7 +39,8 @@ class DataBaseHandler extends SQLiteOpenHelper {
                 COLUMN_ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_COMPLETED + " INTEGER, " +
                 COLUMN_BEST_MOVES + " INTEGER, " +
-                COLUMN_BEST_TIME + " INTEGER " +
+                COLUMN_BEST_TIME + " INTEGER, " +
+                COLUMN_OPTIMAL_MOVES + " INTEGER " +
                 ")");
         for (int i = 0; i < Levels.packs.length; i++){
             Levels.Pack pack = Levels.packs[i];
@@ -53,6 +55,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
                     row.put(COLUMN_COMPLETED, 0);
                     row.put(COLUMN_BEST_MOVES, -1);
                     row.put(COLUMN_BEST_TIME, -1);
+                    row.put(COLUMN_OPTIMAL_MOVES, -1);
                     db.insert(TABLE_SCORES, null, row);
                 }
             }
