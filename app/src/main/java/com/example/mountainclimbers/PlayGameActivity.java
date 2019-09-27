@@ -55,8 +55,6 @@ public class PlayGameActivity extends AppCompatActivity {
         buttonReset = findViewById(R.id.mountainResetButton);
         buttonNextLevel = findViewById(R.id.mountainNextLevelButton);
 
-        loadLevel(savedInstanceState);
-
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +107,7 @@ public class PlayGameActivity extends AppCompatActivity {
         onVictoryListener = new Game.OnVictoryListener() {
             @Override
             public void onVictory() {
+                Log.d("PLAY", "victory!");
                 goButton.setVisibility(View.INVISIBLE);
                 buttonHint.setVisibility(View.INVISIBLE);
                 buttonBack.setVisibility(View.VISIBLE);
@@ -123,6 +122,7 @@ public class PlayGameActivity extends AppCompatActivity {
             }
         };
 
+        loadLevel(savedInstanceState);
     }
 
     protected void loadLevel(Bundle savedInstanceState){

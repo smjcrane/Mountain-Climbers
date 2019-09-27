@@ -19,7 +19,7 @@ public final class Levels {
                     R.raw.easy_01, R.raw.easy_02, R.raw.easy_03, R.raw.easy_04, R.raw.easy_05,
                     R.raw.easy_06, R.raw.easy_07, R.raw.easy_08, R.raw.easy_09, R.raw.easy_10,
                     R.raw.easy_11, R.raw.easy_12, R.raw.easy_13, R.raw.easy_14, R.raw.easy_15,
-                    R.raw.easy_16, R.raw.easy_17}),
+                    R.raw.easy_16, R.raw.easy_17, R.raw.easy_18, R.raw.easy_19, R.raw.easy_20}),
             new Pack("Hard Pack", new Integer[] {
                     R.raw.hard_01, R.raw.hard_02, R.raw.hard_03, R.raw.hard_04, R.raw.hard_05,
                     R.raw.hard_06, R.raw.hard_07, R.raw.hard_08, R.raw.hard_09, R.raw.hard_10,
