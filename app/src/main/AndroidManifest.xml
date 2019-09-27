@@ -14,8 +14,9 @@
         <activity
             android:name=".TutorialActivity" />
         <activity android:name=".LevelSelectActivity" />
-        <activity
-            android:name=".SeeMountainActivity" />
+        <activity android:name=".PlayGameActivity" />
+        <activity android:name=".PlayTimedModeActivity" />
+        <activity android:name=".PlayPuzzleModeActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

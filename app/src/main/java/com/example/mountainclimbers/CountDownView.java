@@ -27,6 +27,7 @@ public class CountDownView extends View {
         paint = new TextPaint();
         paint.setColor(context.getColor(R.color.darkTextBlue));
         paint.setTextAlign(Paint.Align.LEFT);
+        paint.setAlpha(100);
         going = false;
         onCounted = new OnCounted() {
             @Override

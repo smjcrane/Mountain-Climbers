@@ -13,4 +13,11 @@ public class Common {
     public static int TUTORIAL_POS = 0;
 
     public static boolean tutorial = true;
+
+    public static int[] colorIDs = new int[] {
+            R.color.climberGreen, R.color.climberPurple, R.color.climberOrange, R.color.climberRed};
+
+    static final MountainClimber.Direction[] DIRECTIONS =
+            new MountainClimber.Direction[] {null, MountainClimber.Direction.LEFT, MountainClimber.Direction.RIGHT
+            };
 }

@@ -10,6 +10,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import static com.example.mountainclimbers.Common.MODE_DEFAULT;
+import static com.example.mountainclimbers.Common.MODE_PUZZLE;
+import static com.example.mountainclimbers.Common.MODE_TIMED;
+
 
 public class LevelSelectActivity extends AppCompatActivity {
 
@@ -49,7 +53,17 @@ public class LevelSelectActivity extends AppCompatActivity {
                     Log.d("LVL", "you clicked on " + levelPos);
                     if (!db.isLocked(db.getId(Common.PACK_POS, levelPos))) {
                         Intent playLevel = new Intent();
-                        playLevel.setClass(LevelSelectActivity.this, SeeMountainActivity.class);
+                        switch (mode){
+                            case MODE_DEFAULT:
+                                playLevel.setClass(LevelSelectActivity.this, PlayGameActivity.class);
+                                break;
+                            case MODE_TIMED:
+                                playLevel.setClass(LevelSelectActivity.this, PlayTimedModeActivity.class);
+                                break;
+                            case MODE_PUZZLE:
+                                playLevel.setClass(LevelSelectActivity.this, PlayPuzzleModeActivity.class);
+                                break;
+                        }
                         Common.LEVEL_POS = levelPos;
                         startActivity(playLevel);
                     }

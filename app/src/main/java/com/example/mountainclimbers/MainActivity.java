@@ -28,12 +28,11 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
-                startActivity(selectPack);
 
                 Intent selectLevel = new Intent();
                 selectLevel.setClass(MainActivity.this, LevelSelectActivity.class);
                 Intent playGame = new Intent();
-                playGame.setClass(MainActivity.this, SeeMountainActivity.class);
+                playGame.setClass(MainActivity.this, PlayGameActivity.class);
 
                 int length = Levels.packs[Common.PACK_POS].getLength();
 
@@ -47,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                startActivity(selectPack);
                 startActivity(selectLevel);
                 startActivity(playGame);
             }

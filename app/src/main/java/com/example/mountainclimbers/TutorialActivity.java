@@ -16,10 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.mountainclimbers.Common.MODE_TIMED;
-import static com.example.mountainclimbers.SeeMountainActivity.DIRECTIONS;
-import static com.example.mountainclimbers.SeeMountainActivity.SAVED_DIRECTIONS;
-import static com.example.mountainclimbers.SeeMountainActivity.SAVED_POSITIONS;
+import static com.example.mountainclimbers.Common.DIRECTIONS;
+import static com.example.mountainclimbers.PlayGameActivity.SAVED_DIRECTIONS;
+import static com.example.mountainclimbers.PlayGameActivity.SAVED_POSITIONS;
 
 public class TutorialActivity extends AppCompatActivity {
 
@@ -188,7 +187,7 @@ public class TutorialActivity extends AppCompatActivity {
             }
 
             for (int i = 0; i < climbers.size(); i++){
-                mountainView.addClimber(climbers.get(i), SeeMountainActivity.colorIDs[i]);
+                mountainView.addClimber(climbers.get(i), Common.colorIDs[i]);
             }
 
             br.close();
