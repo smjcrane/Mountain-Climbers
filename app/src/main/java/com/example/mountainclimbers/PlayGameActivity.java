@@ -44,9 +44,6 @@ public class PlayGameActivity extends AppCompatActivity {
 
         Common.tutorial = false;
 
-        SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
-        Game.speed = preferences.getInt(SettingsActivity.SPEED, 1);
-
         mountainView = findViewById(R.id.mountainView);
         buttonHint = findViewById(R.id.mountainHintButton);
         levelNumberText = findViewById(R.id.mountainLevelNumber);
@@ -206,6 +203,7 @@ public class PlayGameActivity extends AppCompatActivity {
         super.onResume();
         SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
         boolean isLandscapeLocked = preferences.getBoolean(SettingsActivity.LANDSCAPE_LOCKED, true);
+        Game.speed = preferences.getInt(SettingsActivity.SPEED, 1);
         if (isLandscapeLocked){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         }

@@ -47,14 +47,20 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
             }
         });
 
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadLevel(null);
+                loadPuzzle(null);
+            }
+        });
+
         loadPuzzle(savedInstanceState);
     }
 
     protected void loadPuzzle(Bundle savedInstanceState){
         super.loadLevel(savedInstanceState);
-        if (movesText == null){
-            return;
-        }
+        buttonHint.setVisibility(View.INVISIBLE);
         int moves = 0;
         if (savedInstanceState != null){
             moves = savedInstanceState.getInt(SAVED_MOVES);

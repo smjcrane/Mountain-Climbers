@@ -28,12 +28,18 @@ public class PlayTimedModeActivity extends PlayGameActivity {
         countDownView = findViewById(R.id.mountainCountdown);
         countDownView.setVisibility(View.VISIBLE);
 
-        buttonHint.setVisibility(View.INVISIBLE);
-
         buttonNextLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Common.LEVEL_POS++;
+                loadLevel(null);
+                loadTimers(null);
+            }
+        });
+
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 loadLevel(null);
                 loadTimers(null);
             }
@@ -60,6 +66,8 @@ public class PlayTimedModeActivity extends PlayGameActivity {
     }
 
     protected void loadTimers(Bundle savedInstanceState){
+        mountainView.deActivate();
+        buttonHint.setVisibility(View.INVISIBLE);
         timerText.setText("0:00");
         game.setOnVictoryListener(onTimedVictoryListener);
         if (timer != null){
