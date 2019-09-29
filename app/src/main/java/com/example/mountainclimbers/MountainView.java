@@ -100,6 +100,8 @@ public class MountainView extends View {
         this.game = game;
         this.selectedClimber = null;
         this.climberFilters = new HashMap<>();
+        this.hint = null;
+        this.hintFlashOn = false;
         invalidate();
     }
 
