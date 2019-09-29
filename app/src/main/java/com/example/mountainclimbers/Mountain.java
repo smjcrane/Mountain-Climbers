@@ -1,5 +1,6 @@
 package com.example.mountainclimbers;
 
+import android.telephony.CellSignalStrengthGsm;
 import android.util.Log;
 
 public class Mountain {
@@ -74,6 +75,14 @@ public class Mountain {
 
     public int[] getTurningPoints(){
         return turningPoints;
+    }
+
+    public String toString(){
+        String s = "Mountain";
+        for (int i : turningPoints){
+            s = s + " " + getHeightAt(i);
+        }
+        return s;
     }
 
     public enum Slope {

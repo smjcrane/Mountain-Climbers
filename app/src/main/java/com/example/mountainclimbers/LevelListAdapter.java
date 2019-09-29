@@ -84,7 +84,8 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                         completedImage.setImageDrawable(null);
                         starLayout.setVisibility(View.VISIBLE);
                         int bestMoves = db.getBestMoves(levelID);
-                        int stars = howManyStars(context, Common.PACK_POS, levelPos, bestMoves);
+                        int optimalMoves = db.getOptimalMoves(levelID, context);
+                        int stars = howManyStars(bestMoves, optimalMoves);
                         for (int i = 0; i < 3; i++){
                             if (i < stars){
                                 starFills[i].setVisibility(View.VISIBLE);
@@ -109,11 +110,10 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         return s + ":" + (r < 10 ? "0" : "") + r;
     }
 
-    public static int howManyStars(Context context, int packpos, int levelpos, int moves){
+    public static int howManyStars(int moves, int bestPossibleMoves){
         if (moves == -1){
             return 0;
         } else {
-            int bestPossibleMoves = Solver.solveFromResourceID(context, Levels.packs[packpos].getLevelIDs()[levelpos]);
             if (moves == bestPossibleMoves){
                 return 3;
             } else if (moves <= Math.max(bestPossibleMoves + 2, (int) bestPossibleMoves * 1.3)) {

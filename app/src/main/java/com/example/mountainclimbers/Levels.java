@@ -48,7 +48,7 @@ public final class Levels {
                     R.raw.gen_096, R.raw.gen_097, R.raw.gen_098, R.raw.gen_099, R.raw.gen_100}),
             new Pack("Wolf Pack", new Integer[] {
                     R.raw.wolf_01, R.raw.wolf_02, R.raw.wolf_03, R.raw.wolf_04, R.raw.wolf_05,
-                    R.raw.wolf_06})
+                    R.raw.wolf_06, R.raw.wolf_07})
     };
 
     public static class Pack {

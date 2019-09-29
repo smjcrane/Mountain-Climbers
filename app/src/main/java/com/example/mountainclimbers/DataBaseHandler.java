@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.Arrays;
 
 class DataBaseHandler extends SQLiteOpenHelper {
 
@@ -79,6 +82,13 @@ class DataBaseHandler extends SQLiteOpenHelper {
                 "SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,
                 null);
         if (res == null || res.getCount() == 0){
+            ContentValues row = new ContentValues();
+            row.put(COLUMN_ID, id);
+            row.put(COLUMN_COMPLETED, 0);
+            row.put(COLUMN_BEST_MOVES, -1);
+            row.put(COLUMN_BEST_TIME, -1);
+            row.put(COLUMN_OPTIMAL_MOVES, -1);
+            db.insert(TABLE_SCORES, null, row);
             return false;
         }
         res.moveToFirst();
@@ -99,6 +109,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
             row.put(COLUMN_COMPLETED, 1);
             row.put(COLUMN_BEST_MOVES, -1);
             row.put(COLUMN_BEST_TIME, -1);
+            row.put(COLUMN_OPTIMAL_MOVES, -1);
             db.insert(TABLE_SCORES, null, row);
         } else {
             ContentValues row = new ContentValues();
@@ -159,6 +170,46 @@ class DataBaseHandler extends SQLiteOpenHelper {
         row.put(COLUMN_BEST_TIME, bestTime);
         db.update(TABLE_SCORES, row, COLUMN_ID + "=" + id, null);
         db.close();
+    }
+
+    public int getOptimalMoves(int id, Context context){
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,
+                null);
+        int optimalMoves = -1;
+        if (res.getColumnIndex(COLUMN_OPTIMAL_MOVES) == -1){
+            db.execSQL("ALTER TABLE " + TABLE_SCORES + " ADD COLUMN " +
+                    COLUMN_OPTIMAL_MOVES + " INTEGER DEFAULT -1");
+        }
+        if (res == null || res.getCount() == 0){
+            ContentValues row = new ContentValues();
+            row.put(COLUMN_ID, id);
+            row.put(COLUMN_COMPLETED, 1);
+            row.put(COLUMN_BEST_MOVES, -1);
+            row.put(COLUMN_BEST_TIME, -1);
+            int packpos = id / 1000;
+            int levelpos = id % 1000;
+            int resourceID = Levels.packs[packpos].getLevelIDs()[levelpos];
+            optimalMoves = Solver.solveFromResourceID(context, Levels.packs[packpos].getLevelIDs()[levelpos]);
+            row.put(COLUMN_OPTIMAL_MOVES, optimalMoves);
+            db.insert(TABLE_SCORES, null, row);
+        } else {
+            res.moveToFirst();
+            optimalMoves = res.getInt(res.getColumnIndex(COLUMN_OPTIMAL_MOVES));
+        }
+        if (optimalMoves == -1){
+            int packpos = id / 1000;
+            int levelpos = id % 1000;
+            int resourceID = Levels.packs[packpos].getLevelIDs()[levelpos];
+            optimalMoves = Solver.solveFromResourceID(context, Levels.packs[packpos].getLevelIDs()[levelpos]);
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_OPTIMAL_MOVES, optimalMoves);
+            db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+        }
+        res.close();
+        db.close();
+        return optimalMoves;
+
     }
 
 }

@@ -106,7 +106,7 @@ public class MountainView extends View {
     private void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
-        int climberSize = Math.max(30, Math.max(width, height) / 35);
+        int climberSize = Math.max(30, Math.max(width, height) / 30);
         for (MountainClimber climber : game.climbers){
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
@@ -323,7 +323,7 @@ public class MountainView extends View {
                 hintFlashOn = false;
                 if (selectedClimber == null){
                     MountainClimber bestClimber = null;
-                    int bestDistance = 50;
+                    int bestDistance = Math.max(width, height) / 10;
                     for (MountainClimber climber : game.climbers){
                         int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
                         int cy = getHeight() - PADDING -

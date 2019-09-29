@@ -26,6 +26,8 @@ public class Solver {
         this.mountain = mountain;
         this.numClimbers = numClimbers;
         this.graph = makeGraph();
+
+        Log.d("SOLVE", "Going to solve " + mountain.toString());
     }
 
     public static int solveFromResourceID(Context context, int resourceID) {
@@ -42,7 +44,7 @@ public class Solver {
                 heights[i] = Integer.parseInt(heightStrings[i]);
             }
 
-            final Mountain mountain = new Mountain(heights);
+            Mountain mountain = new Mountain(heights);
 
             for (int i = 0; i < climberString.length; i++) {
                 climberPositions[i] = Integer.parseInt(climberString[i]);
@@ -50,9 +52,7 @@ public class Solver {
 
             Solver solver = new Solver(mountain, climberString.length);
 
-            // TODO work for more than 2 climbers
             return solver.solve(climberPositions).size();
-
         } catch (IOException e) {
             e.printStackTrace();
             return -1;
@@ -158,14 +158,12 @@ public class Solver {
         }
 
         public boolean isGoal(){
-            for (int i = 0; i < coords.length; i++){
-                for (int j = i + 1; j < coords.length; j++){
-                    if (coords[i] == coords[j]){
-                        return true;
-                    }
+            for (int i = 1; i < coords.length; i++){
+                if (coords[i]!= coords[0]){
+                    return false;
                 }
             }
-            return false;
+            return true;
         }
 
         public boolean equals(Object other){
@@ -196,6 +194,7 @@ public class Solver {
 
         public List<Vertex> getBreadthFirstPathFrom(Vertex startVertex){
             if (!vertices.contains(startVertex)){
+                Log.d("SOLVE", "starting position does not exist");
                 return null;
             }
             List<Vertex> exploring = new ArrayList<>();
@@ -232,6 +231,7 @@ public class Solver {
                 }
                 exploring.remove(v);
             }
+            Log.d("SOLVE", "Couldn't find a solution");
             return null;
         }
     }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -32,6 +33,8 @@ public class SettingsActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private ImageView imageTortoise, imageHare, imageLightning, imageInfinity;
     private ImageView imageCircle, imagePeg, imageHollow;
+
+    private Button doneButton;
 
     private int speed;
     private boolean isLandscapeLocked;
@@ -173,6 +176,13 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
         }
 
+        doneButton = findViewById(R.id.settingsDoneButton);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
 
