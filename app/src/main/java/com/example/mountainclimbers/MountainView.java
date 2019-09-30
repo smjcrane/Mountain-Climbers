@@ -31,7 +31,6 @@ public class MountainView extends View {
 
     private Paint mountainPaint, skyPaint, cloudPaint;
     protected Paint victoryTextPaint;
-    private ColorFilter arrowFilter;
     private ColorFilter hintFilter;
     protected Solver.Move hint;
     private boolean hintFlashOn;
@@ -67,7 +66,6 @@ public class MountainView extends View {
         this.victoryTextPaint = new Paint();
         this.victoryTextPaint.setColor(context.getColor(R.color.victoryGold));
         this.victoryTextPaint.setTextSize(TEXT_SIZE);
-        this.arrowFilter = new PorterDuffColorFilter(context.getColor(R.color.highlightedArrow), PorterDuff.Mode.SRC_ATOP);
         this.hintFilter = new PorterDuffColorFilter(context.getColor(R.color.hintingArrow), PorterDuff.Mode.SRC_ATOP);
 
         this.climberFilters = new HashMap<>();
@@ -133,7 +131,7 @@ public class MountainView extends View {
         }
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING;
-        int arrowSize = Math.max(20, Math.max(width, height) / 40);
+        int arrowSize = Math.max(20, Math.max(width, height) / 35);
         for (MountainClimber climber : game.climbers) {
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
@@ -144,20 +142,20 @@ public class MountainView extends View {
             if (direction == MountainClimber.Direction.LEFT || climber == selectedClimber) {
                 Drawable leftArrow = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
                 leftArrow.setBounds(cx - (int) (arrowSize * 2), cy - arrowSize, cx - arrowSize, cy + arrowSize);
-                leftArrow.setColorFilter(arrowFilter);
+                leftArrow.setColorFilter(climberFilters.get(climber));
                 leftArrow.setAlpha(100);
                 if (direction == MountainClimber.Direction.LEFT) {
-                    leftArrow.setAlpha(150);
+                    leftArrow.setAlpha(175);
                 }
                 leftArrow.draw(canvas);
             }
-            if (direction == MountainClimber.Direction.RIGHT) {
+            if (direction == MountainClimber.Direction.RIGHT || climber == selectedClimber) {
                 Drawable rightArrow = ContextCompat.getDrawable(this.context, R.drawable.arrow_right);
                 rightArrow.setBounds(cx + arrowSize, cy - arrowSize, cx + (int) (arrowSize * 2), cy + arrowSize);
-                rightArrow.setColorFilter(arrowFilter);
+                rightArrow.setColorFilter(climberFilters.get(climber));
                 rightArrow.setAlpha(100);
                 if (direction == MountainClimber.Direction.RIGHT) {
-                    rightArrow.setAlpha(150);
+                    rightArrow.setAlpha(175);
                 }
                 rightArrow.draw(canvas);
             }

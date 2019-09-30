@@ -210,4 +210,10 @@ public class PlayGameActivity extends AppCompatActivity {
         mountainView.updateClimberDrawable();
     }
 
+    @Override
+    protected void onPause(){
+        super.onPause();
+        mountainView.resetClimberDrawableColor();
+    }
+
 }

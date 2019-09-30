@@ -34,11 +34,16 @@ public class TutorialMountainView extends MountainView {
     }
 
     public boolean go(){
-        if (game.getInstruction().getObjectID() != Instruction.GO_BUTTON){
+        if (game.getInstruction().getObjectID() == Instruction.GO_BUTTON){
+            if (super.go()){
+                game.markAsDone();
+                return true;
+            }
             return false;
-        }
-        if (super.go()){
+        } else if (game.getInstruction().getObjectID() == Instruction.ANYWHERE){
+            Log.d("TUT", "go is somewhere");
             game.markAsDone();
+            invalidate();
             return true;
         }
         return false;
@@ -107,7 +112,6 @@ public class TutorialMountainView extends MountainView {
                 if (actionInProgress){
                     return false;
                 }
-                hint = null;
                 if (selectedClimber == null){
                     int width = getWidth() - 2 * PADDING;
                     int height = getHeight() - 2 * PADDING;
