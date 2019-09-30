@@ -10,6 +10,7 @@ import static com.example.mountainclimbers.Common.MODE_TIMED;
 public class PlayPuzzleModeActivity extends PlayGameActivity {
 
     public static final String SAVED_MOVES = "savedmoves";
+    public static final String[] MESSAGES = new String[] {"", "YOU WIN!", "GREAT!", "PERFECT!"};
 
     private TextView movesText;
     private Game.OnVictoryListener onPuzzleVictoryListener;
@@ -29,9 +30,11 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
                 db.markCompleted(levelDBID);
                 int previousBest = db.getBestMoves(levelDBID);
                 int moves = game.getMovesTaken();
+                int bestPossible = db.getOptimalMoves(levelDBID, PlayPuzzleModeActivity.this);
+                int stars = LevelListAdapter.howManyStars(moves, bestPossible);
                 if (moves < previousBest || previousBest == -1){
                     db.setBestMoves(levelDBID, moves);
-                    MountainView.victoryMessage = "NEW RECORD!";
+                    MountainView.victoryMessage = MESSAGES[stars];
                 } else {
                     MountainView.victoryMessage = "YOU WIN!";
                 }
