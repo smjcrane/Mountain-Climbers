@@ -3,6 +3,7 @@ package com.example.mountainclimbers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -11,6 +12,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -35,6 +37,8 @@ public class MountainView extends View {
     protected Solver.Move hint;
     private boolean hintFlashOn;
     protected Map<MountainClimber, PorterDuffColorFilter> climberFilters;
+    protected Map<MountainClimber, PorterDuffColorFilter> arrowFilters;
+    protected Map<MountainClimber, PorterDuffColorFilter> highlightedArrowFilters;
     protected Context context;
     protected MountainClimber selectedClimber;
     protected Rect r = new Rect();
@@ -69,6 +73,8 @@ public class MountainView extends View {
         this.hintFilter = new PorterDuffColorFilter(context.getColor(R.color.hintingArrow), PorterDuff.Mode.SRC_ATOP);
 
         this.climberFilters = new HashMap<>();
+        this.arrowFilters = new HashMap<>();
+        this.highlightedArrowFilters = new HashMap<>();
         this.selectedClimber = null;
 
         SharedPreferences preferences = context.getSharedPreferences(SettingsActivity.PREFERENCES, Context.MODE_PRIVATE);
@@ -90,14 +96,21 @@ public class MountainView extends View {
 
     public void addClimber(MountainClimber climber, int colorId){
         this.game.climbers.add(climber);
-        PorterDuffColorFilter filter = new PorterDuffColorFilter(context.getColor(colorId), PorterDuff.Mode.SRC_ATOP);
+        int color = context.getColor(colorId);
+        PorterDuffColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         this.climberFilters.put(climber, filter);
+        PorterDuffColorFilter arrowFilter = new PorterDuffColorFilter(lighten(color, 0.2f, 0.4f), PorterDuff.Mode.SRC_ATOP);
+        this.arrowFilters.put(climber, arrowFilter);
+        PorterDuffColorFilter highlightedFilter = new PorterDuffColorFilter(lighten(color, 0.4f, 0), PorterDuff.Mode.SRC_ATOP);
+        this.highlightedArrowFilters.put(climber, highlightedFilter);
     }
 
     public void setGame(Game game){
         this.game = game;
         this.selectedClimber = null;
         this.climberFilters = new HashMap<>();
+        this.arrowFilters = new HashMap<>();
+        this.highlightedArrowFilters = new HashMap<>();
         this.hint = null;
         this.hintFlashOn = false;
         invalidate();
@@ -142,20 +155,20 @@ public class MountainView extends View {
             if (direction == MountainClimber.Direction.LEFT || climber == selectedClimber) {
                 Drawable leftArrow = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
                 leftArrow.setBounds(cx - (int) (arrowSize * 2), cy - arrowSize, cx - arrowSize, cy + arrowSize);
-                leftArrow.setColorFilter(climberFilters.get(climber));
-                leftArrow.setAlpha(100);
                 if (direction == MountainClimber.Direction.LEFT) {
-                    leftArrow.setAlpha(175);
+                    leftArrow.setColorFilter(highlightedArrowFilters.get(climber));
+                } else {
+                    leftArrow.setColorFilter(arrowFilters.get(climber));
                 }
                 leftArrow.draw(canvas);
             }
             if (direction == MountainClimber.Direction.RIGHT || climber == selectedClimber) {
                 Drawable rightArrow = ContextCompat.getDrawable(this.context, R.drawable.arrow_right);
                 rightArrow.setBounds(cx + arrowSize, cy - arrowSize, cx + (int) (arrowSize * 2), cy + arrowSize);
-                rightArrow.setColorFilter(climberFilters.get(climber));
-                rightArrow.setAlpha(100);
                 if (direction == MountainClimber.Direction.RIGHT) {
-                    rightArrow.setAlpha(175);
+                    rightArrow.setColorFilter(highlightedArrowFilters.get(climber));
+                } else {
+                    rightArrow.setColorFilter(arrowFilters.get(climber));
                 }
                 rightArrow.draw(canvas);
             }
@@ -361,5 +374,13 @@ public class MountainView extends View {
                 return false;
         }
         return false;
+    }
+
+    private int lighten(int color, float amount, float desaturate){
+        float[] hsl = new float[3];
+        ColorUtils.colorToHSL(color, hsl);
+        hsl[2] = 1 - (1 - amount) * (1 - hsl[2]);
+        hsl[1] = 1 - (1 - desaturate) * (1 - hsl[1]);
+        return ColorUtils.HSLToColor(hsl);
     }
 }
