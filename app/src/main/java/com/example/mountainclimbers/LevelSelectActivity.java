@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import static com.example.mountainclimbers.Common.MODE_DEFAULT;
 import static com.example.mountainclimbers.Common.MODE_PUZZLE;
@@ -32,6 +33,9 @@ public class LevelSelectActivity extends AppCompatActivity {
         listView = findViewById(R.id.levelList);
         adapter = new LevelListAdapter(this, R.layout.list_item_level_select);
         listView.setAdapter(adapter);
+
+        TextView titleText = findViewById(R.id.listHeader);
+        titleText.setText(Levels.packs[Common.PACK_POS].getName().toUpperCase());
 
         View footer = new ImageView(this);
         footer.setMinimumHeight(1000);

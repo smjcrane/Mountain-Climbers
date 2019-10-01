@@ -1,8 +1,6 @@
 package com.example.mountainclimbers;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +14,6 @@ public class PackSelectActivity extends AppCompatActivity {
     private ListView listView;
     private PackListAdapter adapter;
     private Button backButton;
-    private int mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +27,6 @@ public class PackSelectActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        mode = Common.MODE;
 
         listView = findViewById(R.id.levelList);
         adapter = new PackListAdapter(this, R.layout.list_item_level_select);
