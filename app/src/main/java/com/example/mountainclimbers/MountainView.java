@@ -94,14 +94,14 @@ public class MountainView extends View {
         this.seed = seed;
     }
 
-    public void addClimber(MountainClimber climber, int colorId){
-        this.game.climbers.add(climber);
-        int color = context.getColor(colorId);
-        PorterDuffColorFilter filter = new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_ATOP);
-        this.climberFilters.put(climber, filter);
-        PorterDuffColorFilter arrowFilter = new PorterDuffColorFilter(lighten(color, 0.2f, 0.4f), PorterDuff.Mode.SRC_ATOP);
+    public void addClimber(MountainClimber climber){
+        int i = game.climbers.size();
+        game.climbers.add(climber);
+        PorterDuffColorFilter filter = new PorterDuffColorFilter(getClimberColor(i), PorterDuff.Mode.SRC_ATOP);
+        climberFilters.put(climber, filter);
+        PorterDuffColorFilter arrowFilter = new PorterDuffColorFilter(getArrowColor(i), PorterDuff.Mode.SRC_ATOP);
         this.arrowFilters.put(climber, arrowFilter);
-        PorterDuffColorFilter highlightedFilter = new PorterDuffColorFilter(lighten(color, 0.4f, 0), PorterDuff.Mode.SRC_ATOP);
+        PorterDuffColorFilter highlightedFilter = new PorterDuffColorFilter(getHighlightedColor(i), PorterDuff.Mode.SRC_ATOP);
         this.highlightedArrowFilters.put(climber, highlightedFilter);
     }
 
@@ -376,11 +376,15 @@ public class MountainView extends View {
         return false;
     }
 
-    private int lighten(int color, float amount, float desaturate){
-        float[] hsl = new float[3];
-        ColorUtils.colorToHSL(color, hsl);
-        hsl[2] = 1 - (1 - amount) * (1 - hsl[2]);
-        hsl[1] = 1 - (1 - desaturate) * (1 - hsl[1]);
-        return ColorUtils.HSLToColor(hsl);
+    private int getClimberColor(int i){
+        return ColorUtils.HSLToColor(new float[]{Common.climberHues[i], 0.9f, 0.5f});
+    }
+
+    private int getArrowColor(int i){
+        return ColorUtils.HSLToColor(new float[]{Common.climberHues[i], 0.7f, 0.7f});
+    }
+
+    private int getHighlightedColor(int i){
+        return ColorUtils.HSLToColor(new float[]{Common.climberHues[i], 0.7f, 0.85f});
     }
 }

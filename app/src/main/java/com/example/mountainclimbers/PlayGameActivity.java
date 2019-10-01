@@ -161,7 +161,7 @@ public class PlayGameActivity extends AppCompatActivity {
                     climber.setDirection(Common.DIRECTIONS[directions[i]]);
                 }
                 if (savedInstanceState == null || positions != null && positions.length > i){
-                    mountainView.addClimber(climber, Common.colorIDs[i]);
+                    mountainView.addClimber(climber);
                 }
             }
 

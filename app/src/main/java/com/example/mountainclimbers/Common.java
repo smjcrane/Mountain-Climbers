@@ -1,7 +1,5 @@
 package com.example.mountainclimbers;
 
-import android.graphics.Color;
-
 public class Common {
 
     public static final int MODE_DEFAULT = 0;
@@ -16,10 +14,7 @@ public class Common {
 
     public static boolean tutorial = true;
 
-    public static int[] colorIDs = new int[]{
-            R.color.climberPurple, R.color.climberOrange,
-            R.color.climberPink, R.color.climberBlue,
-            R.color.climberGreen, R.color.climberYellow,};
+    public static float[] climberHues = new float[] {140, 330, 40, 260, 10, 180};
 
     static final MountainClimber.Direction[] DIRECTIONS =
             new MountainClimber.Direction[]{null, MountainClimber.Direction.LEFT, MountainClimber.Direction.RIGHT

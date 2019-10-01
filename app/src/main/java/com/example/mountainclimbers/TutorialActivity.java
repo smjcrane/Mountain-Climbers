@@ -187,7 +187,7 @@ public class TutorialActivity extends AppCompatActivity {
             }
 
             for (int i = 0; i < climbers.size(); i++){
-                mountainView.addClimber(climbers.get(i), Common.colorIDs[i]);
+                mountainView.addClimber(climbers.get(i));
             }
 
             br.close();
