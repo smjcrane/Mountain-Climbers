@@ -6,15 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PackListAdapter extends ArrayAdapter<Integer> {
 
     private Context context;
+    private DataBaseHandler db;
 
     public PackListAdapter(Context context, int layoutID) {
         super(context, layoutID, new Integer[Levels.packs.length]);
         this.context = context;
+        this.db = new DataBaseHandler(context);
     }
 
     @Override
@@ -29,6 +32,16 @@ public class PackListAdapter extends ArrayAdapter<Integer> {
         String packName = Levels.packs[position].getName();
 
         TextView packNameText = v.findViewById(R.id.listItemPackText);
+
+        ImageView completedImage = v.findViewById(R.id.listItemCompletedImage);
+
+        boolean completed = db.isCompleted(db.getId(position, Levels.packs[position].getLength() - 1));
+
+        if (completed && Common.MODE == Common.MODE_DEFAULT){
+            completedImage.setVisibility(View.VISIBLE);
+        } else {
+            completedImage.setVisibility(View.INVISIBLE);
+        }
 
         packNameText.setText(packName);
 

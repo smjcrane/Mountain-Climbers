@@ -7,10 +7,12 @@
     <color name="skyBlue">#87CEEB</color>
     <color name="cloudWhite">#FFFFFF</color>
     <color name="victoryGold">#F0D080</color>
-    <color name="climberGreen">#30B030</color>
-    <color name="climberPurple">#CC40E2</color>
+    <color name="climberGreen">#BADA75</color>
+    <color name="climberPurple">#B00BB5</color>
     <color name="climberOrange">#F0B868</color>
-    <color name="climberRed">#D00040</color>
+    <color name="climberYellow">#ECE41E</color>
+    <color name="climberBlue">#4010C2</color>
+    <color name="climberPink">#F42069</color>
     <color name="guideArrow">#E0E0F0</color>
     <color name="highlightedArrow">#F0F0FF</color>
     <color name="hintingArrow">#FF2000</color>

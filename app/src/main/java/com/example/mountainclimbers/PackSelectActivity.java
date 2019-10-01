@@ -33,7 +33,7 @@ public class PackSelectActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         View footer = new ImageView(this);
-        footer.setMinimumHeight(1000);
+        footer.setMinimumHeight(500);
         listView.addFooterView(footer);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -28,8 +28,6 @@ public class PlayGameActivity extends AppCompatActivity {
 
     protected MountainView mountainView;
     protected Game game;
-    public static int[] colorIDs = new int[] {
-            R.color.climberGreen, R.color.climberPurple, R.color.climberOrange, R.color.climberRed};
     protected Button buttonBack, buttonNextLevel;
     protected ImageView buttonReset, buttonHint, settingsButton;
     protected TextView goButton, levelNumberText;
@@ -163,7 +161,7 @@ public class PlayGameActivity extends AppCompatActivity {
                     climber.setDirection(Common.DIRECTIONS[directions[i]]);
                 }
                 if (savedInstanceState == null || positions != null && positions.length > i){
-                    mountainView.addClimber(climber, colorIDs[i]);
+                    mountainView.addClimber(climber, Common.colorIDs[i]);
                 }
             }
 
@@ -206,6 +204,8 @@ public class PlayGameActivity extends AppCompatActivity {
         Game.speed = preferences.getInt(SettingsActivity.SPEED, 1);
         if (isLandscapeLocked){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
         mountainView.updateClimberDrawable();
     }

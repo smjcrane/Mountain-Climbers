@@ -274,6 +274,7 @@ public class MountainView extends View {
         drawHint(canvas);
         drawClimbers(canvas);
 
+        Log.d("MVIEW", "Have I won? " + game.victory);
         if (game.victory && game.moving == Game.Moving.NONE){
             drawCenteredText(canvas, victoryTextPaint, victoryMessage);
         }

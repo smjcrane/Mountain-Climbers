@@ -38,7 +38,7 @@ public class LevelSelectActivity extends AppCompatActivity {
         titleText.setText(Levels.packs[Common.PACK_POS].getName().toUpperCase());
 
         View footer = new ImageView(this);
-        footer.setMinimumHeight(1000);
+        footer.setMinimumHeight(500);
         listView.addFooterView(footer);
 
         db = new DataBaseHandler(this);

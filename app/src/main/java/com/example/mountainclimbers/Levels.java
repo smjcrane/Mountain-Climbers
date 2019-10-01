@@ -48,7 +48,29 @@ public final class Levels {
                     R.raw.gen_096, R.raw.gen_097, R.raw.gen_098, R.raw.gen_099, R.raw.gen_100}),
             new Pack("Wolf Pack", new Integer[] {
                     R.raw.wolf_01, R.raw.wolf_02, R.raw.wolf_03, R.raw.wolf_04, R.raw.wolf_05,
-                    R.raw.wolf_06, R.raw.wolf_07})
+                    R.raw.wolf_06, R.raw.wolf_07}),
+            new Pack("Big Pack", new Integer[] {
+                    R.raw.pymtn_001, R.raw.pymtn_002, R.raw.pymtn_003, R.raw.pymtn_004, R.raw.pymtn_005,
+                    R.raw.pymtn_006, R.raw.pymtn_007, R.raw.pymtn_008, R.raw.pymtn_009, R.raw.pymtn_010,
+                    R.raw.pymtn_011, R.raw.pymtn_012, R.raw.pymtn_013, R.raw.pymtn_014, R.raw.pymtn_015,
+                    R.raw.pymtn_016, R.raw.pymtn_017, R.raw.pymtn_018, R.raw.pymtn_019, R.raw.pymtn_020,
+                    R.raw.pymtn_021, R.raw.pymtn_022, R.raw.pymtn_023, R.raw.pymtn_024, R.raw.pymtn_025,
+                    R.raw.pymtn_026, R.raw.pymtn_027, R.raw.pymtn_028, R.raw.pymtn_029, R.raw.pymtn_030,
+                    R.raw.pymtn_031, R.raw.pymtn_032, R.raw.pymtn_033, R.raw.pymtn_034, R.raw.pymtn_035,
+                    R.raw.pymtn_036, R.raw.pymtn_037, R.raw.pymtn_038, R.raw.pymtn_039, R.raw.pymtn_040,
+                    R.raw.pymtn_041, R.raw.pymtn_042, R.raw.pymtn_043, R.raw.pymtn_044, R.raw.pymtn_045,
+                    R.raw.pymtn_046, R.raw.pymtn_047, R.raw.pymtn_048, R.raw.pymtn_049, R.raw.pymtn_050,
+                    R.raw.pymtn_051, R.raw.pymtn_052, R.raw.pymtn_053, R.raw.pymtn_054, R.raw.pymtn_055,
+                    R.raw.pymtn_056, R.raw.pymtn_057, R.raw.pymtn_058, R.raw.pymtn_059, R.raw.pymtn_060,
+                    R.raw.pymtn_061, R.raw.pymtn_062, R.raw.pymtn_063, R.raw.pymtn_064, R.raw.pymtn_065,
+                    R.raw.pymtn_066, R.raw.pymtn_067, R.raw.pymtn_068, R.raw.pymtn_069, R.raw.pymtn_070,
+                    R.raw.pymtn_071, R.raw.pymtn_072, R.raw.pymtn_073, R.raw.pymtn_074, R.raw.pymtn_075,
+                    R.raw.pymtn_076, R.raw.pymtn_077, R.raw.pymtn_078, R.raw.pymtn_079, R.raw.pymtn_080,
+                    R.raw.pymtn_081, R.raw.pymtn_082, R.raw.pymtn_083, R.raw.pymtn_084, R.raw.pymtn_085,
+                    R.raw.pymtn_086, R.raw.pymtn_087, R.raw.pymtn_088, R.raw.pymtn_089, R.raw.pymtn_090,
+                    R.raw.pymtn_091, R.raw.pymtn_092, R.raw.pymtn_093, R.raw.pymtn_094, R.raw.pymtn_095,
+                    R.raw.pymtn_096, R.raw.pymtn_097, R.raw.pymtn_098, R.raw.pymtn_099, R.raw.pymtn_100
+            })
     };
 
     public static class Pack {

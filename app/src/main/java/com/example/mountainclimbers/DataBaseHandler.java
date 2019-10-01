@@ -99,6 +99,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
     }
 
     public void markCompleted(int id) {
+        Log.d("DB", "completed level " + id);
         SQLiteDatabase db = getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES +
                         " WHERE " + COLUMN_ID + "=" + id,

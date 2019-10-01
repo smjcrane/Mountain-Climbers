@@ -15,7 +15,9 @@ public class Common {
     public static boolean tutorial = true;
 
     public static int[] colorIDs = new int[] {
-            R.color.climberGreen, R.color.climberPurple, R.color.climberOrange, R.color.climberRed};
+            R.color.climberPurple, R.color.climberOrange,
+            R.color.climberPink, R.color.climberBlue,
+            R.color.climberGreen, R.color.climberYellow, };
 
     static final MountainClimber.Direction[] DIRECTIONS =
             new MountainClimber.Direction[] {null, MountainClimber.Direction.LEFT, MountainClimber.Direction.RIGHT
