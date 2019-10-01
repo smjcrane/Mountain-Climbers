@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.mountainclimbers">
 
     <application
+        tools:replace="android:appComponentFactory"
+        android:appComponentFactory="android.support.app.CoreComponentFactory"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="Mountains"

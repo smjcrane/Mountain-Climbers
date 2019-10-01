@@ -3,7 +3,6 @@ package com.example.mountainclimbers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -11,8 +10,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -338,6 +337,7 @@ public class MountainView extends View {
                 if (selectedClimber == null){
                     MountainClimber bestClimber = null;
                     int bestDistance = Math.max(width, height) / 10;
+                    MountainClimber.Direction direction = null;
                     for (MountainClimber climber : game.climbers){
                         int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
                         int cy = getHeight() - PADDING -
@@ -345,9 +345,13 @@ public class MountainView extends View {
                         if (Math.abs(cx - x) + Math.abs(cy - y) < bestDistance){
                             bestClimber = climber;
                             bestDistance = (int) (Math.abs(cx - x) + Math.abs(cy - y));
+                            direction = x > cx ? MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT;
                         }
                     }
                     selectedClimber = bestClimber;
+                    if (selectedClimber != null){
+                        selectedClimber.setDirection(direction);
+                    }
                     invalidate();
                     return true;
                 } else {
