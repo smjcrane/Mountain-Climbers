@@ -1,4 +1,4 @@
-package com.example.mountainclimbers;
+package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import java.util.zip.DeflaterInputStream;
 

@@ -1,4 +1,4 @@
-package com.example.mountainclimbers;
+package com.gmail.mountainapp.scrane.mountainclimbers;
 
 public final class Levels {
 

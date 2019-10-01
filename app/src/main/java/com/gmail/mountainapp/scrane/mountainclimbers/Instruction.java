@@ -1,8 +1,7 @@
-package com.example.mountainclimbers;
+package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.util.Log;
 
-import static com.example.mountainclimbers.MountainView.PADDING;
 
 public class Instruction {
     public static final int GO_BUTTON = -1;

@@ -1,4 +1,5 @@
-package com.example.mountainclimbers;
+package com.gmail.mountainapp.scrane.mountainclimbers;
+
 
 import android.os.Bundle;
 import android.view.View;

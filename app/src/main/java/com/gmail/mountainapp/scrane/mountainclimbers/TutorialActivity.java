@@ -1,4 +1,4 @@
-package com.example.mountainclimbers;
+package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,9 +14,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.mountainclimbers.Common.DIRECTIONS;
-import static com.example.mountainclimbers.PlayGameActivity.SAVED_DIRECTIONS;
-import static com.example.mountainclimbers.PlayGameActivity.SAVED_POSITIONS;
+import static com.gmail.mountainapp.scrane.mountainclimbers.Common.DIRECTIONS;
+import static com.gmail.mountainapp.scrane.mountainclimbers.PlayGameActivity.SAVED_DIRECTIONS;
+import static com.gmail.mountainapp.scrane.mountainclimbers.PlayGameActivity.SAVED_POSITIONS;
 
 public class TutorialActivity extends AppCompatActivity {
 

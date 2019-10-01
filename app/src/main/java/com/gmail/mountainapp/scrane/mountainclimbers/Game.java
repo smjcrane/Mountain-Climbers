@@ -1,4 +1,4 @@
-package com.example.mountainclimbers;
+package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.os.CountDownTimer;
 import android.util.Log;

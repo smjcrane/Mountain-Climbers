@@ -1,4 +1,4 @@
-package com.example.mountainclimbers;
+package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +11,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import static com.example.mountainclimbers.Common.MODE_DEFAULT;
-import static com.example.mountainclimbers.Common.MODE_PUZZLE;
-import static com.example.mountainclimbers.Common.MODE_TIMED;
-
+import static com.gmail.mountainapp.scrane.mountainclimbers.Common.MODE_DEFAULT;
+import static com.gmail.mountainapp.scrane.mountainclimbers.Common.MODE_PUZZLE;
+import static com.gmail.mountainapp.scrane.mountainclimbers.Common.MODE_TIMED;
 
 public class LevelSelectActivity extends AppCompatActivity {
 

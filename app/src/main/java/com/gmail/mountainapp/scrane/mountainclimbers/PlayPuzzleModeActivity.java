@@ -1,11 +1,8 @@
-package com.example.mountainclimbers;
+package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-
-import static com.example.mountainclimbers.Common.MODE_PUZZLE;
-import static com.example.mountainclimbers.Common.MODE_TIMED;
 
 public class PlayPuzzleModeActivity extends PlayGameActivity {
 
