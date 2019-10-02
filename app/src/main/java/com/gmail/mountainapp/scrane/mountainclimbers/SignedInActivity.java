@@ -21,7 +21,7 @@ public abstract class SignedInActivity extends AppCompatActivity {
 
     public static int RC_SIGN_IN = 0;
 
-    private GoogleSignInClient signInClient;
+    protected GoogleSignInClient signInClient;
     protected GoogleSignInAccount account;
     private GoogleSignInOptions signInOptions;
 

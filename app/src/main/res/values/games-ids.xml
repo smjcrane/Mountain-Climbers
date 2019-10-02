@@ -10,4 +10,8 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="package_name" translatable="false">com.gmail.mountainapp.scrane.mountainclimbers</string>
     <!-- achievement Getting started -->
     <string name="achievement_getting_started" translatable="false">CgkIp5ftp_gLEAIQAQ</string>
+    <!-- achievement Speed Demon -->
+    <string name="achievement_speed_demon" translatable="false">CgkIp5ftp_gLEAIQBA</string>
+    <!-- achievement Perfect Score! -->
+    <string name="achievement_perfect_score" translatable="false">CgkIp5ftp_gLEAIQAw</string>
 </resources>
