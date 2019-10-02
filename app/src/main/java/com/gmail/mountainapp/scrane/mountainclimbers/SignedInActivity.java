@@ -20,7 +20,6 @@ import com.google.android.gms.tasks.Task;
 public abstract class SignedInActivity extends AppCompatActivity {
 
     public static int RC_SIGN_IN = 0;
-    public static String SHOULD_SIGN_IN = "shouldsignin";
 
     protected GoogleSignInClient signInClient;
     protected GoogleSignInAccount account;
@@ -32,14 +31,11 @@ public abstract class SignedInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
-        shouldSignIn = sharedPreferences.getBoolean(SHOULD_SIGN_IN, false);
+        sharedPreferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
+        shouldSignIn = sharedPreferences.getBoolean(getString(R.string.SHOULD_SIGN_IN), false);
 
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
         signInClient = GoogleSignIn.getClient(this, signInOptions);
-        if (shouldSignIn){
-            account = GoogleSignIn.getLastSignedInAccount(this);
-        }
     }
 
     protected void signInSilently() {
@@ -94,7 +90,7 @@ public abstract class SignedInActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        shouldSignIn = sharedPreferences.getBoolean(SHOULD_SIGN_IN, false);
+        shouldSignIn = sharedPreferences.getBoolean(getString(R.string.SHOULD_SIGN_IN), false);
         if (shouldSignIn ){
             signInSilently();
         } else {

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Mountain Climbers</string>
+    <string name="SHOULD_SIGN_IN">shouldsignin</string>
+    <string name="PREFERENCES">preferences</string>
+    <string name="SPEED">speed</string>
+    <string name="LANDSCAPE_LOCKED">landscape_locked</string>
+    <string name="CLIMBER_APPEARANCE">climberappearance</string>
 </resources>

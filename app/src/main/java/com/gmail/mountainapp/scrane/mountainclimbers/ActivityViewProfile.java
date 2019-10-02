@@ -73,7 +73,7 @@ public class ActivityViewProfile extends SignedInActivity {
                     shouldSignIn = false;
                     account = null;
                     onAccountChanged();
-                    preferences.putBoolean(SHOULD_SIGN_IN, false);
+                    preferences.putBoolean(getString(R.string.SHOULD_SIGN_IN), false);
                     signInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -82,7 +82,7 @@ public class ActivityViewProfile extends SignedInActivity {
                         }
                     });
                 } else {
-                    preferences.putBoolean(SHOULD_SIGN_IN, true);
+                    preferences.putBoolean(getString(R.string.SHOULD_SIGN_IN), true);
                     shouldSignIn = true;
                     signInSilently();
                 }

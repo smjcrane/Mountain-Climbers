@@ -14,11 +14,6 @@ import android.widget.Switch;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    public static final String PREFERENCES = "preferences";
-    public static final String SPEED = "speed";
-    public static final String LANDSCAPE_LOCKED = "landscape_locked";
-    public static final String CLIMBER_APPEARANCE = "climberappearance";
-
     public static final int SPEED_TORTOISE = 1;
     public static final int SPEED_HARE = 2;
     public static final int SPEED_LIGHTNING = 3;
@@ -44,7 +39,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        preferences = getSharedPreferences(PREFERENCES, MODE_PRIVATE);
+        preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
         editor = preferences.edit();
 
         imageTortoise = findViewById(R.id.speedImageTortoise);
@@ -59,12 +54,12 @@ public class SettingsActivity extends AppCompatActivity {
         final Drawable selected = getDrawable(R.drawable.rectangle_border);
 
         landscapeLockSwitch = findViewById(R.id.settingsLandscapeSwitch);
-        isLandscapeLocked = preferences.getBoolean(LANDSCAPE_LOCKED, true);
+        isLandscapeLocked = preferences.getBoolean(getString(R.string.LANDSCAPE_LOCKED), true);
         landscapeLockSwitch.setChecked(isLandscapeLocked);
         landscapeLockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                editor.putBoolean(LANDSCAPE_LOCKED, isChecked);
+                editor.putBoolean(getString(R.string.LANDSCAPE_LOCKED), isChecked);
             }
         });
 
@@ -76,7 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
                 imageHare.setBackground(null);
                 imageLightning.setBackground(null);
                 imageInfinity.setBackground(null);
-                editor.putInt(SPEED, SPEED_TORTOISE);
+                editor.putInt(getString(R.string.SPEED), SPEED_TORTOISE);
             }
         });
 
@@ -88,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
                 imageTortoise.setBackground(null);
                 imageLightning.setBackground(null);
                 imageInfinity.setBackground(null);
-                editor.putInt(SPEED, SPEED_HARE);
+                editor.putInt(getString(R.string.SPEED), SPEED_HARE);
             }
         });
 
@@ -100,7 +95,7 @@ public class SettingsActivity extends AppCompatActivity {
                 imageTortoise.setBackground(null);
                 imageHare.setBackground(null);
                 imageInfinity.setBackground(null);
-                editor.putInt(SPEED, SPEED_LIGHTNING);
+                editor.putInt(getString(R.string.SPEED), SPEED_LIGHTNING);
             }
         });
 
@@ -112,11 +107,11 @@ public class SettingsActivity extends AppCompatActivity {
                 imageTortoise.setBackground(null);
                 imageHare.setBackground(null);
                 imageInfinity.setBackground(selected);
-                editor.putInt(SPEED, SPEED_INFINITY);
+                editor.putInt(getString(R.string.SPEED), SPEED_INFINITY);
             }
         });
 
-        speed = preferences.getInt(SPEED, 1);
+        speed = preferences.getInt(getString(R.string.SPEED), 1);
         Log.d("SETTINGS", "The speed is "+speed);
         switch (speed){
             case SPEED_TORTOISE:
@@ -139,7 +134,7 @@ public class SettingsActivity extends AppCompatActivity {
                 imageCircle.setBackground(selected);
                 imagePeg.setBackground(null);
                 imageHollow.setBackground(null);
-                editor.putInt(CLIMBER_APPEARANCE, CLIMBER_CIRCLE);
+                editor.putInt(getString(R.string.CLIMBER_APPEARANCE), CLIMBER_CIRCLE);
             }
         });
 
@@ -149,7 +144,7 @@ public class SettingsActivity extends AppCompatActivity {
                 imageCircle.setBackground(null);
                 imagePeg.setBackground(selected);
                 imageHollow.setBackground(null);
-                editor.putInt(CLIMBER_APPEARANCE, CLIMBER_PEG);
+                editor.putInt(getString(R.string.CLIMBER_APPEARANCE), CLIMBER_PEG);
             }
         });
 
@@ -159,11 +154,11 @@ public class SettingsActivity extends AppCompatActivity {
                 imageCircle.setBackground(null);
                 imagePeg.setBackground(null);
                 imageHollow.setBackground(selected);
-                editor.putInt(CLIMBER_APPEARANCE, CLIMBER_HOLLOW);
+                editor.putInt(getString(R.string.CLIMBER_APPEARANCE), CLIMBER_HOLLOW);
             }
         });
 
-        int climberAppearance = preferences.getInt(CLIMBER_APPEARANCE, 0);
+        int climberAppearance = preferences.getInt(getString(R.string.CLIMBER_APPEARANCE), 0);
         switch (climberAppearance){
             case CLIMBER_CIRCLE:
                 imageCircle.callOnClick();

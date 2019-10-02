@@ -76,8 +76,8 @@ public class MountainView extends View {
         this.highlightedArrowFilters = new HashMap<>();
         this.selectedClimber = null;
 
-        SharedPreferences preferences = context.getSharedPreferences(SettingsActivity.PREFERENCES, Context.MODE_PRIVATE);
-        int climberAppearance = preferences.getInt(SettingsActivity.CLIMBER_APPEARANCE, SettingsActivity.CLIMBER_CIRCLE);
+        SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
+        int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
         this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
     }
 
@@ -308,8 +308,8 @@ public class MountainView extends View {
     }
 
     public void updateClimberDrawable(){
-        SharedPreferences preferences = context.getSharedPreferences(SettingsActivity.PREFERENCES, Context.MODE_PRIVATE);
-        int climberAppearance = preferences.getInt(SettingsActivity.CLIMBER_APPEARANCE, SettingsActivity.CLIMBER_CIRCLE);
+        SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
+        int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
         this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
         invalidate();
     }

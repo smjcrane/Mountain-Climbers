@@ -201,9 +201,9 @@ public class PlayGameActivity extends SignedInActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        SharedPreferences preferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
-        boolean isLandscapeLocked = preferences.getBoolean(SettingsActivity.LANDSCAPE_LOCKED, true);
-        Game.speed = preferences.getInt(SettingsActivity.SPEED, 1);
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
+        boolean isLandscapeLocked = preferences.getBoolean(getString(R.string.LANDSCAPE_LOCKED), true);
+        Game.speed = preferences.getInt(getString(R.string.SPEED), 1);
         if (isLandscapeLocked){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         } else {
