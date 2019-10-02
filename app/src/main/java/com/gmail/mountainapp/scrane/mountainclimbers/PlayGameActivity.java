@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class PlayGameActivity extends SignedInActivity {
+public class PlayGameActivity extends AppCompatActivity {
 
     static final String SAVED_POSITIONS = "savedpositions";
     static final String SAVED_DIRECTIONS = "saveddirections";
@@ -106,10 +106,6 @@ public class PlayGameActivity extends SignedInActivity {
 
                 db = new DataBaseHandler(PlayGameActivity.this);
                 int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
-                if (!db.isCompleted(levelDBID) && Common.PACK_POS == 0){
-                    Games.getAchievementsClient(PlayGameActivity.this, account)
-                            .increment(getString(R.string.achievement_getting_started), 1);
-                }
                 db.markCompleted(levelDBID);
                 db.close();
 
@@ -217,5 +213,4 @@ public class PlayGameActivity extends SignedInActivity {
         super.onPause();
         mountainView.resetClimberDrawableColor();
     }
-
 }

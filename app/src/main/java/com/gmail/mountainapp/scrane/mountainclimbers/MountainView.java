@@ -273,10 +273,6 @@ public class MountainView extends View {
         super.onDraw(canvas);
         random.setSeed(seed);
 
-        while (game.removeClimbers()){
-            game.updateVictory();
-        };
-
         //sky
         canvas.drawRect(0,  getHeight(), getWidth(), 0, skyPaint);
         drawClouds(canvas);
@@ -286,7 +282,6 @@ public class MountainView extends View {
         drawHint(canvas);
         drawClimbers(canvas);
 
-        Log.d("MVIEW", "Have I won? " + game.victory);
         if (game.victory && game.moving == Game.Moving.NONE){
             drawCenteredText(canvas, victoryTextPaint, victoryMessage);
         }
@@ -295,6 +290,10 @@ public class MountainView extends View {
         if (moved){
             postInvalidateDelayed(2);
         }
+
+        while (game.removeClimbers()){
+            game.updateVictory();
+        };
     }
 
     public boolean go(){

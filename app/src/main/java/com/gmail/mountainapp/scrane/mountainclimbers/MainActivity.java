@@ -148,7 +148,7 @@ public class MainActivity extends SignedInActivity {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), account.getPhotoUrl());
                 userProfilePicture.setImageBitmap(bitmap);
             } catch (IOException e){
-                Log.d("MAIN", "Idk");
+                Log.d("MAIN", "Couldn't retrieve profile image from URI");
                 e.printStackTrace();
                 userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
             }

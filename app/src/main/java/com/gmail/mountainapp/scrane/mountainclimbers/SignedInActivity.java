@@ -79,7 +79,12 @@ public abstract class SignedInActivity extends AppCompatActivity {
                 account = result.getSignInAccount();
                 onAccountChanged();
             } else {
+                account = null;
                 shouldSignIn = false;
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(getString(R.string.SHOULD_SIGN_IN), false);
+                editor.commit();
+                onAccountChanged();
                 Log.d("SIGN-IN", "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + result.getStatus().getStatusMessage());
             }
         }
