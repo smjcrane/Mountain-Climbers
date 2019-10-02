@@ -17,7 +17,7 @@
         android:id="@+id/mountainGoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="GO"
+        android:text="@string/go"
         style="@style/MainButton"
         android:paddingBottom="0dp"
         android:paddingTop="0dp"

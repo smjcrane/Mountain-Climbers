@@ -70,7 +70,11 @@ public abstract class SignedInActivity extends AppCompatActivity {
             }
 
         }
+    }
 
+    protected void signInWithActivity(){
+        Intent intent = signInClient.getSignInIntent();
+        startActivityForResult(intent, RC_SIGN_IN);
     }
 
     @Override
@@ -88,9 +92,9 @@ public abstract class SignedInActivity extends AppCompatActivity {
                 editor.putBoolean(getString(R.string.SHOULD_SIGN_IN), false);
                 editor.commit();
                 onAccountChanged();
-                Toast.makeText(SignedInActivity.this,
-                        "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + result.getStatus().getStatusMessage(),
-                        Toast.LENGTH_LONG).show();
+                Toast.makeText(SignedInActivity.this, "Sign in failed", Toast.LENGTH_LONG).show();
+                Log.d("SIGNIN",
+                        "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + result.getStatus().getStatusMessage());
             }
         }
     }

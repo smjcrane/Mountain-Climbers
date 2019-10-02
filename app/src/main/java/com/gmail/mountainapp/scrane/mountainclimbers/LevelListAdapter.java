@@ -49,7 +49,11 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         String displayName;
         if (position < pack.getNumTutorials()){
             displayName = "Tutorial " + (position + 1);
-            completedImage.setImageDrawable(null);
+            if (db.isCompletedTutorial(db.getId(Common.PACK_POS, position))){
+                completedImage.setImageDrawable(completedDrawable);
+            } else {
+                completedImage.setImageDrawable(null);
+            }
             starLayout.setVisibility(View.INVISIBLE);
             timeText.setText("");
         } else {

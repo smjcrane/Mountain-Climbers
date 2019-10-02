@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
@@ -23,8 +24,17 @@ import com.google.android.gms.tasks.Task;
 
 public class ActivityViewProfile extends SignedInActivity {
     public static final int RC_ACHIEVEMENT_UI = 1;
+    public static int[] packCompletedAchievementIDs = new int[] {
+            R.string.achievement_getting_started,
+            R.string.achievement_teamwork,
+            R.string.achievement_this_is_easy,
+            R.string.achievement_hard_worker,
+            R.string.achievement_01101001,
+            R.string.achievement_awoooo,
+            R.string.achievement_the_big_one
+    };
 
-    private TextView acheivementText, userInfoText;
+    private TextView acheivementText, userInfoText, backupText;
     private Button signOutButton;
     private AchievementsClient client;
     private SharedPreferences.Editor preferences;
@@ -38,11 +48,11 @@ public class ActivityViewProfile extends SignedInActivity {
 
         userInfoText = findViewById(R.id.userInfo);
 
-        acheivementText = findViewById(R.id.acheivementText);
+        acheivementText = findViewById(R.id.achievementText);
         acheivementText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (account == null) {
+                if (account == null || !shouldSignIn) {
                     Toast.makeText(ActivityViewProfile.this, "You must sign in to view acheivements", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -65,10 +75,20 @@ public class ActivityViewProfile extends SignedInActivity {
             }
         });
 
+        backupText = findViewById(R.id.backUpText);
+        backupText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ActivityViewProfile.this,
+                        "Sorry this feature has not been implemented yet", Toast.LENGTH_LONG).show();
+            }
+        });
+
         signOutButton = findViewById(R.id.signOutButton);
         signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("SIGN", "should i " + shouldSignIn);
                 if (shouldSignIn){
                     shouldSignIn = false;
                     account = null;
@@ -84,7 +104,7 @@ public class ActivityViewProfile extends SignedInActivity {
                 } else {
                     preferences.putBoolean(getString(R.string.SHOULD_SIGN_IN), true);
                     shouldSignIn = true;
-                    signInSilently();
+                    signInWithActivity();
                 }
             }
         });
@@ -104,8 +124,13 @@ public class ActivityViewProfile extends SignedInActivity {
         client.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
         client.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
         client.setSteps(getString(R.string.achievement_speed_demon), db.howManyInUnder10Seconds());
-        client.setSteps(getString(R.string.achievement_getting_started), db.howManyCompletedInPack(0));
+        client.setSteps(getString(R.string.achievement_learn_the_ropes), db.howManyTutorialCompletedInPack(0));
+        for (int i = 0; i < packCompletedAchievementIDs.length; i++){
+            client.setSteps(getString(packCompletedAchievementIDs[i]), db.howManyCompletedInPack(i));
+        }
+        client.setSteps(getString(R.string.achievement_master), db.howManyLevelsCompleted());
         db.close();
+        //TODO: the secret settings achievement
     }
 
     @Override

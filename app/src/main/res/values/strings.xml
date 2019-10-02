@@ -5,4 +5,20 @@
     <string name="SPEED">speed</string>
     <string name="LANDSCAPE_LOCKED">landscape_locked</string>
     <string name="CLIMBER_APPEARANCE">climberappearance</string>
+    <string name="select_pack">SELECT PACK</string>
+    <string name="nobody">Nobody</string>
+    <string name="puzzle_mode">Puzzle mode</string>
+    <string name="timed_mode">Timed mode</string>
+    <string name="levels">Levels</string>
+    <string name="play">Play</string>
+    <string name="go">GO</string>
+    <string name="settings">Settings</string>
+    <string name="landscape_only">Landscape only</string>
+    <string name="speed">Speed</string>
+    <string name="climbers">Climbers</string>
+    <string name="done">Done</string>
+    <string name="profile">Profile</string>
+    <string name="achievements">Achievements</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="backup">Back Up My Progress</string>
 </resources>

@@ -27,7 +27,8 @@ public class TutorialActivity extends AppCompatActivity {
     private TextView goButton;
     private Button buttonBack, buttonNextLevel, buttonReset;
     private static int levelID;
-    private static int levelPos = -1;
+
+    private DataBaseHandler db;
 
     private TutorialGame game;
 
@@ -37,10 +38,10 @@ public class TutorialActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tutorial);
 
         Common.tutorial = true;
+        db = new DataBaseHandler(this);
 
         levelIDs = Levels.packs[Common.PACK_POS].getTutorialLevelIDs();
-        levelPos = Common.TUTORIAL_POS;
-        levelID = levelIDs[levelPos];
+        levelID = levelIDs[Common.TUTORIAL_POS];
 
         mountainView = findViewById(R.id.tutorialMountainView);
 
@@ -72,8 +73,8 @@ public class TutorialActivity extends AppCompatActivity {
         buttonNextLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                levelPos++;
-                levelID = levelIDs[levelPos];
+                Common.TUTORIAL_POS++;
+                levelID = levelIDs[Common.TUTORIAL_POS];
                 loadLevel(null);
             }
         });
@@ -171,8 +172,9 @@ public class TutorialActivity extends AppCompatActivity {
                 public void onVictory() {
                     buttonBack.setVisibility(View.VISIBLE);
                     buttonReset.setVisibility(View.VISIBLE);
+                    db.markCompletedTutorial(db.getId(Common.PACK_POS, Common.TUTORIAL_POS));
 
-                    if (levelPos < levelIDs.length - 1){
+                    if (Common.TUTORIAL_POS < levelIDs.length - 1){
                         buttonNextLevel.setVisibility(View.VISIBLE);
                     }
 

@@ -8,6 +8,8 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="app_id" translatable="false">410252954535</string>
     <!-- package_name -->
     <string name="package_name" translatable="false">com.gmail.mountainapp.scrane.mountainclimbers</string>
+    <!-- achievement Learn the Ropes -->
+    <string name="achievement_learn_the_ropes" translatable="false">CgkIp5ftp_gLEAIQBw</string>
     <!-- achievement Getting started -->
     <string name="achievement_getting_started" translatable="false">CgkIp5ftp_gLEAIQAQ</string>
     <!-- achievement Speed Demon -->
@@ -16,4 +18,20 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="achievement_perfect_score" translatable="false">CgkIp5ftp_gLEAIQAw</string>
     <!-- achievement Unstoppable! -->
     <string name="achievement_unstoppable" translatable="false">CgkIp5ftp_gLEAIQBQ</string>
+    <!-- achievement Teamwork -->
+    <string name="achievement_teamwork" translatable="false">CgkIp5ftp_gLEAIQCA</string>
+    <!-- achievement This is Easy! -->
+    <string name="achievement_this_is_easy" translatable="false">CgkIp5ftp_gLEAIQCQ</string>
+    <!-- achievement Hard Worker -->
+    <string name="achievement_hard_worker" translatable="false">CgkIp5ftp_gLEAIQCg</string>
+    <!-- achievement 01101001 -->
+    <string name="achievement_01101001" translatable="false">CgkIp5ftp_gLEAIQCw</string>
+    <!-- achievement Awoooo! -->
+    <string name="achievement_awoooo" translatable="false">CgkIp5ftp_gLEAIQDA</string>
+    <!-- achievement The Big One -->
+    <string name="achievement_the_big_one" translatable="false">CgkIp5ftp_gLEAIQDQ</string>
+    <!-- achievement Tinker -->
+    <string name="achievement_tinker" translatable="false">CgkIp5ftp_gLEAIQBg</string>
+    <!-- achievement Master -->
+    <string name="achievement_master" translatable="false">CgkIp5ftp_gLEAIQDg</string>
 </resources>

@@ -11,7 +11,7 @@
         android:id="@+id/mainPlayButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play"
+        android:text="@string/play"
         style="@style/MainButton"
         app:layout_constraintBottom_toTopOf="@+id/mainLevelSelectButton"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -20,7 +20,7 @@
 
     <Button
         android:id="@+id/mainLevelSelectButton"
-        android:text="Levels"
+        android:text="@string/levels"
         style="@style/MainButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
 
     <Button
         android:id="@+id/mainTimedModeButton"
-        android:text="Timed mode"
+        android:text="@string/timed_mode"
         style="@style/MainButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
 
     <Button
         android:id="@+id/mainPuzzleModeButton"
-        android:text="Puzzle mode"
+        android:text="@string/puzzle_mode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="@style/MainButton"
@@ -79,6 +79,6 @@
             android:layout_margin="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:text="Nobody" />
+            android:text="@string/nobody" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

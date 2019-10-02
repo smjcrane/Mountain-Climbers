@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/listHeader"
-            android:text="SELECT PACK"
+            android:text="@string/select_pack"
             android:layout_width="match_parent"
             android:textAlignment="center"
             android:layout_height="wrap_content"
