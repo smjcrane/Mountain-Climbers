@@ -210,7 +210,64 @@ class DataBaseHandler extends SQLiteOpenHelper {
         res.close();
         db.close();
         return optimalMoves;
+    }
 
+    public int howManyCompletedInPack(int packpos){
+        SQLiteDatabase db = getReadableDatabase();
+        int ans;
+        Cursor res = db.rawQuery("SELECT * FROM " +  TABLE_SCORES + " WHERE " +
+                COLUMN_COMPLETED + "=1 " + " AND " +
+                COLUMN_ID + " BETWEEN " + (1000 * packpos) + " AND " + (1000 * (packpos + 1) - 1), null );
+        if (res == null){
+            ans = 0;
+        }
+        ans = res.getCount();
+        res.close();
+        db.close();
+        return ans;
+    }
+
+    public int howManyInUnder10Seconds(){
+        SQLiteDatabase db = getReadableDatabase();
+        int ans;
+        Cursor res = db.rawQuery("SELECT * FROM " +  TABLE_SCORES + " WHERE " +
+                COLUMN_BEST_TIME + " BETWEEN 0 AND 10", null );
+        if (res == null){
+            ans = 0;
+        }
+        ans = res.getCount();
+        res.close();
+        db.close();
+        return ans;
+    }
+
+    public int howManyPerfect(){
+        SQLiteDatabase db = getReadableDatabase();
+        int ans;
+        Cursor res = db.rawQuery("SELECT * FROM " +  TABLE_SCORES + " WHERE " +
+                COLUMN_BEST_MOVES + "=" + COLUMN_OPTIMAL_MOVES +
+                " AND " + COLUMN_BEST_MOVES + ">0", null );
+        if (res == null){
+            ans = 0;
+        }
+        ans = res.getCount();
+        res.close();
+        db.close();
+        return ans;
+    }
+
+    public int howManyCompleted(){
+        SQLiteDatabase db = getReadableDatabase();
+        int ans;
+        Cursor res = db.rawQuery("SELECT * FROM " +  TABLE_SCORES + " WHERE " +
+                COLUMN_COMPLETED + "=1 ", null );
+        if (res == null){
+            ans = 0;
+        }
+        ans = res.getCount();
+        res.close();
+        db.close();
+        return ans;
     }
 
 }

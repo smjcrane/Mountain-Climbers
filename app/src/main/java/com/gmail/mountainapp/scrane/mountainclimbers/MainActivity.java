@@ -134,7 +134,12 @@ public class MainActivity extends SignedInActivity {
     }
 
     @Override
-    protected void onSignIn(){
+    protected void onAccountChanged(){
+        if (account == null){
+            userNameText.setText("Sign in");
+            userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
+            return;
+        }
         userNameText.setText(account.getDisplayName());
         if (account.getPhotoUrl() == null){
             userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));

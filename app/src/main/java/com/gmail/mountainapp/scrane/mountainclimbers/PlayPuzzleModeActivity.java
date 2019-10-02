@@ -56,6 +56,13 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         });
 
         loadPuzzle(savedInstanceState);
+
+        new Thread(new Runnable() {
+            public void run() {
+                DataBaseHandler db = new DataBaseHandler(PlayPuzzleModeActivity.this);
+                db.getOptimalMoves(db.getId(Common.PACK_POS, Common.LEVEL_POS), PlayPuzzleModeActivity.this);
+            }
+        }).start();
     }
 
     protected void loadPuzzle(Bundle savedInstanceState){

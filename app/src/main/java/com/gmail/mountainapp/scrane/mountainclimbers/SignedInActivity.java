@@ -1,10 +1,10 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,28 +20,36 @@ import com.google.android.gms.tasks.Task;
 public abstract class SignedInActivity extends AppCompatActivity {
 
     public static int RC_SIGN_IN = 0;
+    public static String SHOULD_SIGN_IN = "shouldsignin";
 
     protected GoogleSignInClient signInClient;
     protected GoogleSignInAccount account;
     private GoogleSignInOptions signInOptions;
+    protected boolean shouldSignIn;
+    protected SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferences = getSharedPreferences(SettingsActivity.PREFERENCES, MODE_PRIVATE);
+        shouldSignIn = sharedPreferences.getBoolean(SHOULD_SIGN_IN, false);
+
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
         signInClient = GoogleSignIn.getClient(this, signInOptions);
-        account = GoogleSignIn.getLastSignedInAccount(this);
-
+        if (shouldSignIn){
+            account = GoogleSignIn.getLastSignedInAccount(this);
+        }
     }
 
-    private void signInSilently() {
+    protected void signInSilently() {
         if (account !=null && account.getDisplayName() != null && GoogleSignIn.hasPermissions(account, signInOptions.getScopeArray())) {
-            onSignIn();
+            onAccountChanged();
         } else {
             Task<GoogleSignInAccount> task = signInClient.silentSignIn();
             if (task.isSuccessful()){
                 account = task.getResult();
-                onSignIn();
+                onAccountChanged();
             } else {
                 task.addOnCompleteListener(
                         this,
@@ -52,7 +60,7 @@ public abstract class SignedInActivity extends AppCompatActivity {
                                     // The signed in account is stored in the task's result.
                                     account = task.getResult();
                                     if (account!=null){
-                                        onSignIn();
+                                        onAccountChanged();
                                     }
                                 } else {
                                     Intent intent = signInClient.getSignInIntent();
@@ -73,22 +81,25 @@ public abstract class SignedInActivity extends AppCompatActivity {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 account = result.getSignInAccount();
-                onSignIn();
+                onAccountChanged();
             } else {
+                shouldSignIn = false;
                 Log.d("SIGN-IN", "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + result.getStatus().getStatusMessage());
             }
         }
     }
 
-    protected void onSignIn(){return;};
+    protected void onAccountChanged(){return;};
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (account == null){
+        shouldSignIn = sharedPreferences.getBoolean(SHOULD_SIGN_IN, false);
+        if (shouldSignIn ){
             signInSilently();
         } else {
-            onSignIn();
+            account = null;
+            onAccountChanged();
         }
     }
 }

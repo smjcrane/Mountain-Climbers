@@ -84,8 +84,11 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                         completedImage.setImageDrawable(null);
                         starLayout.setVisibility(View.VISIBLE);
                         int bestMoves = db.getBestMoves(levelID);
-                        int optimalMoves = db.getOptimalMoves(levelID, context);
-                        int stars = howManyStars(bestMoves, optimalMoves);
+                        int stars = 0;
+                        if (bestMoves > -1){
+                            int optimalMoves = db.getOptimalMoves(levelID, context);
+                            stars = howManyStars(bestMoves, optimalMoves);
+                        }
                         for (int i = 0; i < 3; i++){
                             if (i < stars){
                                 starFills[i].setVisibility(View.VISIBLE);

@@ -14,4 +14,6 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="achievement_speed_demon" translatable="false">CgkIp5ftp_gLEAIQBA</string>
     <!-- achievement Perfect Score! -->
     <string name="achievement_perfect_score" translatable="false">CgkIp5ftp_gLEAIQAw</string>
+    <!-- achievement Unstoppable! -->
+    <string name="achievement_unstoppable" translatable="false">CgkIp5ftp_gLEAIQBQ</string>
 </resources>
