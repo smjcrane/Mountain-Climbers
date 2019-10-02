@@ -11,12 +11,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.games.Games;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class PlayGameActivity extends AppCompatActivity {
+public class PlayGameActivity extends SignedInActivity {
 
     static final String SAVED_POSITIONS = "savedpositions";
     static final String SAVED_DIRECTIONS = "saveddirections";
@@ -103,7 +105,12 @@ public class PlayGameActivity extends AppCompatActivity {
                 buttonBack.setVisibility(View.VISIBLE);
 
                 db = new DataBaseHandler(PlayGameActivity.this);
-                db.markCompleted(db.getId(Common.PACK_POS, Common.LEVEL_POS));
+                int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
+                if (!db.isCompleted(levelDBID) && Common.PACK_POS == 0){
+                    Games.getAchievementsClient(PlayGameActivity.this, account)
+                            .increment(getString(R.string.achievement_getting_started), 1);
+                }
+                db.markCompleted(levelDBID);
                 db.close();
 
                 if (Common.LEVEL_POS < Levels.packs[Common.PACK_POS].getLength() - 1){

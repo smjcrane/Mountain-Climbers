@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PlayGameActivity">
 
-    <com.example.mountainclimbers.MountainView
+    <com.gmail.mountainapp.scrane.mountainclimbers.MountainView
         android:id="@+id/mountainView"
         android:layout_margin="1px"
         android:layout_width="match_parent"
@@ -97,7 +98,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/mountainResetButton" />
 
-    <com.example.mountainclimbers.CountDownView
+    <com.gmail.mountainapp.scrane.mountainclimbers.CountDownView
         android:id="@+id/mountainCountdown"
         android:visibility="invisible"
         app:layout_constraintTop_toTopOf="parent"

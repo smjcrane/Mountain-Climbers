@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".TutorialActivity">
 
-    <com.example.mountainclimbers.TutorialMountainView
+    <com.gmail.mountainapp.scrane.mountainclimbers.TutorialMountainView
         android:id="@+id/tutorialMountainView"
         android:layout_margin="1px"
         android:layout_width="match_parent"
