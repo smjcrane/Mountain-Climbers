@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 public class Solver {
@@ -91,7 +93,7 @@ public class Solver {
         List<Pair<Vertex, Vertex>> edges = new ArrayList<>();
         for (Vertex v : vertices){
             for (Vertex w : vertices) {
-                if (v.compareTo(w) != 0){
+                if (v.numberOfDistinctCoords() >= w.numberOfDistinctCoords()){
                     int diff = Math.abs(mountain.getHeightAt(v.coords[0]) -  mountain.getHeightAt(w.coords[0]));
                     boolean reachable = true;
                     for (int i = 0; i < v.coords.length; i ++){
@@ -101,7 +103,7 @@ public class Solver {
                         }
                     }
                     if (reachable){
-                        edges.add(new Pair<Vertex, Vertex>(v, w));
+                        edges.add(new Pair<>(v, w));
                     }
                 }
             }
@@ -157,6 +159,11 @@ public class Solver {
             return 0;
         }
 
+        public int numberOfDistinctCoords(){
+            Set mySet = new HashSet<>(Arrays.asList(coords));
+            return mySet.size();
+        }
+
         public boolean isGoal(){
             for (int i = 1; i < coords.length; i++){
                 if (coords[i]!= coords[0]){
@@ -206,8 +213,6 @@ public class Solver {
                     Vertex neighbour = null;
                     if (v.equals(edge.first)){
                         neighbour = edge.second;
-                    } else if (v.equals(edge.second)){
-                        neighbour = edge.first;
                     }
                     if (neighbour != null && !neighbour.equals(startVertex)){
                         if (!parents.containsKey(neighbour)){
