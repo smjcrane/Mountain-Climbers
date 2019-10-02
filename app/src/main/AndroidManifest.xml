@@ -4,18 +4,20 @@
     package="com.gmail.mountainapp.scrane.mountainclimbers">
 
     <application
-        tools:replace="android:appComponentFactory"
-        android:appComponentFactory="android.support.app.CoreComponentFactory"
         android:allowBackup="true"
+        android:appComponentFactory="android.support.app.CoreComponentFactory"
         android:icon="@mipmap/logo"
         android:label="Mountains"
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".SettingsActivity"></activity>
+        android:theme="@style/AppTheme"
+        tools:replace="android:appComponentFactory">
+        <activity android:name=".ActivityViewProfile"></activity>
+
+        <activity android:name=".SettingsActivity" />
         <activity android:name=".PackSelectActivity" />
-        <activity
-            android:name=".TutorialActivity" />
+
+        <activity android:name=".TutorialActivity" />
         <activity android:name=".LevelSelectActivity" />
         <activity android:name=".PlayGameActivity" />
         <activity android:name=".PlayTimedModeActivity" />
@@ -27,6 +29,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
