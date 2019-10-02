@@ -14,6 +14,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.games.Games;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -34,7 +35,9 @@ public abstract class SignedInActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
         shouldSignIn = sharedPreferences.getBoolean(getString(R.string.SHOULD_SIGN_IN), false);
 
-        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(Games.SCOPE_GAMES_LITE)
+                .build();
         signInClient = GoogleSignIn.getClient(this, signInOptions);
     }
 
@@ -85,7 +88,9 @@ public abstract class SignedInActivity extends AppCompatActivity {
                 editor.putBoolean(getString(R.string.SHOULD_SIGN_IN), false);
                 editor.commit();
                 onAccountChanged();
-                Log.d("SIGN-IN", "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + result.getStatus().getStatusMessage());
+                Toast.makeText(SignedInActivity.this,
+                        "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + result.getStatus().getStatusMessage(),
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
