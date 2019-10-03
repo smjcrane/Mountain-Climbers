@@ -17,7 +17,7 @@ public final class Levels {
                     new Integer[] {R.raw.tutorial_ttw3_1}),
             new Pack("Easy Pack", new Integer[] {
                     R.raw.easy_01, R.raw.easy_02, R.raw.easy_03, R.raw.easy_04, R.raw.easy_05,
-                    R.raw.easy_06, R.raw.easy_07, R.raw.easy_08, R.raw.easy_09, R.raw.easy_10,
+                    R.raw.easy_06, R.raw.easy_07, R.raw.easy_09, R.raw.easy_10,
                     R.raw.easy_11, R.raw.easy_12, R.raw.easy_13, R.raw.easy_14, R.raw.easy_15,
                     R.raw.easy_16, R.raw.easy_17, R.raw.easy_18, R.raw.easy_19, R.raw.easy_20,
                     R.raw.color_test}),
