@@ -7,13 +7,13 @@ public class Mountain {
 
     private MountainSegment[] segments;
     private int width, maxHeight;
-    private int[] turningPoints;
+    private Integer[] turningPoints;
 
     public Mountain(int[] heights){
         this.segments = new MountainSegment[heights.length - 1];
         this.width = 0;
         this.maxHeight = 0;
-        this.turningPoints = new int[heights.length];
+        this.turningPoints = new Integer[heights.length];
         this.turningPoints[0] = 0;
         for (int i = 0; i < heights.length - 1; i++) {
             int segWidth = Math.abs(heights[i] - heights[i + 1]);
@@ -73,7 +73,7 @@ public class Mountain {
         throw new IndexOutOfBoundsException("Couldn't get slope and I don't know why");
     }
 
-    public int[] getTurningPoints(){
+    public Integer[] getTurningPoints(){
         return turningPoints;
     }
 

@@ -34,7 +34,8 @@ android {
                             'src/main/res/levels/hard_pack',
                             'src/main/res/levels/gen_pack',
                             'src/main/res/levels/wolf_pack',
-                            'src/main/res/levels/big_pack'
+                            'src/main/res/levels/big_pack',
+                            'src/main/res/levels/inv'
                     ]
         }
     }

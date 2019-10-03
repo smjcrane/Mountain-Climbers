@@ -49,7 +49,7 @@ public final class Levels {
                     R.raw.gen_096, R.raw.gen_097, R.raw.gen_098, R.raw.gen_099, R.raw.gen_100}),
             new Pack("Wolf Pack", new Integer[] {
                     R.raw.wolf_01, R.raw.wolf_02, R.raw.wolf_03, R.raw.wolf_04, R.raw.wolf_05,
-                    R.raw.wolf_06, R.raw.wolf_07}),
+                    R.raw.wolf_06, R.raw.wolf_07, R.raw.wolf_08}),
             new Pack("Big Pack", new Integer[] {
                     R.raw.pymtn_001, R.raw.pymtn_002, R.raw.pymtn_003, R.raw.pymtn_004, R.raw.pymtn_005,
                     R.raw.pymtn_006, R.raw.pymtn_007, R.raw.pymtn_008, R.raw.pymtn_009, R.raw.pymtn_010,
@@ -71,6 +71,12 @@ public final class Levels {
                     R.raw.pymtn_086, R.raw.pymtn_087, R.raw.pymtn_088, R.raw.pymtn_089, R.raw.pymtn_090,
                     R.raw.pymtn_091, R.raw.pymtn_092, R.raw.pymtn_093, R.raw.pymtn_094, R.raw.pymtn_095,
                     R.raw.pymtn_096, R.raw.pymtn_097, R.raw.pymtn_098, R.raw.pymtn_099, R.raw.pymtn_100
+            }),
+            new Pack("In the Valley", new Integer[] {
+                    R.raw.inv001, R.raw.inv002, R.raw.inv003, R.raw.inv004, R.raw.inv005,
+                    R.raw.inv006, R.raw.inv007, R.raw.inv008, R.raw.inv009, R.raw.inv010,
+                    R.raw.inv011, R.raw.inv012, R.raw.inv013, R.raw.inv014, R.raw.inv015,
+                    R.raw.inv016, R.raw.inv017, R.raw.inv018, R.raw.inv019, R.raw.inv020
             })
     };
 

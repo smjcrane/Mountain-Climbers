@@ -79,11 +79,14 @@ public class Solver {
 
         for (int x1 : mountain.getTurningPoints()){
             for (Vertex v : getAllVerticesAtHeight(mountain.getHeightAt(x1))){
-                boolean good = true;
-                for (int i = 0; i < numClimbers - 1; i++){
-                    if (v.coords[i] > v.coords[i + 1]){
-                        good = false;
+                boolean good = false;
+                for (int i = 0; i < numClimbers; i++){
+                    if (Arrays.asList(mountain.getTurningPoints()).contains(v.coords[i])){
+                        good = true;
                     }
+                }
+                if (vertices.contains(v)){
+                    good = false;
                 }
                 if (good){
                     vertices.add(v);
@@ -109,6 +112,7 @@ public class Solver {
             }
         }
         Graph graph = new Graph(vertices, edges);
+        Log.d("SOLVE", "Graph has " + vertices.size() + " vertices and " + edges.size() + "edges");
         return graph;
     }
 
@@ -129,34 +133,28 @@ public class Solver {
         List<Vertex> vertices = new ArrayList<>();
 
         for (int i = 0; i < (int) Math.pow(n, numClimbers); i++){
+            boolean good = true;
             int[] coords = new int[numClimbers];
             for (int c = 0; c < numClimbers; c++){
                 coords[c] = possibleXs.get((i % (int) Math.pow(n, c + 1)) / (int) Math.pow(n, c));
+                if (c > 0 && coords[c] < coords[c - 1]){
+                    good = false;
+                }
             }
-            Vertex v = new Vertex(coords);
-            vertices.add(v);
+            if (good){
+                Vertex v = new Vertex(coords);
+                vertices.add(v);
+            }
         }
 
         return vertices;
     }
 
-    private class Vertex implements Comparable<Vertex> {
+    private class Vertex {
         private int[] coords;
 
         public Vertex(int[] coords){
             this.coords = coords;
-        }
-
-        @Override
-        public int compareTo(Vertex o) {
-            for (int i = 0; i < coords.length; i++){
-                if (coords[i] < o.coords[i]){
-                    return -1;
-                } else if (coords[i] > o.coords[i]){
-                    return 1;
-                }
-            }
-            return 0;
         }
 
         public int numberOfDistinctCoords(){

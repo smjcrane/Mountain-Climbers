@@ -38,6 +38,7 @@ public class PlayGameActivity extends AppCompatActivity {
         setContentView(R.layout.activity_see_mountain);
 
         Common.tutorial = false;
+        MountainView.victoryMessage = "YOU WIN!";
 
         mountainView = findViewById(R.id.mountainView);
         buttonHint = findViewById(R.id.mountainHintButton);
