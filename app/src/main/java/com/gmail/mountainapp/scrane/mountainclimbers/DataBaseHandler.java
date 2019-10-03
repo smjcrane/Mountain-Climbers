@@ -6,7 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 class DataBaseHandler extends SQLiteOpenHelper {
@@ -363,6 +371,39 @@ class DataBaseHandler extends SQLiteOpenHelper {
         res.close();
         db.close();
         return ans;
+    }
+
+    public byte[] getBytes(Context context){
+        File file = context.getDatabasePath(DATABASE_NAME);
+        int size = (int) file.length();
+        byte[] bytes = new byte[size];
+        try {
+            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(file));
+            buf.read(bytes, 0, bytes.length);
+            buf.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            Log.d("DB", "Could not find database file");
+            e.printStackTrace();
+            return new byte[0];
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            Log.d("DB", "Could not read database file");
+            e.printStackTrace();
+            return new byte[0];
+        }
+        return bytes;
+    }
+
+    public void restoreFromBytes(Context context, byte[] bytes){
+        Log.d("DB", "Restoring from backup");
+        try (FileOutputStream fos = new FileOutputStream(context.getDatabasePath(DATABASE_NAME))) {
+            fos.write(bytes);
+            Toast.makeText(context, "Transfer complete", Toast.LENGTH_LONG).show();
+        } catch (IOException e){
+            e.printStackTrace();
+            Toast.makeText(context, "Error resoring backup", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
