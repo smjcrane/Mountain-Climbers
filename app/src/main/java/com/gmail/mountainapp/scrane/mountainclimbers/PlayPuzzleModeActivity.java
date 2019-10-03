@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.games.AchievementsClient;
+import com.google.android.gms.games.Games;
+
 public class PlayPuzzleModeActivity extends PlayGameActivity {
 
     public static final String SAVED_MOVES = "savedmoves";
@@ -34,6 +37,10 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
                     MountainView.victoryMessage = MESSAGES[stars];
                 } else {
                     MountainView.victoryMessage = "YOU WIN!";
+                }
+                if (shouldUpdateAchievements){
+                    AchievementsClient client = Games.getAchievementsClient(PlayPuzzleModeActivity.this, account);
+                    client.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
                 }
             }
         };

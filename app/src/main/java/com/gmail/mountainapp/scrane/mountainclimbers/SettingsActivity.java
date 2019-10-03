@@ -11,8 +11,11 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 
+import com.google.android.gms.games.AchievementsClient;
+import com.google.android.gms.games.Games;
 
-public class SettingsActivity extends AppCompatActivity {
+
+public class SettingsActivity extends SignedInActivity {
 
     public static final int SPEED_TORTOISE = 1;
     public static final int SPEED_HARE = 2;
@@ -185,5 +188,14 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onPause(){
         super.onPause();
         editor.commit();
+    }
+
+    @Override
+    protected void onAccountChanged(){
+        if (!shouldSignIn || account == null){
+            return;
+        }
+        AchievementsClient achievementsClient = Games.getAchievementsClient(this, account);
+        achievementsClient.unlock(getString(R.string.achievement_tinker));
     }
 }

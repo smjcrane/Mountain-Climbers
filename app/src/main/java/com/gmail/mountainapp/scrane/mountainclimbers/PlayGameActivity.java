@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 
 import java.io.BufferedReader;
@@ -18,7 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class PlayGameActivity extends AppCompatActivity {
+public class PlayGameActivity extends SignedInActivity {
 
     static final String SAVED_POSITIONS = "savedpositions";
     static final String SAVED_DIRECTIONS = "saveddirections";
@@ -29,7 +30,7 @@ public class PlayGameActivity extends AppCompatActivity {
     protected ImageView buttonReset, buttonHint, settingsButton;
     protected TextView goButton, levelNumberText;
     protected DataBaseHandler db;
-
+    protected boolean shouldUpdateAchievements;
     protected static Game.OnVictoryListener onVictoryListener;
 
     @Override
@@ -108,6 +109,13 @@ public class PlayGameActivity extends AppCompatActivity {
                 db = new DataBaseHandler(PlayGameActivity.this);
                 int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
                 db.markCompleted(levelDBID);
+                if (shouldUpdateAchievements){
+                    AchievementsClient client = Games.getAchievementsClient(PlayGameActivity.this, account);
+                    client.setSteps(getString(ActivityViewProfile.packCompletedAchievementIDs[Common.PACK_POS]),
+                            db.howManyCompletedInPack(Common.PACK_POS));
+                    client.setSteps(getString(R.string.achievement_master), db.howManyCompleted());
+                    client.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
+                }
                 db.close();
 
                 if (Common.LEVEL_POS < Levels.packs[Common.PACK_POS].getLength() - 1){
@@ -173,6 +181,11 @@ public class PlayGameActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onAccountChanged(){
+        shouldUpdateAchievements = shouldSignIn && (account != null);
     }
 
     @Override

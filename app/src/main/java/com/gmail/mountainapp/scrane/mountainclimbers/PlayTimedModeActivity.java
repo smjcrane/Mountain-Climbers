@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.games.AchievementsClient;
+import com.google.android.gms.games.Games;
+
 public class PlayTimedModeActivity extends PlayGameActivity {
 
     private static final String SAVED_TIME = "savedtime";
@@ -59,6 +62,10 @@ public class PlayTimedModeActivity extends PlayGameActivity {
                     MountainView.victoryMessage = "NEW RECORD!";
                 } else {
                     MountainView.victoryMessage = "YOU WIN!";
+                }
+                if (shouldUpdateAchievements){
+                    AchievementsClient client = Games.getAchievementsClient(PlayTimedModeActivity.this, account);
+                    client.setSteps(getString(R.string.achievement_speed_demon), db.howManyInUnder10Seconds());
                 }
             }
         };

@@ -14,9 +14,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import static com.google.android.gms.drive.Drive.SCOPE_APPFOLDER;
 
 public abstract class SignedInActivity extends AppCompatActivity {
 
@@ -28,7 +32,6 @@ public abstract class SignedInActivity extends AppCompatActivity {
     protected boolean shouldSignIn;
     protected SharedPreferences sharedPreferences;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +40,7 @@ public abstract class SignedInActivity extends AppCompatActivity {
 
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestScopes(Games.SCOPE_GAMES_LITE)
+                .requestScopes(SCOPE_APPFOLDER)
                 .build();
         signInClient = GoogleSignIn.getClient(this, signInOptions);
     }
