@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".TutorialActivity">
 
+    <com.gmail.mountainapp.scrane.mountainclimbers.SnowView
+        android:id="@+id/snowView"
+        android:layout_margin="1px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.gmail.mountainapp.scrane.mountainclimbers.TutorialMountainView
         android:id="@+id/tutorialMountainView"
         android:layout_margin="1px"

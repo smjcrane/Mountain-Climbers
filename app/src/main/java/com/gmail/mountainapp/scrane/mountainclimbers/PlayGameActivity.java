@@ -3,7 +3,6 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +24,7 @@ public class PlayGameActivity extends SignedInActivity {
     static final String SAVED_DIRECTIONS = "saveddirections";
 
     protected MountainView mountainView;
+    protected SnowView snowView;
     protected Game game;
     protected Button buttonBack, buttonNextLevel;
     protected ImageView buttonReset, buttonHint, settingsButton;
@@ -42,6 +42,7 @@ public class PlayGameActivity extends SignedInActivity {
         MountainView.victoryMessage = "YOU WIN!";
 
         mountainView = findViewById(R.id.mountainView);
+        snowView = findViewById(R.id.snowView);
         buttonHint = findViewById(R.id.mountainHintButton);
         levelNumberText = findViewById(R.id.mountainLevelNumber);
         goButton = findViewById(R.id.mountainGoButton);
@@ -133,7 +134,6 @@ public class PlayGameActivity extends SignedInActivity {
 
         levelNumberText.setText(Integer.toString(Common.LEVEL_POS + 1));
         int levelID = Levels.packs[Common.PACK_POS].getLevelIDs()[Common.LEVEL_POS];
-        mountainView.setSeed((long) levelID);
 
         buttonBack.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);

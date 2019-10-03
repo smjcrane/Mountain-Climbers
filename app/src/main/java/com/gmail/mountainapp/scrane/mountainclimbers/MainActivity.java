@@ -140,7 +140,7 @@ public class MainActivity extends SignedInActivity {
             userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
             return;
         }
-        userNameText.setText(account.getDisplayName());
+        userNameText.setText(account.getGivenName());
         if (account.getPhotoUrl() == null){
             userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
         } else {

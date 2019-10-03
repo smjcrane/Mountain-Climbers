@@ -7,6 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".PlayGameActivity">
 
+    <com.gmail.mountainapp.scrane.mountainclimbers.SnowView
+        android:id="@+id/snowView"
+        android:layout_margin="1px"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.gmail.mountainapp.scrane.mountainclimbers.MountainView
         android:id="@+id/mountainView"
         android:layout_margin="1px"

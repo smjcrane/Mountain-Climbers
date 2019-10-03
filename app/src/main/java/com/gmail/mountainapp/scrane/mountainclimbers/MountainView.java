@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.lang.Math;
-import java.util.Random;
 
 public class MountainView extends View {
 
@@ -29,9 +28,7 @@ public class MountainView extends View {
     private static int TEXT_SIZE = 1000;
     private static int HINT_FLASH_TIME = 500;
     public static String victoryMessage = "YOU WIN!";
-
-    private Paint mountainPaint, skyPaint, cloudPaint;
-    protected Paint victoryTextPaint;
+    protected Paint mountainPaint, victoryTextPaint;
     private ColorFilter hintFilter;
     protected Solver.Move hint;
     private boolean hintFlashOn;
@@ -41,8 +38,6 @@ public class MountainView extends View {
     protected Context context;
     protected MountainClimber selectedClimber;
     protected Rect r = new Rect();
-    protected Random random;
-    protected long seed;
     Game game;
     private boolean clickable;
 
@@ -52,7 +47,6 @@ public class MountainView extends View {
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
         this.context = context;
-        this.random = new Random();
         this.clickable = true;
 
         this.mountainPaint = new Paint();
@@ -60,12 +54,6 @@ public class MountainView extends View {
         this.mountainPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         this.mountainPaint.setAntiAlias(true);
         this.mountainPaint.setStrokeWidth(2);
-        this.skyPaint = new Paint();
-        this.skyPaint.setColor(context.getColor(R.color.skyBlue));
-        this.cloudPaint = new Paint();
-        this.cloudPaint.setColor(context.getColor(R.color.cloudWhite));
-        this.cloudPaint.setStrokeWidth(10);
-        this.cloudPaint.setStrokeCap(Paint.Cap.ROUND);
         this.victoryTextPaint = new Paint();
         this.victoryTextPaint.setColor(context.getColor(R.color.victoryGold));
         this.victoryTextPaint.setTextSize(TEXT_SIZE);
@@ -87,10 +75,6 @@ public class MountainView extends View {
 
     public void activate() {
         clickable = true;
-    }
-
-    public void setSeed(long seed){
-        this.seed = seed;
     }
 
     public void addClimber(MountainClimber climber){
@@ -252,30 +236,8 @@ public class MountainView extends View {
                 mountainPaint);
     }
 
-    protected void drawClouds(Canvas canvas){
-        for (int i = 0; i < 5; i++){
-            float cx = random.nextFloat() * getWidth();
-            float cy = random.nextFloat() * getHeight() / 2;
-            int numBlobs = random.nextInt(3) + 3;
-            int cloudWidth = 0;
-            float radius = 0;
-            for (int j = 0; j < numBlobs; j++){
-                radius = random.nextFloat() * 50 + 50;
-                canvas.drawCircle(cx + cloudWidth, cy - radius, radius, cloudPaint);
-                cloudWidth += radius * 1.4;
-            }
-            cloudWidth -= radius * 1.4;
-            canvas.drawRect(cx, cy, cx + cloudWidth, cy - 50, cloudPaint);
-        }
-    }
-
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        random.setSeed(seed);
-
-        //sky
-        canvas.drawRect(0,  getHeight(), getWidth(), 0, skyPaint);
-        drawClouds(canvas);
 
         drawMountain(canvas);
         drawDirections(canvas);
