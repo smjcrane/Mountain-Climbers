@@ -90,24 +90,15 @@ public class Solver {
                 }
                 if (good){
                     vertices.add(v);
+                    Log.d("VERTEX", v.toString());
                 }
             }
         }
         List<Pair<Vertex, Vertex>> edges = new ArrayList<>();
         for (Vertex v : vertices){
             for (Vertex w : vertices) {
-                if (v.numberOfDistinctCoords() >= w.numberOfDistinctCoords()){
-                    int diff = Math.abs(mountain.getHeightAt(v.coords[0]) -  mountain.getHeightAt(w.coords[0]));
-                    boolean reachable = true;
-                    for (int i = 0; i < v.coords.length; i ++){
-
-                        if (Math.abs(v.coords[i] - w.coords[i]) != diff){
-                            reachable = false;
-                        }
-                    }
-                    if (reachable){
-                        edges.add(new Pair<>(v, w));
-                    }
+                if (v.goesTo(w)){
+                    edges.add(new Pair<>(v, w));
                 }
             }
         }
@@ -181,6 +172,18 @@ public class Solver {
                 s = s + ", " + coords[i];
             }
             return s;
+        }
+
+        public boolean goesTo(Vertex w) {
+            int diff = Math.abs(mountain.getHeightAt(v.coords[0]) -  mountain.getHeightAt(w.coords[0]));
+            boolean reachable = true;
+            for (int i = 0; i < coords.length; i ++){
+
+                if (Math.abs(coords[i] - w.coords[i]) != diff){
+                    reachable = false;
+                }
+            }
+            return reachable;
         }
     }
 
