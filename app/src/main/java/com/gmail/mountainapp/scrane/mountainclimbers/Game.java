@@ -3,6 +3,8 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 import android.os.CountDownTimer;
 import android.util.Log;
 
+import androidx.core.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -73,20 +75,20 @@ public class Game {
         }
     }
 
-    protected boolean removeClimbers(){
+    protected Pair<MountainClimber, MountainClimber> removeClimbers(){
         if (climbers.size() == 1){
-            return false;
+            return null;
         }
         for (MountainClimber climber : climbers){
             for (MountainClimber c2 : climbers) {
                 if (c2 != climber && Math.abs(c2.getPosition() - climber.getPosition()) < 1.5) {
                     this.climbers.remove(c2);
                     climber.setDirection(null);
-                    return true;
+                    return new Pair<>(climber, c2);
                 }
             }
         }
-        return false;
+        return null;
     }
 
     protected void updateVictory(){
@@ -154,7 +156,6 @@ public class Game {
             } else {
                 moving = Moving.NONE;
                 movingTimer.cancel();
-                while (removeClimbers()){};
                 updateVictory();
                 if (victory) {
                     victoryListener.onVictory();

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
@@ -97,9 +98,19 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
         buttonHint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Solver.Move hint = game.getHint();
-                Log.d("MTN", hint.toString());
-                mountainView.showHint();
+                if (game.victory || game.moving != Game.Moving.NONE){
+                    return;
+                }
+                if (game.climbers.size() >= 5){
+                    Toast.makeText(PlayGameActivity.this, "Calculating...", Toast.LENGTH_LONG).show();
+                }
+                new Thread(new Runnable() {
+                    public void run() {
+                        Solver.Move hint = game.getHint();
+                        Log.d("MTN", hint.toString());
+                        mountainView.showHint();
+                    }
+                }).start();
             }
         });
 
@@ -186,11 +197,17 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
                 }
             }
 
-            while(game.removeClimbers()){}
+            while(game.removeClimbers() != null){}
             game.updateVictory();
             if (game.victory){
                 game.callOnVictoryListener();
             }
+
+            new Thread(new Runnable() {
+                public void run() {
+                    game.getHint();
+                }
+            }).start();
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -12,15 +12,22 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
+import androidx.core.util.Pair;
+
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import java.lang.Math;
+import java.util.Random;
 
 public class MountainView extends View {
 
@@ -41,6 +48,8 @@ public class MountainView extends View {
     protected CountUpTimer hintTimer;
     Game game;
     private boolean clickable;
+    private Map<MountainClimber, Integer> coloursInUse;
+    private Random random;
 
     private Drawable climberDrawable;
     static final int[] climberDrawableIDs = new int[] {R.drawable.circle, R.drawable.peg_person, R.drawable.hollow};
@@ -78,6 +87,8 @@ public class MountainView extends View {
         SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
         int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
         this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
+        coloursInUse = new HashMap<>();
+        random = new Random(SystemClock.elapsedRealtime());
     }
 
     public void deActivate(){
@@ -97,6 +108,7 @@ public class MountainView extends View {
         this.arrowFilters.put(climber, arrowFilter);
         PorterDuffColorFilter highlightedFilter = new PorterDuffColorFilter(getHighlightedColor(i), PorterDuff.Mode.SRC_ATOP);
         this.highlightedArrowFilters.put(climber, highlightedFilter);
+        coloursInUse.put(climber, i);
     }
 
     public void setGame(Game game){
@@ -257,9 +269,23 @@ public class MountainView extends View {
             postInvalidateDelayed(5);
         }
 
-        while (game.removeClimbers()){
-            game.updateVictory();
+        Pair<MountainClimber, MountainClimber> climbers = game.removeClimbers();
+        game.updateVictory();
+        while (climbers != null){
+            MountainClimber climber = climbers.first;
+            ArrayList<Integer> colorsAvailable = new ArrayList<>(Arrays.asList(new Integer[] {0, 1, 2, 3, 4, 5}));
+            MountainClimber gone = climbers.second;
+            coloursInUse.remove(climber);
+            for (Integer i : coloursInUse.values()){
+                colorsAvailable.remove(i);
+            }
+            int c = random.nextInt(colorsAvailable.size());
+            climberFilters.put(climber, new PorterDuffColorFilter(getClimberColor(c), PorterDuff.Mode.SRC_ATOP));
+            arrowFilters.put(climber, new PorterDuffColorFilter(getArrowColor(c), PorterDuff.Mode.SRC_ATOP));
+            highlightedArrowFilters.put(climber, new PorterDuffColorFilter(getHighlightedColor(c), PorterDuff.Mode.SRC_ATOP));
+            climbers = game.removeClimbers();
         };
+        invalidate();
     }
 
     public boolean go(){
