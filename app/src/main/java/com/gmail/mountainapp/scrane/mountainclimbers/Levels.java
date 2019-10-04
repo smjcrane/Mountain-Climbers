@@ -80,6 +80,14 @@ public final class Levels {
             })
     };
 
+    public static int totalLevels(){
+        int n = 0;
+        for (Pack pack: packs){
+            n += pack.getLength();
+        }
+        return n;
+    }
+
     public static class Pack {
 
         private String name;

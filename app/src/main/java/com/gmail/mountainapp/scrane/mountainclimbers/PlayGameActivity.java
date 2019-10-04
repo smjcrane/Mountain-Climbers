@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class PlayGameActivity extends SignedInActivity {
+public class PlayGameActivity extends SignedInActivity implements Game.OnVictoryListener{
 
     static final String SAVED_POSITIONS = "savedpositions";
     static final String SAVED_DIRECTIONS = "saveddirections";
@@ -31,7 +31,6 @@ public class PlayGameActivity extends SignedInActivity {
     protected TextView goButton, levelNumberText;
     protected DataBaseHandler db;
     protected boolean shouldUpdateAchievements;
-    protected static Game.OnVictoryListener onVictoryListener;
     protected SharedPreferences preferences;
     protected SharedPreferences.Editor editor;
     protected int packPos;
@@ -40,6 +39,12 @@ public class PlayGameActivity extends SignedInActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_see_mountain);
+
+        setup();
+        loadLevel(savedInstanceState);
+        }
+
+    protected void setup() {
 
         preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
         editor = preferences.edit();
@@ -108,36 +113,32 @@ public class PlayGameActivity extends SignedInActivity {
                 startActivity(settings);
             }
         });
+    }
 
-        onVictoryListener = new Game.OnVictoryListener() {
-            @Override
-            public void onVictory() {
-                Log.d("PLAY", "victory!");
-                goButton.setVisibility(View.INVISIBLE);
-                buttonHint.setVisibility(View.INVISIBLE);
-                buttonBack.setVisibility(View.VISIBLE);
-                mountainView.invalidate();
+    @Override
+    public void onVictory() {
+        Log.d("PLAY", "victory!");
+        goButton.setVisibility(View.INVISIBLE);
+        buttonHint.setVisibility(View.INVISIBLE);
+        buttonBack.setVisibility(View.VISIBLE);
+        mountainView.invalidate();
 
-                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
-                db = new DataBaseHandler(PlayGameActivity.this);
-                int levelDBID = db.getId(packPos, levelPos);
-                db.markCompleted(levelDBID);
-                if (shouldUpdateAchievements){
-                    AchievementsClient client = Games.getAchievementsClient(PlayGameActivity.this, account);
-                    client.setSteps(getString(Common.packCompletedAchievementIDs[packPos]),
-                            db.howManyCompletedInPack(packPos));
-                    client.setSteps(getString(R.string.achievement_master), db.howManyCompleted());
-                    client.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
-                }
-                db.close();
+        int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+        db = new DataBaseHandler(PlayGameActivity.this);
+        int levelDBID = db.getId(packPos, levelPos);
+        db.markCompleted(levelDBID);
+        if (shouldUpdateAchievements){
+            AchievementsClient client = Games.getAchievementsClient(PlayGameActivity.this, account);
+            client.setSteps(getString(Common.packCompletedAchievementIDs[packPos]),
+                    db.howManyCompletedInPack(packPos));
+            client.setSteps(getString(R.string.achievement_master), db.howManyCompleted() * 728 / Levels.totalLevels());
+            client.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
+        }
+        db.close();
 
-                if (levelPos < Levels.packs[packPos].getLength() - 1){
-                    buttonNextLevel.setVisibility(View.VISIBLE);
-                }
-            }
-        };
-
-        loadLevel(savedInstanceState);
+        if (levelPos < Levels.packs[packPos].getLength() - 1){
+            buttonNextLevel.setVisibility(View.VISIBLE);
+        }
     }
 
     protected void loadLevel(Bundle savedInstanceState){
@@ -166,7 +167,7 @@ public class PlayGameActivity extends SignedInActivity {
 
             final Mountain mountain = new Mountain(heights);
             game = new Game(mountain);
-            game.setOnVictoryListener(onVictoryListener);
+            game.setOnVictoryListener(this);
 
             mountainView.setGame(game);
 

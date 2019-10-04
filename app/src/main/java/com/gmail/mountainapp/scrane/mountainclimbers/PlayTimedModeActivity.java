@@ -15,73 +15,45 @@ public class PlayTimedModeActivity extends PlayGameActivity {
 
     private TextView timerText;
     private CountDownView countDownView;
-    private Game.OnVictoryListener onTimedVictoryListener;
     private CountUpTimer timer;
     private int seconds;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState == null){
-            mountainView.deActivate();
-        }
-
+    protected void setup() {
+        super.setup();
         timerText = findViewById(R.id.mountainTimerText);
         timerText.setVisibility(View.VISIBLE);
 
         countDownView = findViewById(R.id.mountainCountdown);
         countDownView.setVisibility(View.VISIBLE);
 
-        buttonNextLevel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
-                editor.putInt(getString(R.string.LEVELPOS), levelPos + 1);
-                editor.apply();
-                loadLevel(null);
-                loadTimers(null);
-            }
-        });
-
-        buttonReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadLevel(null);
-                loadTimers(null);
-            }
-        });
-
-        onTimedVictoryListener = new Game.OnVictoryListener() {
-            @Override
-            public void onVictory() {
-                onVictoryListener.onVictory();
-                timer.cancel();
-                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
-                int levelDBID = db.getId(packPos, levelPos);
-                db.markCompleted(levelDBID);
-                int previousBest = db.getBestTimeSeconds(levelDBID);
-                if (seconds < previousBest || previousBest == -1){
-                    db.setBestTimeSeconds(levelDBID, seconds);
-                    MountainView.victoryMessage = "NEW RECORD!";
-                } else {
-                    MountainView.victoryMessage = "YOU WIN!";
-                }
-                if (shouldUpdateAchievements){
-                    AchievementsClient client = Games.getAchievementsClient(PlayTimedModeActivity.this, account);
-                    client.setSteps(getString(R.string.achievement_speed_demon), db.howManyInUnder10Seconds());
-                }
-            }
-        };
-
-        loadTimers(savedInstanceState);
+        buttonHint.setVisibility(View.INVISIBLE);
     }
 
-    protected void loadTimers(Bundle savedInstanceState){
+
+    @Override
+    public void onVictory() {
+        super.onVictory();
+        timer.cancel();
+        int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+        int levelDBID = db.getId(packPos, levelPos);
+        int previousBest = db.getBestTimeSeconds(levelDBID);
+        if (seconds < previousBest || previousBest == -1){
+            db.setBestTimeSeconds(levelDBID, seconds);
+            MountainView.victoryMessage = "NEW RECORD!";
+        } else {
+            MountainView.victoryMessage = "YOU WIN!";
+        }
+        if (shouldUpdateAchievements){
+            AchievementsClient client = Games.getAchievementsClient(PlayTimedModeActivity.this, account);
+            client.setSteps(getString(R.string.achievement_speed_demon), db.howManyInUnder10Seconds());
+        }
+    }
+
+    protected void loadLevel(Bundle savedInstanceState){
+        super.loadLevel(savedInstanceState);
         mountainView.deActivate();
-        buttonHint.setVisibility(View.INVISIBLE);
         timerText.setText("0:00");
-        game.setOnVictoryListener(onTimedVictoryListener);
         if (savedInstanceState == null || !savedInstanceState.containsKey(SAVED_TIME)){
             if (timer != null){
                 timer.cancel();
