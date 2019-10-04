@@ -39,10 +39,8 @@ public class Mountain {
 
     public int getHeightAt(int x){
         if (x > this.width || x < 0){
-            throw new IndexOutOfBoundsException("The mountain is only "
-                    + Integer.toString(this.width)
-                    + " wide but you tried to access "
-                    + Integer.toString(x));
+            throw new IndexOutOfBoundsException("The mountain is only " + this.width +
+                    " wide but you tried to access " + x);
         }
         int w = 0;
         for (MountainSegment s : segments){
@@ -56,10 +54,8 @@ public class Mountain {
 
     public Slope getTypeAt(int x){
         if (x > this.width || x < 0){
-            throw new IndexOutOfBoundsException("The mountain is only "
-                    + Integer.toString(this.width)
-                    + " wide but you tried to access "
-                    + Integer.toString(x));
+            throw new IndexOutOfBoundsException("The mountain is only " + this.width +
+                    " wide but you tried to access " + x);
         }
         int w = 0;
         for (MountainSegment s : segments){

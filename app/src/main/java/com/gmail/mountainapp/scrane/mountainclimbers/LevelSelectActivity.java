@@ -62,6 +62,7 @@ public class LevelSelectActivity extends AppCompatActivity {
                 } else {
                     int levelPos = position - pack.getNumTutorials();
                     Log.d("LVL", "you clicked on " + levelPos);
+                    //Solver.solveFromResourceID(LevelSelectActivity.this, pack.getLevelIDs()[levelPos]);
                     if (!db.isLocked(db.getId(packpos, levelPos))) {
                         Intent playLevel = new Intent();
                         switch (mode){
