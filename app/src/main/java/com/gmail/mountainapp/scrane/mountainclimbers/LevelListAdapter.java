@@ -1,6 +1,7 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.provider.ContactsContract;
 import android.text.Layout;
@@ -20,14 +21,28 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
     private Levels.Pack pack;
     private Drawable completedDrawable;
     private Drawable lockedDrawable;
+    private SharedPreferences preferences;
+    private int packPos, mode;
+    private boolean[] askedForOptimalMoves;
 
-    public LevelListAdapter(Context context, int layoutID){
-        super(context, layoutID, new Integer[Levels.packs[Common.PACK_POS].getLength() + Levels.packs[Common.PACK_POS].getNumTutorials()]);
-        this.pack = Levels.packs[Common.PACK_POS];
+    public LevelListAdapter(Context context){
+        super(context, R.layout.list_item_level_select);
+        preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
+        packPos = preferences.getInt(context.getString(R.string.PACKPOS), 0);
+        this.pack = Levels.packs[packPos];
         this.context = context;
         this.db = new DataBaseHandler(context);
         completedDrawable = context.getDrawable(R.drawable.tick);
         lockedDrawable = context.getDrawable(R.drawable.padlock);
+        this.mode = preferences.getInt(context.getString(R.string.MODE), Common.MODE_DEFAULT);
+        if (mode == Common.MODE_PUZZLE){
+            askedForOptimalMoves = new boolean[getCount()];
+        }
+    }
+
+    @Override
+    public int getCount(){
+        return pack.getLength() + pack.getNumTutorials();
     }
 
     @Override
@@ -49,7 +64,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         String displayName;
         if (position < pack.getNumTutorials()){
             displayName = "Tutorial " + (position + 1);
-            if (db.isCompletedTutorial(db.getId(Common.PACK_POS, position))){
+            if (db.isCompletedTutorial(db.getId(packPos, position))){
                 completedImage.setImageDrawable(completedDrawable);
             } else {
                 completedImage.setImageDrawable(null);
@@ -59,8 +74,8 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
         } else {
             displayName = "Level " + (position - pack.getNumTutorials() + 1);
             int levelPos = position - pack.getNumTutorials();
-            int levelID = db.getId(Common.PACK_POS, levelPos);
-            switch (Common.MODE){
+            final int levelID = db.getId(packPos, levelPos);
+            switch (mode){
                 case Common.MODE_DEFAULT:
                     timeText.setText("");
                     if (db.isCompleted(levelID)){
@@ -87,11 +102,25 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                     } else {
                         completedImage.setImageDrawable(null);
                         starLayout.setVisibility(View.VISIBLE);
-                        int bestMoves = db.getBestMoves(levelID);
+                        int bestMoves = -1;
                         int stars = 0;
-                        if (bestMoves > -1){
-                            int optimalMoves = db.getOptimalMoves(levelID, context);
-                            stars = howManyStars(bestMoves, optimalMoves);
+                        if (db.knowsOptimalMoves(levelID)){
+                            askedForOptimalMoves[position] = true;
+                            bestMoves = db.getBestMoves(levelID);
+                            stars = howManyStars(bestMoves, db.getOptimalMoves(levelID, context));
+                        }
+                        else {
+                            stars = 0;
+                            if (!askedForOptimalMoves[position]){
+                                askedForOptimalMoves[position] = true;
+                                new Thread(new Runnable() {
+                                    public void run() {
+                                        new DataBaseHandler(context).getOptimalMoves(levelID, context);
+                                        Log.d("LIST", "Got optimal moves");
+                                        //notifyDataSetChanged();
+                                    }
+                                }).start();
+                            }
                         }
                         for (int i = 0; i < 3; i++){
                             if (i < stars){

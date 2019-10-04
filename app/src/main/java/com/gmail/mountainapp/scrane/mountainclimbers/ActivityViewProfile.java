@@ -31,24 +31,14 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.Random;
 
+import static com.gmail.mountainapp.scrane.mountainclimbers.Common.packCompletedAchievementIDs;
+
 public class ActivityViewProfile extends SignedInActivity {
     public static final int RC_ACHIEVEMENT_UI = 1;
     public static final int RC_BACKUP = 2;
     public static final int RC_RESTORE = 3;
 
     public static final int conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED;
-
-
-    public static int[] packCompletedAchievementIDs = new int[] {
-            R.string.achievement_getting_started,
-            R.string.achievement_teamwork,
-            R.string.achievement_this_is_easy,
-            R.string.achievement_hard_worker,
-            R.string.achievement_01101001,
-            R.string.achievement_awoooo,
-            R.string.achievement_the_big_one,
-            R.string.achievement_upside_down
-    };
 
     private TextView acheivementText, userInfoText, restoreText, backupText;
     private Button signOutButton;
@@ -63,7 +53,7 @@ public class ActivityViewProfile extends SignedInActivity {
 
         preferences = sharedPreferences.edit();
 
-        userInfoText = findViewById(R.id.userInfo);
+        userInfoText = findViewById(R.id.userInfoText);
 
         acheivementText = findViewById(R.id.achievementText);
         acheivementText.setOnClickListener(new View.OnClickListener() {
@@ -116,23 +106,6 @@ public class ActivityViewProfile extends SignedInActivity {
                         }
                     }
                 });
-            }
-        });
-
-        backupText = findViewById(R.id.backUpText);
-        backupText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (account == null || !shouldSignIn) {
-                    Toast.makeText(ActivityViewProfile.this, "You must sign in save your progress", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (snapshotsClient == null) {
-                    Toast.makeText(ActivityViewProfile.this, "Could not connect to Google Drive", Toast.LENGTH_LONG).show();
-                    return;
-                } else {
-                    backUpFromDatabase();
-                }
             }
         });
 
@@ -253,11 +226,6 @@ public class ActivityViewProfile extends SignedInActivity {
                     }
                 });
             } else if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
-                // Create a new snapshot named with a unique string
-                String unique = new BigInteger(281, new Random()).toString(13);
-                String saveName = "snapshotTemp-" + unique;
-                // Create the new snapshot
-                // ...
                 backUpFromDatabase();
             }
         } else if (requestCode == RC_BACKUP){

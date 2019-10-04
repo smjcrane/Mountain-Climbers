@@ -287,7 +287,7 @@ public class MountainView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent e){
-        if (game.victory || !clickable){
+        if (game.victory || !clickable || game.moving != Game.Moving.NONE){
             return true;
         }
 

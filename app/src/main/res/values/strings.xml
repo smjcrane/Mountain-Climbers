@@ -23,4 +23,9 @@
     <string name="backup">Back Up My Progress</string>
     <string name="SAVED_GAME_ID">savedgameid</string>
     <string name="restore_from_backup">Restore from backup</string>
+    <string name="MODE">mode</string>
+    <string name="PACKPOS">packpos</string>
+    <string name="LEVELPOS">levelpos</string>
+    <string name="TUTORIAL">tutorial</string>
+    <string name="backup_restore">Backup / Restore</string>
 </resources>

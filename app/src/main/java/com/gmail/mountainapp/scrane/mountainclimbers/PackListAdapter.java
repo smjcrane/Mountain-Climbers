@@ -13,11 +13,13 @@ public class PackListAdapter extends ArrayAdapter<Integer> {
 
     private Context context;
     private DataBaseHandler db;
+    private int mode;
 
-    public PackListAdapter(Context context, int layoutID) {
+    public PackListAdapter(Context context, int layoutID, int mode) {
         super(context, layoutID, new Integer[Levels.packs.length]);
         this.context = context;
         this.db = new DataBaseHandler(context);
+        this.mode = mode;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class PackListAdapter extends ArrayAdapter<Integer> {
 
         boolean completed = db.isCompleted(db.getId(position, Levels.packs[position].getLength() - 1));
 
-        if (completed && Common.MODE == Common.MODE_DEFAULT){
+        if (completed && mode == Common.MODE_DEFAULT){
             completedImage.setVisibility(View.VISIBLE);
         } else {
             completedImage.setVisibility(View.INVISIBLE);

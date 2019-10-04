@@ -36,7 +36,9 @@ public class PlayTimedModeActivity extends PlayGameActivity {
         buttonNextLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.LEVEL_POS++;
+                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+                editor.putInt(getString(R.string.LEVELPOS), levelPos + 1);
+                editor.apply();
                 loadLevel(null);
                 loadTimers(null);
             }
@@ -55,7 +57,8 @@ public class PlayTimedModeActivity extends PlayGameActivity {
             public void onVictory() {
                 onVictoryListener.onVictory();
                 timer.cancel();
-                int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
+                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+                int levelDBID = db.getId(packPos, levelPos);
                 db.markCompleted(levelDBID);
                 int previousBest = db.getBestTimeSeconds(levelDBID);
                 if (seconds < previousBest || previousBest == -1){

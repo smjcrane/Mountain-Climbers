@@ -2,6 +2,8 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,21 +22,25 @@ public class LevelSelectActivity extends AppCompatActivity {
     private DataBaseHandler db;
     private ListView listView;
     private LevelListAdapter adapter;
-    private int mode;
+    private int mode, packpos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_level_select);
 
-        mode = Common.MODE;
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
+        mode = preferences.getInt(getString(R.string.MODE), MODE_DEFAULT);
+        packpos = preferences.getInt(getString(R.string.PACKPOS), MODE_DEFAULT);
+        final SharedPreferences.Editor editor = preferences.edit();
 
         listView = findViewById(R.id.levelList);
-        adapter = new LevelListAdapter(this, R.layout.list_item_level_select);
+        adapter = new LevelListAdapter(this);
         listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
         TextView titleText = findViewById(R.id.listHeader);
-        titleText.setText(Levels.packs[Common.PACK_POS].getName().toUpperCase());
+        titleText.setText(Levels.packs[packpos].getName().toUpperCase());
 
         View footer = new ImageView(this);
         footer.setMinimumHeight(500);
@@ -45,16 +51,18 @@ public class LevelSelectActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Levels.Pack pack = Levels.packs[Common.PACK_POS];
+                Levels.Pack pack = Levels.packs[packpos];
                 if (position < pack.getNumTutorials()){
                     Intent tutorial = new Intent();
                     tutorial.setClass(LevelSelectActivity.this, TutorialActivity.class);
-                    Common.TUTORIAL_POS = position;
+                    editor.putInt(getString(R.string.LEVELPOS), position);
+                    editor.putBoolean(getString(R.string.TUTORIAL), true);
+                    editor.apply();
                     startActivity(tutorial);
                 } else {
                     int levelPos = position - pack.getNumTutorials();
                     Log.d("LVL", "you clicked on " + levelPos);
-                    if (!db.isLocked(db.getId(Common.PACK_POS, levelPos))) {
+                    if (!db.isLocked(db.getId(packpos, levelPos))) {
                         Intent playLevel = new Intent();
                         switch (mode){
                             case MODE_DEFAULT:
@@ -67,7 +75,8 @@ public class LevelSelectActivity extends AppCompatActivity {
                                 playLevel.setClass(LevelSelectActivity.this, PlayPuzzleModeActivity.class);
                                 break;
                         }
-                        Common.LEVEL_POS = levelPos;
+                        editor.putInt(getString(R.string.LEVELPOS), levelPos);
+                        editor.apply();
                         startActivity(playLevel);
                     }
                 }
@@ -96,10 +105,11 @@ public class LevelSelectActivity extends AppCompatActivity {
         super.onResume();
         adapter.notifyDataSetInvalidated();
         int pos;
-        if (Common.tutorial){
-            pos = Common.TUTORIAL_POS;
+        SharedPreferences preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
+        if (preferences.getBoolean(getString(R.string.TUTORIAL), true)){
+            pos = preferences.getInt(getString(R.string.LEVELPOS), 0);
         } else {
-            pos = Common.LEVEL_POS + Levels.packs[Common.PACK_POS].getNumTutorials();
+            pos = preferences.getInt(getString(R.string.LEVELPOS) + Levels.packs[packpos].getNumTutorials(), 0);
         }
         listView.setSelection(pos);
     }

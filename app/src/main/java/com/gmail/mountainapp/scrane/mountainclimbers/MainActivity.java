@@ -5,6 +5,7 @@ import android.content.Intent;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -38,17 +39,22 @@ public class MainActivity extends SignedInActivity {
     private ImageView settingsButton;
     private TextView userNameText;
     private ImageView userProfilePicture;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
+        editor = preferences.edit();
+
         playButton = findViewById(R.id.mainPlayButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.MODE = Common.MODE_DEFAULT;
+                editor.putInt(getString(R.string.MODE), Common.MODE_DEFAULT);
 
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
@@ -58,19 +64,24 @@ public class MainActivity extends SignedInActivity {
                 Intent playGame = new Intent();
                 playGame.setClass(MainActivity.this, PlayGameActivity.class);
 
-                int length = Levels.packs[Common.PACK_POS].getLength();
+                int packPos = 0;
+                int levelPos = 0;
+                int length = Levels.packs[packPos].getLength();
 
                 DataBaseHandler db = new DataBaseHandler(MainActivity.this);
-                while (db.isCompleted(db.getId(Common.PACK_POS, Common.LEVEL_POS)) && Common.PACK_POS < Levels.packs.length - 1) {
-                    if (Common.LEVEL_POS == length - 1) {
-                        Common.PACK_POS++;
-                        length = Levels.packs[Common.PACK_POS].getLength();
-                        Common.LEVEL_POS = 0;
+                while (db.isCompleted(db.getId(packPos, levelPos)) && packPos < Levels.packs.length - 1) {
+                    if (levelPos == length - 1) {
+                        packPos++;
+                        length = Levels.packs[packPos].getLength();
+                        levelPos = 0;
                     } else {
-                        Common.LEVEL_POS++;
+                        levelPos++;
                     }
                 }
 
+                editor.putInt(getString(R.string.LEVELPOS), levelPos);
+                editor.putInt(getString(R.string.PACKPOS), packPos);
+                editor.apply();
                 startActivity(selectPack);
                 startActivity(selectLevel);
                 startActivity(playGame);
@@ -83,7 +94,8 @@ public class MainActivity extends SignedInActivity {
             public void onClick(View v) {
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
-                Common.MODE = Common.MODE_DEFAULT;
+                editor.putInt(getString(R.string.MODE), Common.MODE_DEFAULT);
+                editor.apply();
                 startActivity(selectPack);
             }
         });
@@ -94,7 +106,8 @@ public class MainActivity extends SignedInActivity {
             public void onClick(View v) {
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
-                Common.MODE = Common.MODE_TIMED;
+                editor.putInt(getString(R.string.MODE), Common.MODE_TIMED);
+                editor.apply();
                 startActivity(selectPack);
             }
         });
@@ -105,7 +118,8 @@ public class MainActivity extends SignedInActivity {
             public void onClick(View v) {
                 Intent selectPack = new Intent();
                 selectPack.setClass(MainActivity.this, PackSelectActivity.class);
-                Common.MODE = Common.MODE_PUZZLE;
+                editor.putInt(getString(R.string.MODE), Common.MODE_PUZZLE);
+                editor.apply();
                 startActivity(selectPack);
             }
         });

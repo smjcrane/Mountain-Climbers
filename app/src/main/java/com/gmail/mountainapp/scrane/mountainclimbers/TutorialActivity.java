@@ -32,16 +32,25 @@ public class TutorialActivity extends AppCompatActivity {
 
     private TutorialGame game;
 
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
 
-        Common.tutorial = true;
+        preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.putBoolean(getString(R.string.TUTORIAL), true);
+        editor.apply();
+        int packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
+        final int levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
+
         db = new DataBaseHandler(this);
 
-        levelIDs = Levels.packs[Common.PACK_POS].getTutorialLevelIDs();
-        levelID = levelIDs[Common.TUTORIAL_POS];
+        levelIDs = Levels.packs[packPos].getTutorialLevelIDs();
+        levelID = levelIDs[levelPos];
 
         mountainView = findViewById(R.id.tutorialMountainView);
 
@@ -73,8 +82,9 @@ public class TutorialActivity extends AppCompatActivity {
         buttonNextLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.TUTORIAL_POS++;
-                levelID = levelIDs[Common.TUTORIAL_POS];
+                editor.putInt(getString(R.string.LEVELPOS), levelPos+1);
+                editor.apply();
+                levelID = levelIDs[levelPos];
                 loadLevel(null);
             }
         });
@@ -172,9 +182,11 @@ public class TutorialActivity extends AppCompatActivity {
                 public void onVictory() {
                     buttonBack.setVisibility(View.VISIBLE);
                     buttonReset.setVisibility(View.VISIBLE);
-                    db.markCompletedTutorial(db.getId(Common.PACK_POS, Common.TUTORIAL_POS));
+                    int packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
+                    int levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
+                    db.markCompletedTutorial(db.getId(packPos, levelPos));
 
-                    if (Common.TUTORIAL_POS < levelIDs.length - 1){
+                    if (levelPos < levelIDs.length - 1){
                         buttonNextLevel.setVisibility(View.VISIBLE);
                     }
 

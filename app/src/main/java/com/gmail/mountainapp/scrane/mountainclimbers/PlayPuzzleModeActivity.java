@@ -14,6 +14,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
 
     private TextView movesText;
     private Game.OnVictoryListener onPuzzleVictoryListener;
+    private int optimalMoves;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -26,19 +27,23 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
             @Override
             public void onVictory() {
                 onVictoryListener.onVictory();
-                int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
+                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+                int levelDBID = db.getId(packPos, levelPos);
                 db.markCompleted(levelDBID);
                 int previousBest = db.getBestMoves(levelDBID);
                 int moves = game.getMovesTaken();
-                int bestPossible = db.getOptimalMoves(levelDBID, PlayPuzzleModeActivity.this);
-                int stars = LevelListAdapter.howManyStars(moves, bestPossible);
-                if (moves < previousBest || previousBest == -1){
+                if (moves < previousBest || previousBest == -1) {
                     db.setBestMoves(levelDBID, moves);
-                    MountainView.victoryMessage = MESSAGES[stars];
-                } else {
-                    MountainView.victoryMessage = "YOU WIN!";
                 }
-                mountainView.invalidate();
+                if (optimalMoves != -1){
+                    int stars = LevelListAdapter.howManyStars(moves, optimalMoves);
+                    if (moves < previousBest || previousBest == -1){
+                        MountainView.victoryMessage = MESSAGES[stars];
+                    } else {
+                        MountainView.victoryMessage = "YOU WIN!";
+                    }
+                    mountainView.invalidate();
+                }
                 if (shouldUpdateAchievements){
                     AchievementsClient client = Games.getAchievementsClient(PlayPuzzleModeActivity.this, account);
                     client.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
@@ -49,7 +54,9 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         buttonNextLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.LEVEL_POS++;
+                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+                editor.putInt(getString(R.string.LEVELPOS), levelPos + 1);
+                editor.apply();
                 loadLevel(null);
                 loadPuzzle(null);
             }
@@ -68,6 +75,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
 
     protected void loadPuzzle(Bundle savedInstanceState){
         super.loadLevel(savedInstanceState);
+        optimalMoves = -1;
         buttonHint.setVisibility(View.INVISIBLE);
         int moves = 0;
         if (savedInstanceState != null){
@@ -84,9 +92,8 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         game.setOnVictoryListener(onPuzzleVictoryListener);
         new Thread(new Runnable() {
             public void run() {
-                DataBaseHandler db = new DataBaseHandler(PlayPuzzleModeActivity.this);
-                db.getOptimalMoves(db.getId(Common.PACK_POS, Common.LEVEL_POS), PlayPuzzleModeActivity.this);
-                mountainView.invalidate();
+                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+                optimalMoves = db.getOptimalMoves(db.getId(packPos, levelPos), PlayPuzzleModeActivity.this);
             }
         }).start();
     }

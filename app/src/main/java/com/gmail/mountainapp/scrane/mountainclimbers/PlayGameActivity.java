@@ -32,13 +32,21 @@ public class PlayGameActivity extends SignedInActivity {
     protected DataBaseHandler db;
     protected boolean shouldUpdateAchievements;
     protected static Game.OnVictoryListener onVictoryListener;
+    protected SharedPreferences preferences;
+    protected SharedPreferences.Editor editor;
+    protected int packPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_see_mountain);
 
-        Common.tutorial = false;
+        preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.putBoolean(getString(R.string.TUTORIAL), false);
+        editor.commit();
+        packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
+
         MountainView.victoryMessage = "YOU WIN!";
 
         mountainView = findViewById(R.id.mountainView);
@@ -49,6 +57,7 @@ public class PlayGameActivity extends SignedInActivity {
         buttonBack = findViewById(R.id.mountainBackButton);
         buttonReset = findViewById(R.id.mountainResetButton);
         buttonNextLevel = findViewById(R.id.mountainNextLevelButton);
+        db = new DataBaseHandler(this);
 
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,7 +83,8 @@ public class PlayGameActivity extends SignedInActivity {
         buttonNextLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Common.LEVEL_POS++;
+                editor.putInt(getString(R.string.LEVELPOS), preferences.getInt(getString(R.string.LEVELPOS), 0) + 1);
+                editor.apply();
                 loadLevel(null);
             }
         });
@@ -106,20 +116,22 @@ public class PlayGameActivity extends SignedInActivity {
                 goButton.setVisibility(View.INVISIBLE);
                 buttonHint.setVisibility(View.INVISIBLE);
                 buttonBack.setVisibility(View.VISIBLE);
+                mountainView.invalidate();
 
+                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
                 db = new DataBaseHandler(PlayGameActivity.this);
-                int levelDBID = db.getId(Common.PACK_POS, Common.LEVEL_POS);
+                int levelDBID = db.getId(packPos, levelPos);
                 db.markCompleted(levelDBID);
                 if (shouldUpdateAchievements){
                     AchievementsClient client = Games.getAchievementsClient(PlayGameActivity.this, account);
-                    client.setSteps(getString(ActivityViewProfile.packCompletedAchievementIDs[Common.PACK_POS]),
-                            db.howManyCompletedInPack(Common.PACK_POS));
+                    client.setSteps(getString(Common.packCompletedAchievementIDs[packPos]),
+                            db.howManyCompletedInPack(packPos));
                     client.setSteps(getString(R.string.achievement_master), db.howManyCompleted());
                     client.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
                 }
                 db.close();
 
-                if (Common.LEVEL_POS < Levels.packs[Common.PACK_POS].getLength() - 1){
+                if (levelPos < Levels.packs[packPos].getLength() - 1){
                     buttonNextLevel.setVisibility(View.VISIBLE);
                 }
             }
@@ -132,8 +144,9 @@ public class PlayGameActivity extends SignedInActivity {
         int[] positions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_POSITIONS);
         int[] directions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_DIRECTIONS);
 
-        levelNumberText.setText(Integer.toString(Common.LEVEL_POS + 1));
-        int levelID = Levels.packs[Common.PACK_POS].getLevelIDs()[Common.LEVEL_POS];
+        int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+        levelNumberText.setText(Integer.toString(levelPos + 1));
+        int levelID = Levels.packs[packPos].getLevelIDs()[levelPos];
 
         buttonBack.setVisibility(View.INVISIBLE);
         buttonNextLevel.setVisibility(View.INVISIBLE);

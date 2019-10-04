@@ -272,7 +272,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getOptimalMoves(int id, Context context){
+    public int getOptimalMoves(final int id, final Context context){
         Log.d("DB", "getting optimal moves for " + id);
         SQLiteDatabase db = getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,
@@ -288,12 +288,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
             row.put(COLUMN_COMPLETED, 1);
             row.put(COLUMN_BEST_MOVES, -1);
             row.put(COLUMN_BEST_TIME, -1);
-            int packpos = id / 1000;
-            int levelpos = id % 1000;
-            int resourceID = Levels.packs[packpos].getLevelIDs()[levelpos];
-            optimalMoves = Solver.solveFromResourceID(context, resourceID);
-            Log.d("DB", "Solved optimal moves");
-            row.put(COLUMN_OPTIMAL_MOVES, optimalMoves);
+            row.put(COLUMN_OPTIMAL_MOVES, -1);
             db.insert(TABLE_SCORES, null, row);
         } else {
             res.moveToFirst();
@@ -301,14 +296,20 @@ class DataBaseHandler extends SQLiteOpenHelper {
             Log.d("DB", "Found a previous calculation of optimal moves");
         }
         if (optimalMoves == -1){
-            int packpos = id / 1000;
-            int levelpos = id % 1000;
-            int resourceID = Levels.packs[packpos].getLevelIDs()[levelpos];
-            optimalMoves = Solver.solveFromResourceID(context, resourceID);
-            Log.d("DB", "Solved optimal moves");
-            ContentValues cv = new ContentValues();
-            cv.put(COLUMN_OPTIMAL_MOVES, optimalMoves);
-            db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+            new Thread(new Runnable() {
+                public void run() {
+                    int packpos = id / 1000;
+                    int levelpos = id % 1000;
+                    int resourceID = Levels.packs[packpos].getLevelIDs()[levelpos];
+                    int optimalMoves = Solver.solveFromResourceID(context, resourceID);
+                    Log.d("DB", "Solved optimal moves");
+                    ContentValues cv = new ContentValues();
+                    cv.put(COLUMN_OPTIMAL_MOVES, optimalMoves);
+                    SQLiteDatabase td = getWritableDatabase();
+                    td.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+                    td.close();
+                }
+            }).start();
         }
         res.close();
         db.close();
@@ -373,6 +374,21 @@ class DataBaseHandler extends SQLiteOpenHelper {
         return ans;
     }
 
+    public boolean knowsOptimalMoves(int id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id, null);
+        boolean ans;
+        if (res == null || res.getCount() == 0){
+            ans = false;
+        } else {
+            res.moveToFirst();
+            ans = res.getInt(res.getColumnIndex(COLUMN_BEST_MOVES)) != -1;
+        }
+        res.close();
+        db.close();
+        return ans;
+    }
+
     public byte[] getBytes(Context context){
         File file = context.getDatabasePath(DATABASE_NAME);
         int size = (int) file.length();
@@ -382,12 +398,10 @@ class DataBaseHandler extends SQLiteOpenHelper {
             buf.read(bytes, 0, bytes.length);
             buf.close();
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
             Log.d("DB", "Could not find database file");
             e.printStackTrace();
             return new byte[0];
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             Log.d("DB", "Could not read database file");
             e.printStackTrace();
             return new byte[0];
