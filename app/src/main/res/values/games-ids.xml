@@ -30,6 +30,8 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="achievement_awoooo" translatable="false">CgkIp5ftp_gLEAIQDA</string>
     <!-- achievement The Big One -->
     <string name="achievement_the_big_one" translatable="false">CgkIp5ftp_gLEAIQDQ</string>
+    <!-- achievement Upside Down -->
+    <string name="achievement_upside_down" translatable="false">CgkIp5ftp_gLEAIQDw</string>
     <!-- achievement Tinker -->
     <string name="achievement_tinker" translatable="false">CgkIp5ftp_gLEAIQBg</string>
     <!-- achievement Master -->

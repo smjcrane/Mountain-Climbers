@@ -46,7 +46,8 @@ public class ActivityViewProfile extends SignedInActivity {
             R.string.achievement_hard_worker,
             R.string.achievement_01101001,
             R.string.achievement_awoooo,
-            R.string.achievement_the_big_one
+            R.string.achievement_the_big_one,
+            R.string.achievement_upside_down
     };
 
     private TextView acheivementText, userInfoText, restoreText, backupText;

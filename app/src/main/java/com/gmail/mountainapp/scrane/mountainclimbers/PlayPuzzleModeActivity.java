@@ -38,6 +38,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
                 } else {
                     MountainView.victoryMessage = "YOU WIN!";
                 }
+                mountainView.invalidate();
                 if (shouldUpdateAchievements){
                     AchievementsClient client = Games.getAchievementsClient(PlayPuzzleModeActivity.this, account);
                     client.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
@@ -85,6 +86,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
             public void run() {
                 DataBaseHandler db = new DataBaseHandler(PlayPuzzleModeActivity.this);
                 db.getOptimalMoves(db.getId(Common.PACK_POS, Common.LEVEL_POS), PlayPuzzleModeActivity.this);
+                mountainView.invalidate();
             }
         }).start();
     }

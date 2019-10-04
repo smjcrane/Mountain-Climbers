@@ -38,6 +38,7 @@ public class MountainView extends View {
     protected Context context;
     protected MountainClimber selectedClimber;
     protected Rect r = new Rect();
+    protected CountUpTimer hintTimer;
     Game game;
     private boolean clickable;
 
@@ -63,7 +64,17 @@ public class MountainView extends View {
         this.arrowFilters = new HashMap<>();
         this.highlightedArrowFilters = new HashMap<>();
         this.selectedClimber = null;
-
+        this.hintTimer = new CountUpTimer(HINT_FLASH_TIME) {
+            @Override
+            public void onTick(long millisElapsed) {
+                if (hintFlashOn){
+                    hintFlashOn = false;
+                } else {
+                    hintFlashOn = true;
+                }
+                invalidate();
+            }
+        };
         SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
         int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
         this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
@@ -117,6 +128,7 @@ public class MountainView extends View {
         if (hint == null){
             hint = game.getHint();
             hintFlashOn = true;
+            hintTimer.start();
             invalidate();
         }
     }
@@ -159,12 +171,7 @@ public class MountainView extends View {
     }
 
     protected void drawHint(Canvas canvas){
-        if (hint == null){
-            return;
-        }
-        if (!hintFlashOn){
-            hintFlashOn = true;
-            postInvalidateDelayed(HINT_FLASH_TIME);
+        if (hint == null || !hintFlashOn){
             return;
         }
         Log.d("MVIEW", "Drawing hint");
@@ -193,8 +200,6 @@ public class MountainView extends View {
                 d.draw(canvas);
             }
         }
-        hintFlashOn = false;
-        postInvalidateDelayed(HINT_FLASH_TIME);
         }
 
     protected void drawCenteredText(Canvas canvas, Paint paint, String text) {
@@ -263,6 +268,7 @@ public class MountainView extends View {
         if (gone){
             hint = null;
             hintFlashOn = false;
+            hintTimer.cancel();
             invalidate();
         }
         return gone;
@@ -295,6 +301,7 @@ public class MountainView extends View {
             case MotionEvent.ACTION_DOWN:
                 hint = null;
                 hintFlashOn = false;
+                hintTimer.cancel();
                 if (selectedClimber == null){
                     MountainClimber bestClimber = null;
                     int bestDistance = Math.max(width, height) / 10;

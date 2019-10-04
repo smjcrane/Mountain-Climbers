@@ -2,6 +2,7 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -78,18 +79,22 @@ public class PlayTimedModeActivity extends PlayGameActivity {
         buttonHint.setVisibility(View.INVISIBLE);
         timerText.setText("0:00");
         game.setOnVictoryListener(onTimedVictoryListener);
-        if (timer != null){
-            timer.cancel();
-        }
         if (savedInstanceState == null || !savedInstanceState.containsKey(SAVED_TIME)){
+            if (timer != null){
+                timer.cancel();
+            }
             countDownView.setOnCounted(new CountDownView.OnCounted() {
                 @Override
                 public void onCounted() {
+                    if (timer != null){
+                        timer.cancel();
+                    }
                     timer = new CountUpTimer(1000) {
                         public void onTick(long millis) {
                             int second = (int) millis / 1000;
                             timerText.setText(LevelListAdapter.formatTimeSeconds(second));
                             seconds = second;
+                            Log.d("TIME", Integer.toString(second));
                         }
                     };
                     mountainView.activate();
@@ -98,14 +103,8 @@ public class PlayTimedModeActivity extends PlayGameActivity {
             });
             countDownView.start(3);
         } else {
-            timer = new CountUpTimer(1000, savedInstanceState.getLong(SAVED_TIME)) {
-                @Override
-                public void onTick(long millisElapsed) {
-                    int second = (int) millisElapsed / 1000;
-                    timerText.setText(LevelListAdapter.formatTimeSeconds(second));
-                    seconds = second;
-                }
-            };
+            timer.setMillisAtStart(savedInstanceState.getLong(SAVED_TIME));
+            timer.start();
         }
     }
 
@@ -114,6 +113,14 @@ public class PlayTimedModeActivity extends PlayGameActivity {
         super.onSaveInstanceState(outState);
         if (timer!=null && !timer.cancelled) {
             outState.putLong(SAVED_TIME, timer.getMillisAtStart());
+            timer.cancel();
+        }
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+        if (timer != null){
             timer.cancel();
         }
     }

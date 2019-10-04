@@ -88,4 +88,16 @@ public class SnowView extends View {
             canvas.drawCircle(point.x, point.y, RADIUS, snowPaint);
         }
     }
+
+    @Override
+    public void onDetachedFromWindow(){
+        super.onDetachedFromWindow();
+        timer.cancel();
+    }
+
+    @Override
+    public void onAttachedToWindow(){
+        super.onAttachedToWindow();
+        timer.start();
+    }
 }

@@ -42,7 +42,7 @@ public class CountDownView extends View {
     }
 
     public void start(int numberToShow){
-        stopMillis = SystemClock.elapsedRealtime() + numberToShow * 1000;
+        stopMillis = SystemClock.elapsedRealtime() + (numberToShow + 1) * 1000;
         going = true;
         invalidate();
     }
@@ -54,15 +54,17 @@ public class CountDownView extends View {
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
         long timeLeft = stopMillis - SystemClock.elapsedRealtime();
-        if (timeLeft <=0 ){
-            going = false;
+        if (timeLeft < 1000 ){
             onCounted.onCounted();
+        }
+        if (timeLeft < 0){
+            going = false;
         }
         if (!going){
             return;
         }
         Rect rect = new Rect();
-        String text = Integer.toString(1 + (int) timeLeft / 1000);
+        String text = timeLeft > 1000? Integer.toString((int) timeLeft / 1000) : "Go!";
         int textSize = getWidth() * (int) (timeLeft % 1000) / 500;
         if (textSize < 400){
             textSize = 400;
