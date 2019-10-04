@@ -28,8 +28,6 @@ public class Solver {
         this.mountain = mountain;
         this.numClimbers = numClimbers;
         this.graph = makeGraph();
-
-        Log.d("SOLVE", "Going to solve " + mountain.toString());
     }
 
     public static int solveFromResourceID(Context context, int resourceID) {
@@ -55,7 +53,6 @@ public class Solver {
             Solver solver = new Solver(mountain, climberString.length);
 
             int minMoves = solver.solve(climberPositions).size();
-            Log.d("SOLVE", "Solved it");
             return minMoves;
         } catch (IOException e) {
             e.printStackTrace();
