@@ -62,24 +62,23 @@ public class LevelSelectActivity extends AppCompatActivity {
                 } else {
                     int levelPos = position - pack.getNumTutorials();
                     Log.d("LVL", "you clicked on " + levelPos);
-                    Solver.solveFromResourceID(LevelSelectActivity.this, Levels.packs[packpos].getLevelIDs()[levelPos]);
-//                    if (!db.isLocked(db.getId(packpos, levelPos))) {
-//                        Intent playLevel = new Intent();
-//                        switch (mode){
-//                            case MODE_DEFAULT:
-//                                playLevel.setClass(LevelSelectActivity.this, PlayGameActivity.class);
-//                                break;
-//                            case MODE_TIMED:
-//                                playLevel.setClass(LevelSelectActivity.this, PlayTimedModeActivity.class);
-//                                break;
-//                            case MODE_PUZZLE:
-//                                playLevel.setClass(LevelSelectActivity.this, PlayPuzzleModeActivity.class);
-//                                break;
-//                        }
-//                        editor.putInt(getString(R.string.LEVELPOS), levelPos);
-//                        editor.apply();
-//                        startActivity(playLevel);
-//                    }
+                    if (!db.isLocked(db.getId(packpos, levelPos))) {
+                        Intent playLevel = new Intent();
+                        switch (mode){
+                            case MODE_DEFAULT:
+                                playLevel.setClass(LevelSelectActivity.this, PlayGameActivity.class);
+                                break;
+                            case MODE_TIMED:
+                                playLevel.setClass(LevelSelectActivity.this, PlayTimedModeActivity.class);
+                                break;
+                            case MODE_PUZZLE:
+                                playLevel.setClass(LevelSelectActivity.this, PlayPuzzleModeActivity.class);
+                                break;
+                        }
+                        editor.putInt(getString(R.string.LEVELPOS), levelPos);
+                        editor.apply();
+                        startActivity(playLevel);
+                    }
                 }
             }
         });

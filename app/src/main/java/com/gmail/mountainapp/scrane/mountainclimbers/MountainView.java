@@ -253,9 +253,8 @@ public class MountainView extends View {
             drawCenteredText(canvas, victoryTextPaint, victoryMessage);
         }
 
-        boolean moved = game.moveStep();
-        if (moved){
-            postInvalidateDelayed(2);
+        if (game.moving != Game.Moving.NONE){
+            postInvalidateDelayed(5);
         }
 
         while (game.removeClimbers()){

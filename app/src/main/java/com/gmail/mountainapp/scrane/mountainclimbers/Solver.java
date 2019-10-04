@@ -54,7 +54,9 @@ public class Solver {
 
             Solver solver = new Solver(mountain, climberString.length);
 
-            return solver.solve(climberPositions).size();
+            int minMoves = solver.solve(climberPositions).size();
+            Log.d("SOLVE", "Solved it");
+            return minMoves;
         } catch (IOException e) {
             e.printStackTrace();
             return -1;
@@ -90,7 +92,7 @@ public class Solver {
                 }
                 if (good){
                     vertices.add(v);
-                    Log.d("VERTEX", v.toString());
+                    //Log.d("VERTEX", v.toString());
                 }
             }
         }
@@ -148,11 +150,6 @@ public class Solver {
             this.coords = coords;
         }
 
-        public int numberOfDistinctCoords(){
-            Set mySet = new HashSet<>(Arrays.asList(coords));
-            return mySet.size();
-        }
-
         public boolean isGoal(){
             for (int i = 1; i < coords.length; i++){
                 if (coords[i]!= coords[0]){
@@ -175,15 +172,18 @@ public class Solver {
         }
 
         public boolean goesTo(Vertex w) {
-            int diff = Math.abs(mountain.getHeightAt(v.coords[0]) -  mountain.getHeightAt(w.coords[0]));
-            boolean reachable = true;
+            int diff = Math.abs(mountain.getHeightAt(coords[0]) -  mountain.getHeightAt(w.coords[0]));
             for (int i = 0; i < coords.length; i ++){
-
+                for (int j = i + 1; j < coords.length; j++){
+                    if (coords[i] == coords[j] && w.coords[i] != w.coords[j]){
+                        return false;
+                    }
+                }
                 if (Math.abs(coords[i] - w.coords[i]) != diff){
-                    reachable = false;
+                    return false;
                 }
             }
-            return reachable;
+            return true;
         }
     }
 

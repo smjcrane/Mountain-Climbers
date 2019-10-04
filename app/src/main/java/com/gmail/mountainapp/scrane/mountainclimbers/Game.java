@@ -19,6 +19,7 @@ public class Game {
     private Solver solver;
     private int movesTaken;
     private OnGo onGo;
+    private CountUpTimer movingTimer;
 
     public Game(Mountain mountain){
         if (speed < 1){
@@ -40,6 +41,12 @@ public class Game {
             @Override
             public void onGo() {
                 return;
+            }
+        };
+        movingTimer = new CountUpTimer(1000 / 48) {
+            @Override
+            public void onTick(long millisElapsed) {
+                moveStep();
             }
         };
     }
@@ -111,6 +118,7 @@ public class Game {
             moving = Moving.UP;
             movesTaken ++;
             onGo.onGo();
+            movingTimer.start();
             return true;
         }
         boolean canGoDown = true;
@@ -122,6 +130,7 @@ public class Game {
             moving = Moving.DOWN;
             movesTaken ++;
             onGo.onGo();
+            movingTimer.start();
             return true;
         }
         return false;
@@ -144,6 +153,7 @@ public class Game {
                 }
             } else {
                 moving = Moving.NONE;
+                movingTimer.cancel();
                 while (removeClimbers()){};
                 updateVictory();
                 if (victory) {

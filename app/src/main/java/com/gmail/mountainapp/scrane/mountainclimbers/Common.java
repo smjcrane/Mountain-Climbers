@@ -22,4 +22,6 @@ public class Common {
             R.string.achievement_the_big_one,
             R.string.achievement_upside_down
     };
+
+    public static final int ACHIEVEMENT_TINKER = 0;
 }

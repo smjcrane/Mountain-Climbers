@@ -25,13 +25,15 @@ class DataBaseHandler extends SQLiteOpenHelper {
     //tables
     public static final String TABLE_SCORES = "tablescores";
     public static final String TABLE_TUTORIAL = "tabletutorial";
+    public static final String TABLE_ACHIEVEMENTS = "tableachievements";
 
     //columns
-    public static String COLUMN_ID = "columnid";
-    public static String COLUMN_COMPLETED = "columncompleted";
-    public static String COLUMN_BEST_MOVES = "columnbestmoves";
-    public static String COLUMN_BEST_TIME = "columnbesttime";
-    public static String COLUMN_OPTIMAL_MOVES = "columnoptimalmoves";
+    public static final String COLUMN_ID = "columnid";
+    public static final String COLUMN_COMPLETED = "columncompleted";
+    public static final String COLUMN_BEST_MOVES = "columnbestmoves";
+    public static final String COLUMN_BEST_TIME = "columnbesttime";
+    public static final String COLUMN_OPTIMAL_MOVES = "columnoptimalmoves";
+    public static final String COLUMN_INCREMENTS = "columnincrements";
 
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -90,6 +92,9 @@ class DataBaseHandler extends SQLiteOpenHelper {
                 }
             }
         }
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACHIEVEMENTS + "(" +
+                COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                COLUMN_INCREMENTS + " INTEGER " + ")");
     }
 
     @Override
@@ -101,6 +106,32 @@ class DataBaseHandler extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    public void saveAchievementProgress(int id, int progress){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_ACHIEVEMENTS + "(" +
+                COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                COLUMN_INCREMENTS + " INTEGER " + ")");
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_INCREMENTS, progress);
+        db.update(TABLE_ACHIEVEMENTS, cv, COLUMN_ID + "=" + id, null);
+        db.close();
+    }
+
+    public int getAchievementProgress(int id){
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor res = db.rawQuery(
+                "SELECT * FROM " + TABLE_ACHIEVEMENTS + " WHERE " + COLUMN_ID + "=" + id,
+                null);
+        if (res == null || res.getCount() == 0){
+            return 0;
+        }
+        res.moveToFirst();
+        int progress = res.getInt(res.getColumnIndex(COLUMN_INCREMENTS));
+        res.close();
+        db.close();
+        return progress;
     }
 
     public boolean isCompleted(int id){
