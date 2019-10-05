@@ -270,7 +270,9 @@ public class MountainView extends View {
         }
 
         Pair<MountainClimber, MountainClimber> climbers = game.removeClimbers();
-        game.updateVictory();
+        if (!game.victory){
+            game.updateVictory();
+        }
         while (climbers != null){
             MountainClimber climber = climbers.first;
             ArrayList<Integer> colorsAvailable = new ArrayList<>(Arrays.asList(new Integer[] {0, 1, 2, 3, 4, 5}));

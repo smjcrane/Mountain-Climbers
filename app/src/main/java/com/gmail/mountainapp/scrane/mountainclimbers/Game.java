@@ -94,6 +94,7 @@ public class Game {
     protected void updateVictory(){
         if (climbers.size() == 1){
             victory = true;
+            callOnVictoryListener();
         }
     }
 

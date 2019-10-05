@@ -62,7 +62,6 @@ public class LevelSelectActivity extends AppCompatActivity {
                 } else {
                     int levelPos = position - pack.getNumTutorials();
                     Log.d("LVL", "you clicked on " + levelPos);
-                    //Solver.solveFromResourceID(LevelSelectActivity.this, pack.getLevelIDs()[levelPos]);
                     if (!db.isLocked(db.getId(packpos, levelPos))) {
                         Intent playLevel = new Intent();
                         switch (mode){
@@ -110,8 +109,9 @@ public class LevelSelectActivity extends AppCompatActivity {
         if (preferences.getBoolean(getString(R.string.TUTORIAL), true)){
             pos = preferences.getInt(getString(R.string.LEVELPOS), 0);
         } else {
-            pos = preferences.getInt(getString(R.string.LEVELPOS) + Levels.packs[packpos].getNumTutorials(), 0);
+            pos = preferences.getInt(getString(R.string.LEVELPOS), 0) + Levels.packs[packpos].getNumTutorials();
         }
+        Log.d("LEVELS", "Scrolling to " + pos);
         listView.setSelection(pos);
     }
 
