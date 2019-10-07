@@ -101,12 +101,9 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
                 if (game.victory || game.moving != Game.Moving.NONE){
                     return;
                 }
-                if (game.climbers.size() >= 5){
-                    Toast.makeText(PlayGameActivity.this, "Calculating...", Toast.LENGTH_LONG).show();
-                }
                 new Thread(new Runnable() {
                     public void run() {
-                        Solver.Move hint = game.getHint();
+                        Solver.Move hint = game.getHint(PlayGameActivity.this);
                         Log.d("MTN", hint.toString());
                         mountainView.showHint();
                     }
@@ -152,11 +149,11 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
         }
     }
 
-    protected void loadLevel(Bundle savedInstanceState){
-        int[] positions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_POSITIONS);
+    protected void loadLevel(final Bundle savedInstanceState){
+        final int[] positions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_POSITIONS);
         int[] directions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_DIRECTIONS);
 
-        int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+        final int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
         levelNumberText.setText(Integer.toString(levelPos + 1));
         int levelID = Levels.packs[packPos].getLevelIDs()[levelPos];
 
@@ -169,7 +166,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
 
             BufferedReader br = new BufferedReader(new InputStreamReader(stream));
             String[] heightStrings = br.readLine().split(" ");
-            String[] climberString = br.readLine().split(" ");
+            final String[] climberString = br.readLine().split(" ");
 
             int[] heights = new int[heightStrings.length];
             for (int i = 0; i < heightStrings.length; i++) {
@@ -205,7 +202,14 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
 
             new Thread(new Runnable() {
                 public void run() {
-                    game.getHint();
+                    game.setUpSolver();
+                    if (savedInstanceState == null){
+                        int[] start = new int[climberString.length];
+                        for (int i = 0; i < climberString.length; i++){
+                            start[i] = Integer.parseInt(climberString[i]);
+                        }
+                        game.saveMoves(db, db.getId(packPos, levelPos), start);
+                    }
                 }
             }).start();
 

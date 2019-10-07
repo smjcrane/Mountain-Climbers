@@ -26,8 +26,6 @@ public class PlayTimedModeActivity extends PlayGameActivity {
 
         countDownView = findViewById(R.id.mountainCountdown);
         countDownView.setVisibility(View.VISIBLE);
-
-        buttonHint.setVisibility(View.INVISIBLE);
     }
 
 
@@ -52,6 +50,7 @@ public class PlayTimedModeActivity extends PlayGameActivity {
 
     protected void loadLevel(Bundle savedInstanceState){
         super.loadLevel(savedInstanceState);
+        buttonHint.setVisibility(View.INVISIBLE);
         mountainView.deActivate();
         timerText.setText("0:00");
         if (savedInstanceState == null || !savedInstanceState.containsKey(SAVED_TIME)){

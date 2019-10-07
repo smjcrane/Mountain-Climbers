@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.logging.Level;
+
 public class PackListAdapter extends ArrayAdapter<Integer> {
 
     private Context context;
@@ -31,19 +33,40 @@ public class PackListAdapter extends ArrayAdapter<Integer> {
             v = vi.inflate(R.layout.list_item_pack_select, null);
         }
 
-        String packName = Levels.packs[position].getName();
+        Levels.Pack pack = Levels.packs[position];
+
+        String packName = pack.getName();
 
         TextView packNameText = v.findViewById(R.id.listItemPackText);
 
         ImageView completedImage = v.findViewById(R.id.listItemCompletedImage);
 
-        boolean completed = db.isCompleted(db.getId(position, Levels.packs[position].getLength() - 1));
+        TextView progressText = v.findViewById(R.id.packProgressText);
 
-        if (completed && mode == Common.MODE_DEFAULT){
-            completedImage.setVisibility(View.VISIBLE);
-        } else {
-            completedImage.setVisibility(View.INVISIBLE);
+        switch (mode){
+            case Common.MODE_DEFAULT:
+                boolean completed = db.isCompleted(db.getId(position, pack.getLength() - 1));
+                if (completed){
+                    completedImage.setVisibility(View.VISIBLE);
+                    progressText.setVisibility(View.INVISIBLE);
+                } else {
+                    completedImage.setVisibility(View.INVISIBLE);
+                    progressText.setVisibility(View.VISIBLE);
+                    progressText.setText(db.howManyCompletedInPack(position) + "/" + pack.getLength());
+                }
+                break;
+            case Common.MODE_PUZZLE:
+                completedImage.setVisibility(View.INVISIBLE);
+                progressText.setText(db.countStars(position) + "/" + (3 * Levels.packs[position].getLength()));
+                break;
+            case Common.MODE_TIMED:
+                completedImage.setVisibility(View.INVISIBLE);
+                progressText.setVisibility(View.INVISIBLE);
+                break;
         }
+
+
+
 
         packNameText.setText(packName);
 

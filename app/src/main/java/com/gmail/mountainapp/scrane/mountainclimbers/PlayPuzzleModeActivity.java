@@ -20,13 +20,12 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         super.setup();
         movesText = findViewById(R.id.mountainTimerText);
         movesText.setVisibility(View.VISIBLE);
-
-        buttonHint.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onVictory() {
         super.onVictory();
+        buttonHint.setVisibility(View.INVISIBLE);
         int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
         int levelDBID = db.getId(packPos, levelPos);
         int previousBest = db.getBestMoves(levelDBID);
@@ -41,8 +40,10 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
             } else {
                 MountainView.victoryMessage = "YOU WIN!";
             }
-            mountainView.invalidate();
+        } else {
+            MountainView.victoryMessage = "YOU WIN!";
         }
+        mountainView.invalidate();
         if (shouldUpdateAchievements){
             AchievementsClient client = Games.getAchievementsClient(PlayPuzzleModeActivity.this, account);
             client.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
@@ -52,6 +53,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
     @Override
     protected void loadLevel(Bundle savedInstanceState){
         super.loadLevel(savedInstanceState);
+        buttonHint.setVisibility(View.INVISIBLE);
         optimalMoves = -1;
         int moves = 0;
         if (savedInstanceState != null){

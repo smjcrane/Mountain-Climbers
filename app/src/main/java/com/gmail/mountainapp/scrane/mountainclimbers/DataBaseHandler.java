@@ -303,6 +303,31 @@ class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public int countStars(int packpos){
+        SQLiteDatabase db = getReadableDatabase();
+        int ans = 0;
+        Cursor res = db.rawQuery("SELECT * FROM " +  TABLE_SCORES + " WHERE " +
+                COLUMN_ID + " BETWEEN " + (1000 * packpos) + " AND " + (1000 * (packpos + 1) - 1), null );
+        res.moveToFirst();
+        int bestMovesIndex = res.getColumnIndex(COLUMN_BEST_MOVES);
+        int optimalMovesIndex = res.getColumnIndex(COLUMN_OPTIMAL_MOVES);
+        while (!res.isAfterLast()){
+            if (res.getInt(bestMovesIndex) != -1){
+                ans += LevelListAdapter.howManyStars(res.getInt(bestMovesIndex), res.getInt(optimalMovesIndex));
+            }
+            res.moveToNext();
+        }
+        return ans;
+    }
+
+    void setOptimalMoves(int id, int optimal) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues row = new ContentValues();
+        row.put(COLUMN_OPTIMAL_MOVES, optimal);
+        db.update(TABLE_SCORES, row, COLUMN_ID + "=" + id, null);
+        db.close();
+    }
+
     public int getOptimalMoves(final int id, final Context context){
         Log.d("DB", "getting optimal moves for " + id);
         SQLiteDatabase db = getWritableDatabase();
@@ -355,8 +380,9 @@ class DataBaseHandler extends SQLiteOpenHelper {
                 COLUMN_ID + " BETWEEN " + (1000 * packpos) + " AND " + (1000 * (packpos + 1) - 1), null );
         if (res == null){
             ans = 0;
+        } else {
+            ans = res.getCount();
         }
-        ans = res.getCount();
         res.close();
         db.close();
         return ans;

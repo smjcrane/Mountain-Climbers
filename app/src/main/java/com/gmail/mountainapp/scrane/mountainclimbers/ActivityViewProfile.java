@@ -41,7 +41,7 @@ public class ActivityViewProfile extends SignedInActivity {
     public static final int conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED;
 
     private TextView acheivementText, userInfoText, restoreText, backupText;
-    private Button signOutButton;
+    private Button signOutButton, doneButton;
     private AchievementsClient achievementsClient;
     private SharedPreferences.Editor preferences;
     private SnapshotsClient snapshotsClient;
@@ -55,16 +55,24 @@ public class ActivityViewProfile extends SignedInActivity {
 
         userInfoText = findViewById(R.id.userInfoText);
 
+        doneButton = findViewById(R.id.profileDoneButton);
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         acheivementText = findViewById(R.id.achievementText);
         acheivementText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (account == null || !shouldSignIn) {
-                    Toast.makeText(ActivityViewProfile.this, "You must sign in to view acheivements", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ActivityViewProfile.this, "You must sign in to view acheivements", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (achievementsClient == null) {
-                    Toast.makeText(ActivityViewProfile.this, "Could not connect to Google Play Games", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ActivityViewProfile.this, "Could not connect to Google Play Games", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 acheivementText.setOnClickListener(new View.OnClickListener() {
@@ -87,11 +95,11 @@ public class ActivityViewProfile extends SignedInActivity {
             @Override
             public void onClick(View v) {
                 if (account == null || !shouldSignIn) {
-                    Toast.makeText(ActivityViewProfile.this, "You must sign in save your progress", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ActivityViewProfile.this, "You must sign in save your progress", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (snapshotsClient == null) {
-                    Toast.makeText(ActivityViewProfile.this, "Could not connect to Google Drive", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ActivityViewProfile.this, "Could not connect to Google Drive", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Task<Intent> task = snapshotsClient.getSelectSnapshotIntent("Select backup", true, true, 10);
@@ -100,7 +108,7 @@ public class ActivityViewProfile extends SignedInActivity {
                     public void onComplete(@NonNull Task<Intent> task) {
                         Intent intent = task.getResult();
                         if (intent == null){
-                            Toast.makeText(ActivityViewProfile.this, "An error occurred", Toast.LENGTH_LONG).show();
+                            Toast.makeText(ActivityViewProfile.this, "An error occurred", Toast.LENGTH_SHORT).show();
                         } else {
                             startActivityForResult(intent, RC_RESTORE);
                         }
@@ -222,6 +230,8 @@ public class ActivityViewProfile extends SignedInActivity {
                                     Toast.makeText(ActivityViewProfile.this, "Could not read backup", Toast.LENGTH_SHORT).show();
                                 }
                             }
+                        } else {
+                            Toast.makeText(ActivityViewProfile.this, "Error getting backup file", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

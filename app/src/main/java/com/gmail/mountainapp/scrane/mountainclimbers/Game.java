@@ -1,7 +1,9 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
+import android.content.Context;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.util.Pair;
 
@@ -51,6 +53,16 @@ public class Game {
                 moveStep();
             }
         };
+    }
+
+    public void setUpSolver(){
+        if (solver == null || solver.numClimbers != climbers.size()){
+            solver = new Solver(mountain, climbers.size());
+        }
+    }
+
+    public void saveMoves(DataBaseHandler db, int id, int[] start){
+        db.setOptimalMoves(id, solver.solve(start).size());
     }
 
     public void setOnGo(OnGo onGo){
@@ -175,8 +187,11 @@ public class Game {
         return positions;
     }
 
-    public Solver.Move getHint(){
+    public Solver.Move getHint(Context context){
         if (solver == null || solver.numClimbers != climbers.size()){
+            if (climbers.size() >= 5){
+                Toast.makeText(context, "Calculating...", Toast.LENGTH_LONG).show();
+            }
             solver = new Solver(mountain, climbers.size());
         }
         return solver.solve(getPositions()).get(0);

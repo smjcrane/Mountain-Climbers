@@ -45,9 +45,9 @@
     <Button
         android:id="@+id/levelSelectBackButton"
         android:background="@drawable/back"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_margin="5dp"
+        android:layout_width="40dp"
+        android:layout_height="50dp"
+        android:layout_margin="15dp"
         style="@style/MainButton"
         android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 public class Solver {
@@ -25,16 +26,27 @@ public class Solver {
     private Mountain mountain;
     private Graph graph;
     int numClimbers;
+    HashSet<Integer> turningSet;
+    HashSet<Integer> turningHeights;
+    private static Map<Pair<Integer, Integer>, List<List<Integer>>> allIndices; // num climbers, number of points goes to indices
 
     public Solver(Mountain mountain, int numClimbers){
         this.mountain = mountain;
         this.numClimbers = numClimbers;
+        turningSet = new HashSet<>(Arrays.asList(mountain.getTurningPoints()));
+        turningHeights = new HashSet<>();
+        for (int x : mountain.getTurningPoints()){
+            turningHeights.add(mountain.getHeightAt(x));
+        }
+        if (allIndices == null) {
+            allIndices = new HashMap<>();
+        }
         if (true){//numClimbers < 5){
             this.graph = makeGraph();
         } else {
-            this.graph = new Graph(new ArrayList<Vertex>(), new ArrayList<Pair<Vertex, Vertex>>());
             Log.d("SOLVE", "Too many climbers");
         }
+
     }
 
     public static int solveFromResourceID(Context context, int resourceID) {
@@ -85,37 +97,39 @@ public class Solver {
 
     private Graph makeGraph(){
         long start = SystemClock.elapsedRealtime();
-        List<Vertex> vertices = new ArrayList<>();
+        HashSet<Vertex> vertices = new HashSet<> ();
 
-        for (int x1 : new HashSet<>(Arrays.asList(mountain.getTurningPoints()))){
-            for (Vertex v : getAllVerticesAtHeight(mountain.getHeightAt(x1))){
+        for (Integer x1 : turningHeights){
+            Log.d("SOLVE", "x " + x1);
+            for (Vertex v : getAllVerticesAtHeight(x1)){
                 boolean good = false;
                 for (int i = 0; i < numClimbers; i++){
-                    if (Arrays.asList(mountain.getTurningPoints()).contains(v.coords[i])){
+                    if (turningSet.contains(v.coords[i])){
                         good = true;
                     }
                 }
-                if (vertices.contains(v)){
-                    good = false;
-                }
                 if (good){
                     vertices.add(v);
-                    Log.d("VERTEX", v.toString());
+                    //Log.d("VERTEX", v.toString());
                 }
             }
         }
-        List<Pair<Vertex, Vertex>> edges = new ArrayList<>();
+        Map<Vertex, List<Vertex>> neighbourMap = new HashMap<>();
+        //List<Pair<Vertex, Vertex>> edges = new ArrayList<>();
         for (Vertex v : vertices){
+            List<Vertex> neighbours = new ArrayList<>();
             for (Vertex w : vertices) {
                 if (v.goesTo(w)){
-                    edges.add(new Pair<>(v, w));
+                    neighbours.add(w);
+                    //edges.add(new Pair<>(v, w));
                 }
             }
+            neighbourMap.put(v, neighbours);
         }
-        Graph graph = new Graph(vertices, edges);
+        Graph graph = new Graph(vertices, neighbourMap);
         long end = SystemClock.elapsedRealtime();
         Log.d("SOLVE", "Making the graph took " + (end - start) + " millis");
-        Log.d("SOLVE", "Graph has " + vertices.size() + " vertices and " + edges.size() + "edges");
+        Log.d("SOLVE", "Graph has " + vertices.size() + " vertices");
         return graph;
     }
 
@@ -129,27 +143,48 @@ public class Solver {
         return xs;
     }
 
-    private List<Vertex> getAllVerticesAtHeight(int height){
-        List<Integer> possibleXs = getAllX(height);
-        int n = possibleXs.size();
-
-        List<Vertex> vertices = new ArrayList<>();
-
-        for (int i = 0; i < (int) Math.pow(n, numClimbers); i++){
-            boolean good = true;
-            int[] coords = new int[numClimbers];
-            for (int c = 0; c < numClimbers; c++){
-                coords[c] = possibleXs.get((i % (int) Math.pow(n, c + 1)) / (int) Math.pow(n, c));
-                if (c > 0 && coords[c] < coords[c - 1]){
-                    good = false;
+    private List<List<Integer>> getIndices(int numPoints, int numC) {
+        Log.d("SOLVE", "Getting indices for " + numC + " climbers and " + numPoints + "points");
+        Pair<Integer, Integer> climbersAndPoints = new Pair<>(numC, numPoints);
+        List<List<Integer>> indices;
+        if (!allIndices.containsKey(climbersAndPoints)) {
+            indices = new ArrayList<>();
+            if (numC == 1) {
+                for (int i = 0; i < numPoints; i++) {
+                    List<Integer> index = new ArrayList<>();
+                    index.add(i);
+                    indices.add(index);
+                    Log.d("SOLVE", "new index " + index.size());
+                }
+            } else {
+                List<List<Integer>> indicesNMinus1 = getIndices(numPoints, numC - 1);
+                for (List<Integer> index : indicesNMinus1) {
+                    for (int j = index.get(numC - 2); j < numPoints; j++) {
+                        List<Integer> newIndex = new ArrayList<>(index);
+                        newIndex.add(j);
+                        indices.add(newIndex);
+                        Log.d("SOLVE", "new index " + newIndex.size()  + " new coord " + j);
+                    }
                 }
             }
-            if (good){
-                Vertex v = new Vertex(coords);
-                vertices.add(v);
-            }
+            allIndices.put(climbersAndPoints, indices);
+        } else {
+            indices = allIndices.get(climbersAndPoints);
         }
+        return indices;
+    }
 
+    private List<Vertex> getAllVerticesAtHeight(int height){
+        List<Integer> possibleXs = getAllX(height);
+        List<Vertex> vertices = new ArrayList<>();
+        for (List<Integer> index : getIndices(possibleXs.size(), numClimbers)){
+            Log.d("SOLVE", "finding vertices, i have " + numClimbers + " climbers and " + index.size() + " coords");
+            int[] coords = new int[numClimbers];
+            for (int i = 0; i < numClimbers; i++){
+                coords[i] = possibleXs.get(index.get(i));
+            }
+            vertices.add(new Vertex(coords));
+        }
         return vertices;
     }
 
@@ -165,7 +200,7 @@ public class Solver {
             turningPoints = mountain.getTurningPoints();
             distanceLeft = new int[numClimbers];
             distanceRight = new int[numClimbers];
-            for (int i = 0; i < numClimbers; i++){
+            for (int i = 0; i < coords.length; i++){
                 int j = 0;
                 int l = 0;
                 int r = 0;
@@ -186,6 +221,14 @@ public class Solver {
                 distanceLeft[i] = coords[i] - l;
                 distanceRight[i] = r - coords[i];
             }
+        }
+
+        public int hashCode(){
+            int n = 0;
+            for (int i = 0; i < numClimbers; i++){
+                n += (Math.pow(mountain.getWidth(), i) * coords[i]);
+            }
+            return n;
         }
 
         public boolean isGoal(){
@@ -279,16 +322,13 @@ public class Solver {
     }
 
     private class Graph{
-        public List<Vertex> vertices;
+        public Set<Vertex> vertices;
+        public Map<Vertex, List<Vertex>> neighbourMap;
         public List<Pair<Vertex, Vertex>> edges;
 
-        public Graph(List<Vertex> vertices, List<Pair<Vertex, Vertex>> edges){
+        public Graph(Set<Vertex> vertices, Map<Vertex, List<Vertex>> neighbourMap){
             this.vertices = vertices;
-            this.edges = edges;
-            for (int i = 0; i < vertices.size(); i ++){
-            }
-            for (int i = 0; i < edges.size(); i++){
-            }
+            this.neighbourMap = neighbourMap;
         }
 
         public List<Vertex> getBreadthFirstPathFrom(Vertex startVertex){
@@ -305,12 +345,13 @@ public class Solver {
                 if (false){//numClimbers >= 5){
                     neighbours = v.getNeighbours();
                 } else {
-                    neighbours = new ArrayList<>();
-                    for (Pair<Vertex, Vertex> edge : edges) {
-                        if (v.equals(edge.first)) {
-                            neighbours.add(edge.second);
-                        }
-                    }
+                    neighbours = neighbourMap.get(v);
+                    //neighbours = new ArrayList<>();
+                    //for (Pair<Vertex, Vertex> edge : edges) {
+                    //    if (v.equals(edge.first)) {
+                    //        neighbours.add(edge.second);
+                    //    }
+                    //}
                 }
                 for (Vertex neighbour : neighbours){
                     //Log.d("SOLVE", "Exploring the neighbour at " + neighbour.toString());
@@ -338,7 +379,7 @@ public class Solver {
                 }
                 exploring.remove(v);
             }
-            Log.d("SOLVE", "Couldn't find a solution");
+            Log.d("SOLVE", "couldn't find a solution");
             return null;
         }
     }

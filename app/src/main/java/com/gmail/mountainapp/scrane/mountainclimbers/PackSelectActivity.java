@@ -62,5 +62,6 @@ public class PackSelectActivity extends AppCompatActivity {
         editor.putInt(getString(R.string.LEVELPOS), 0);
         editor.putBoolean(getString(R.string.TUTORIAL), true);
         editor.apply();
+        adapter.notifyDataSetInvalidated();
     }
 }
