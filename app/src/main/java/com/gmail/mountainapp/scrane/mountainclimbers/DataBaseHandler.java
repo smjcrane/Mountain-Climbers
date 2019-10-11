@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 
 class DataBaseHandler extends SQLiteOpenHelper {
@@ -473,8 +474,67 @@ class DataBaseHandler extends SQLiteOpenHelper {
             Toast.makeText(context, "Transfer complete", Toast.LENGTH_LONG).show();
         } catch (IOException e){
             e.printStackTrace();
-            Toast.makeText(context, "Error resoring backup", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Error restoring backup", Toast.LENGTH_SHORT).show();
         }
     }
 
+    public void mergeWithBytes(Context context, byte[] bytes){
+        Log.d("DB", "Merging with backup");
+        try (FileOutputStream fos = new FileOutputStream(context.getDatabasePath(BackUpHandler.BACKUP_NAME))) {
+            fos.write(bytes);
+        } catch (IOException e){
+            e.printStackTrace();
+            Toast.makeText(context, "Error restoring backup", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        SQLiteDatabase db = getWritableDatabase();
+        BackUpHandler backUpHandler = new BackUpHandler(context);
+        SQLiteDatabase backupdb = backUpHandler.getReadableDatabase();
+        Cursor res = backupdb.rawQuery("SELECT * FROM " + TABLE_SCORES, null);
+        if (res != null){
+            res.moveToFirst();
+            while (!res.isAfterLast()){
+                int id = res.getInt(res.getColumnIndex(COLUMN_ID));
+                ContentValues cv = new ContentValues();
+                //TODO other columns
+                Log.d("DB", "Merging " + id);
+                int completed =  res.getInt(res.getColumnIndex(COLUMN_COMPLETED));
+                if (completed > 0){
+                    cv.put(COLUMN_COMPLETED, res.getInt(res.getColumnIndex(COLUMN_COMPLETED)));
+                }
+                if (cv.size() > 0){
+                    db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+                }
+                res.moveToNext();
+            }
+        }
+        res.close();
+        //TODO other tables
+        backupdb.close();
+        db.close();
+        context.getDatabasePath(BackUpHandler.BACKUP_NAME).delete();
+        Toast.makeText(context, "Transfer complete", Toast.LENGTH_LONG).show();
+    }
+
+    private class BackUpHandler extends SQLiteOpenHelper {
+
+        public static final String BACKUP_NAME = "backup.db";
+        public BackUpHandler(Context context) {
+            super(context, BACKUP_NAME, null, 1);
+        }
+
+        @Override
+        public void onCreate(SQLiteDatabase db) {
+        }
+
+        @Override
+        public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+            onCreate(db);
+        }
+
+        @Override
+        public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            onUpgrade(db, oldVersion, newVersion);
+        }
+    }
 }

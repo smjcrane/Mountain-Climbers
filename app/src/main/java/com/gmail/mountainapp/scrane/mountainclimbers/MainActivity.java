@@ -62,28 +62,48 @@ public class MainActivity extends SignedInActivity {
                 Intent selectLevel = new Intent();
                 selectLevel.setClass(MainActivity.this, LevelSelectActivity.class);
                 Intent playGame = new Intent();
-                playGame.setClass(MainActivity.this, PlayGameActivity.class);
 
                 int packPos = 0;
                 int levelPos = 0;
                 int length = Levels.packs[packPos].getLength();
+                Levels.Pack pack;
 
                 DataBaseHandler db = new DataBaseHandler(MainActivity.this);
-                while (db.isCompleted(db.getId(packPos, levelPos)) && packPos < Levels.packs.length - 1) {
-                    if (levelPos == length - 1) {
-                        packPos++;
-                        length = Levels.packs[packPos].getLength();
-                        levelPos = 0;
+                boolean isCompleted = db.isCompletedTutorial(0);
+                boolean goToTutorial = true;
+                while (isCompleted){
+                    pack = Levels.packs[packPos];
+                    if (goToTutorial){
+                        if (levelPos == pack.getNumTutorials()){
+                            goToTutorial = false;
+                            levelPos = 0;
+                        } else {
+                            levelPos++;
+                        }
+                        isCompleted = db.isCompletedTutorial(db.getId(packPos, levelPos));
                     } else {
-                        levelPos++;
+                        if (levelPos == length - 1) {
+                            packPos++;
+                            length = Levels.packs[packPos].getLength();
+                            levelPos = 0;
+                            goToTutorial = true;
+                        } else {
+                            levelPos++;
+                        }
+                        isCompleted = db.isCompleted(db.getId(packPos, levelPos));
                     }
                 }
 
                 editor.putInt(getString(R.string.LEVELPOS), levelPos);
                 editor.putInt(getString(R.string.PACKPOS), packPos);
-                editor.apply();
                 startActivity(selectPack);
                 startActivity(selectLevel);
+                if (goToTutorial){
+                    playGame.setClass(MainActivity.this, TutorialActivity.class);
+                } else {
+                    playGame.setClass(MainActivity.this, PlayGameActivity.class);
+                }
+                editor.apply();
                 startActivity(playGame);
             }
         });

@@ -90,7 +90,7 @@ public class MountainView extends View {
         };
         SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
         int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
-        this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
+        this.climberDrawable = context.getDrawable(R.drawable.pumpkin);
         coloursInUse = new HashMap<>();
         random = new Random(SystemClock.elapsedRealtime());
     }
@@ -137,7 +137,7 @@ public class MountainView extends View {
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
             Drawable d = climberDrawable.getConstantState().newDrawable().mutate();
-            d.setColorFilter(climberFilters.get(climber));
+            //d.setColorFilter(climberFilters.get(climber));
             d.setBounds(cx - climberSize, cy - climberSize, cx + climberSize, cy + climberSize);
             d.draw(canvas);
         }
@@ -283,14 +283,21 @@ public class MountainView extends View {
         while (climbers != null){
             MountainClimber climber = climbers.first;
             MountainClimber gone = climbers.second;
-            int c = new ArrayList<>(colorsAvailable).get(random.nextInt(colorsAvailable.size()));
+            int c;
+            if (colorsAvailable.size() == 0){
+                colorsAvailable.add(coloursInUse.get(climber));;
+                colorsAvailable.add(coloursInUse.get(gone));
+                c = new ArrayList<>(colorsAvailable).get(random.nextInt(colorsAvailable.size()));
+            } else {
+                c = new ArrayList<>(colorsAvailable).get(random.nextInt(colorsAvailable.size()));
+                colorsAvailable.add(coloursInUse.get(climber));;
+                colorsAvailable.add(coloursInUse.get(gone));
+            }
             climberFilters.put(climber, new PorterDuffColorFilter(getClimberColor(c), PorterDuff.Mode.SRC_ATOP));
             arrowFilters.put(climber, new PorterDuffColorFilter(getArrowColor(c), PorterDuff.Mode.SRC_ATOP));
             highlightedArrowFilters.put(climber, new PorterDuffColorFilter(getHighlightedColor(c), PorterDuff.Mode.SRC_ATOP));
             climbers = game.removeClimbers();
-            colorsAvailable.add(coloursInUse.get(climber));;
             colorsAvailable.remove(c);
-            colorsAvailable.add(coloursInUse.get(gone));
             coloursInUse.put(climber, c);
             coloursInUse.remove(gone);
         }
@@ -311,12 +318,12 @@ public class MountainView extends View {
     public void updateClimberDrawable(){
         SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
         int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
-        this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
+        this.climberDrawable = context.getDrawable(R.drawable.pumpkin);
         invalidate();
     }
 
     public void resetClimberDrawableColor(){
-        climberDrawable.setColorFilter(new PorterDuffColorFilter(context.getColor(R.color.darkTextGrey), PorterDuff.Mode.SRC_ATOP));
+        //climberDrawable.setColorFilter(new PorterDuffColorFilter(context.getColor(R.color.darkTextGrey), PorterDuff.Mode.SRC_ATOP));
     }
 
     @Override

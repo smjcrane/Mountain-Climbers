@@ -35,6 +35,8 @@ public class TutorialActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
+    int levelPos;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,7 @@ public class TutorialActivity extends AppCompatActivity {
         editor.putBoolean(getString(R.string.TUTORIAL), true);
         editor.apply();
         int packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
-        final int levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
+        levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
 
         db = new DataBaseHandler(this);
 
@@ -82,7 +84,8 @@ public class TutorialActivity extends AppCompatActivity {
         buttonNextLevel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editor.putInt(getString(R.string.LEVELPOS), levelPos+1);
+                levelPos++;
+                editor.putInt(getString(R.string.LEVELPOS), levelPos);
                 editor.apply();
                 levelID = levelIDs[levelPos];
                 loadLevel(null);

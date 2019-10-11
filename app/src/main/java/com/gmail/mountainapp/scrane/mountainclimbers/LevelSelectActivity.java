@@ -56,7 +56,6 @@ public class LevelSelectActivity extends AppCompatActivity {
                     Intent tutorial = new Intent();
                     tutorial.setClass(LevelSelectActivity.this, TutorialActivity.class);
                     editor.putInt(getString(R.string.LEVELPOS), position);
-                    editor.putBoolean(getString(R.string.TUTORIAL), true);
                     editor.apply();
                     startActivity(tutorial);
                 } else {

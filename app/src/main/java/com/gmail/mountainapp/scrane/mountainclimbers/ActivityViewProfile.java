@@ -134,6 +134,7 @@ public class ActivityViewProfile extends SignedInActivity {
                             Log.d("PROFILE", "Signed out");
                         }
                     });
+                    signInClient.revokeAccess();
                 } else {
                     preferences.putBoolean(getString(R.string.SHOULD_SIGN_IN), true);
                     shouldSignIn = true;
@@ -223,7 +224,7 @@ public class ActivityViewProfile extends SignedInActivity {
                                 try{
                                     byte[] bytes = result.getData().getSnapshotContents().readFully();
                                     DataBaseHandler db = new DataBaseHandler(ActivityViewProfile.this);
-                                    db.restoreFromBytes(ActivityViewProfile.this, bytes);
+                                    db.mergeWithBytes(ActivityViewProfile.this, bytes);
                                     db.close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
