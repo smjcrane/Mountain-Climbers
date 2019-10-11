@@ -2,8 +2,11 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -220,6 +223,30 @@ public class TutorialActivity extends AppCompatActivity {
         if (isLandscapeLocked){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.are_you_sure_you_want_to_leave, null);
+        Button yes = dialogView.findViewById(R.id.leaveYes);
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create();
+        Button no = dialogView.findViewById(R.id.leaveNo);
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
 }
