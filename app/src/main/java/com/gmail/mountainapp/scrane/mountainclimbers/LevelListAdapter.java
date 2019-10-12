@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.concurrent.ExecutionException;
+
 public class LevelListAdapter extends ArrayAdapter<Integer> {
 
     private Context context;
@@ -107,7 +109,13 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                         if (db.knowsOptimalMoves(levelID)){
                             askedForOptimalMoves[position] = true;
                             bestMoves = db.getBestMoves(levelID);
-                            stars = howManyStars(bestMoves, db.getOptimalMoves(levelID, context));
+                            try {
+                                stars = howManyStars(bestMoves, db.getOptimalMoves(levelID, context).get());
+                            } catch (InterruptedException e){
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
                         }
                         else {
                             stars = 0;

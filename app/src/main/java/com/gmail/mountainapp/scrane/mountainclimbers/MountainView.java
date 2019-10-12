@@ -37,7 +37,7 @@ public class MountainView extends View {
     public static int PADDING = 150;
     private static int TEXT_SIZE = 1000;
     private static int HINT_FLASH_TIME = 500;
-    public static String victoryMessage = "YOU WIN!";
+    public static String victoryMessage = "!";
     protected Paint mountainPaint, victoryTextPaint;
     private ColorFilter hintFilter;
     protected Solver.Move hint;

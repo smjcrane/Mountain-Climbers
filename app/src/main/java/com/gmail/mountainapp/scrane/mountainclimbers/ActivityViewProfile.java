@@ -206,7 +206,7 @@ public class ActivityViewProfile extends SignedInActivity {
         if (intent == null){
             return;
         }
-        if (requestCode == RC_RESTORE) {
+        if (requestCode == RC_RESTORE && resultCode == RESULT_OK) {
             Log.d("PROFILE", "Got result from 'Restore'");
             if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA)) {
                 // Load a snapshot.

@@ -17,6 +17,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 class DataBaseHandler extends SQLiteOpenHelper {
 
@@ -329,7 +335,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getOptimalMoves(final int id, final Context context){
+    public Future<Integer> getOptimalMoves(final int id, final Context context){
         Log.d("DB", "getting optimal moves for " + id);
         SQLiteDatabase db = getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id,
@@ -347,14 +353,11 @@ class DataBaseHandler extends SQLiteOpenHelper {
             row.put(COLUMN_BEST_TIME, -1);
             row.put(COLUMN_OPTIMAL_MOVES, -1);
             db.insert(TABLE_SCORES, null, row);
-        } else {
-            res.moveToFirst();
-            optimalMoves = res.getInt(res.getColumnIndex(COLUMN_OPTIMAL_MOVES));
-            Log.d("DB", "Found a previous calculation of optimal moves");
-        }
-        if (optimalMoves == -1){
-            new Thread(new Runnable() {
-                public void run() {
+            res.close();
+            db.close();
+            return Executors.newSingleThreadExecutor().submit(new Callable<Integer>() {
+                @Override
+                public Integer call(){
                     int packpos = id / 1000;
                     int levelpos = id % 1000;
                     int resourceID = Levels.packs[packpos].getLevelIDs()[levelpos];
@@ -365,12 +368,62 @@ class DataBaseHandler extends SQLiteOpenHelper {
                     SQLiteDatabase td = getWritableDatabase();
                     td.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
                     td.close();
+                    return optimalMoves;
                 }
-            }).start();
+            });
         }
+        res.moveToFirst();
+        optimalMoves = res.getInt(res.getColumnIndex(COLUMN_OPTIMAL_MOVES));
+        if (optimalMoves == -1){
+            res.close();
+            db.close();
+            return Executors.newSingleThreadExecutor().submit(new Callable<Integer>() {
+                @Override
+                public Integer call(){
+                    int packpos = id / 1000;
+                    int levelpos = id % 1000;
+                    int resourceID = Levels.packs[packpos].getLevelIDs()[levelpos];
+                    int optimalMoves = Solver.solveFromResourceID(context, resourceID);
+                    Log.d("DB", "Solved optimal moves");
+                    ContentValues cv = new ContentValues();
+                    cv.put(COLUMN_OPTIMAL_MOVES, optimalMoves);
+                    SQLiteDatabase td = getWritableDatabase();
+                    td.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+                    td.close();
+                    return optimalMoves;
+                }
+            });
+        }
+        final int optimalMovesDB = optimalMoves;
+        Log.d("DB", "Found a previous calculation of optimal moves");
         res.close();
         db.close();
-        return optimalMoves;
+        return new Future<Integer>() {
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                return false;
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return false;
+            }
+
+            @Override
+            public boolean isDone() {
+                return true;
+            }
+
+            @Override
+            public Integer get() throws ExecutionException, InterruptedException {
+                return optimalMovesDB;
+            }
+
+            @Override
+            public Integer get(long timeout, TimeUnit unit) throws ExecutionException, InterruptedException, TimeoutException {
+                return optimalMovesDB;
+            }
+        };
     }
 
     public int howManyCompletedInPack(int packpos){
@@ -489,28 +542,57 @@ class DataBaseHandler extends SQLiteOpenHelper {
         }
         SQLiteDatabase db = getWritableDatabase();
         BackUpHandler backUpHandler = new BackUpHandler(context);
-        SQLiteDatabase backupdb = backUpHandler.getReadableDatabase();
-        Cursor res = backupdb.rawQuery("SELECT * FROM " + TABLE_SCORES, null);
+        SQLiteDatabase backupDB = backUpHandler.getReadableDatabase();
+        Cursor res = backupDB.rawQuery("SELECT * FROM " + TABLE_SCORES, null);
         if (res != null){
             res.moveToFirst();
             while (!res.isAfterLast()){
                 int id = res.getInt(res.getColumnIndex(COLUMN_ID));
                 ContentValues cv = new ContentValues();
-                //TODO other columns
                 Log.d("DB", "Merging " + id);
-                int completed =  res.getInt(res.getColumnIndex(COLUMN_COMPLETED));
-                if (completed > 0){
+                Cursor old = db.rawQuery("SELECT * FROM " + TABLE_SCORES + " WHERE " + COLUMN_ID + "=" + id, null);
+                if (old.getCount() == 1){
+                    old.moveToFirst();
+                    int completed =  res.getInt(res.getColumnIndex(COLUMN_COMPLETED));
+                    if (completed > 0){
+                        cv.put(COLUMN_COMPLETED, res.getInt(res.getColumnIndex(COLUMN_COMPLETED)));
+                    }
+                    int bestTime = res.getInt(res.getColumnIndex(COLUMN_BEST_TIME));
+                    if (bestTime != -1){
+                        int oldTime = old.getInt(old.getColumnIndex(COLUMN_BEST_TIME));
+                        if (oldTime > bestTime || oldTime == -1){
+                            cv.put(COLUMN_BEST_TIME, bestTime);
+                        }
+                    }
+                    int bestMoves = res.getInt(res.getColumnIndex(COLUMN_BEST_MOVES));
+                    if (bestMoves != -1){
+                        int oldMoves = old.getInt(old.getColumnIndex(COLUMN_BEST_MOVES));
+                        if (oldMoves > bestMoves || oldMoves == -1){
+                            cv.put(COLUMN_BEST_MOVES, bestMoves);
+                        }
+                    }
+                    int oldOptimalMoves = old.getInt(old.getColumnIndex(COLUMN_OPTIMAL_MOVES));
+                    int newOptimalMoves = res.getInt(res.getColumnIndex(COLUMN_OPTIMAL_MOVES));
+                    if (oldOptimalMoves == -1 && newOptimalMoves != -1){
+                        cv.put(COLUMN_OPTIMAL_MOVES, newOptimalMoves);
+                    }
+                    if (cv.size() > 0){
+                        db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+                    }
+                } else {
+                    cv.put(COLUMN_ID, id);
                     cv.put(COLUMN_COMPLETED, res.getInt(res.getColumnIndex(COLUMN_COMPLETED)));
-                }
-                if (cv.size() > 0){
-                    db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+                    cv.put(COLUMN_BEST_TIME, res.getInt(res.getColumnIndex(COLUMN_BEST_TIME)));
+                    cv.put(COLUMN_BEST_MOVES, res.getInt(res.getColumnIndex(COLUMN_BEST_MOVES)));
+                    cv.put(COLUMN_OPTIMAL_MOVES, res.getInt(res.getColumnIndex(COLUMN_OPTIMAL_MOVES)));
+                    db.insert(TABLE_SCORES, null, cv);
                 }
                 res.moveToNext();
             }
         }
         res.close();
         //TODO other tables
-        backupdb.close();
+        backupDB.close();
         db.close();
         context.getDatabasePath(BackUpHandler.BACKUP_NAME).delete();
         Toast.makeText(context, "Transfer complete", Toast.LENGTH_LONG).show();
@@ -524,8 +606,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
         }
 
         @Override
-        public void onCreate(SQLiteDatabase db) {
-        }
+        public void onCreate(SQLiteDatabase db) {}
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int i, int i1) {

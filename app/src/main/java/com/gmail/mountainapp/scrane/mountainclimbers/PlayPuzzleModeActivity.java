@@ -1,11 +1,14 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
+
+import java.util.concurrent.ExecutionException;
 
 public class PlayPuzzleModeActivity extends PlayGameActivity {
 
@@ -43,6 +46,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         } else {
             MountainView.victoryMessage = "YOU WIN!";
         }
+        Log.d("STARS", MountainView.victoryMessage);
         mountainView.invalidate();
         if (shouldUpdateAchievements){
             AchievementsClient client = Games.getAchievementsClient(PlayPuzzleModeActivity.this, account);
@@ -67,12 +71,14 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
                 movesText.setText("Moves: " + game.getMovesTaken());
             }
         });
-        new Thread(new Runnable() {
-            public void run() {
-                int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
-                optimalMoves = db.getOptimalMoves(db.getId(packPos, levelPos), PlayPuzzleModeActivity.this);
-            }
-        }).start();
+        int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
+        try {
+            optimalMoves = db.getOptimalMoves(db.getId(packPos, levelPos), PlayPuzzleModeActivity.this).get();
+        } catch (ExecutionException e){
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

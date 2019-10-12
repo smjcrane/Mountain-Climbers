@@ -104,7 +104,7 @@ public class Game {
     }
 
     protected void updateVictory(){
-        if (climbers.size() == 1){
+        if (climbers.size() == 1 && !victory){
             victory = true;
             callOnVictoryListener();
         }
@@ -170,9 +170,6 @@ public class Game {
                 moving = Moving.NONE;
                 movingTimer.cancel();
                 updateVictory();
-                if (victory) {
-                    victoryListener.onVictory();
-                }
             }
             moved = true;
         }

@@ -200,9 +200,6 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
 
             while(game.removeClimbers() != null){}
             game.updateVictory();
-            if (game.victory){
-                game.callOnVictoryListener();
-            }
 
             new Thread(new Runnable() {
                 public void run() {
