@@ -591,7 +591,42 @@ class DataBaseHandler extends SQLiteOpenHelper {
             }
         }
         res.close();
-        //TODO other tables
+        res = backupDB.rawQuery("SELECT * FROM " + TABLE_TUTORIAL, null);
+        if (res != null) {
+            res.moveToFirst();
+            while (!res.isAfterLast()) {
+                int id = res.getInt(res.getColumnIndex(COLUMN_ID));
+                ContentValues cv = new ContentValues();
+                Log.d("DB", "Merging " + id);
+                int completed =  res.getInt(res.getColumnIndex(COLUMN_COMPLETED));
+                if (completed > 0){
+                    cv.put(COLUMN_COMPLETED, res.getInt(res.getColumnIndex(COLUMN_COMPLETED)));
+                }
+                if (cv.size() > 0){
+                    db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+                }
+                res.moveToNext();
+            }
+        }
+        res.close();
+        res = backupDB.rawQuery("SELECT * FROM " + TABLE_ACHIEVEMENTS, null);
+        if (res != null) {
+            res.moveToFirst();
+            while (!res.isAfterLast()) {
+                int id = res.getInt(res.getColumnIndex(COLUMN_ID));
+                ContentValues cv = new ContentValues();
+                Log.d("DB", "Merging " + id);
+                int completed =  res.getInt(res.getColumnIndex(COLUMN_COMPLETED));
+                if (completed > 0){
+                    cv.put(COLUMN_COMPLETED, res.getInt(res.getColumnIndex(COLUMN_COMPLETED)));
+                }
+                if (cv.size() > 0){
+                    db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+                }
+                res.moveToNext();
+            }
+        }
+        res.close();
         backupDB.close();
         db.close();
         context.getDatabasePath(BackUpHandler.BACKUP_NAME).delete();
