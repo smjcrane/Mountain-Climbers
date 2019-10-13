@@ -65,35 +65,36 @@ public class MainActivity extends SignedInActivity {
 
                 int packPos = 0;
                 int levelPos = 0;
-                int length = Levels.packs[packPos].getLength();
-                Levels.Pack pack;
+                Levels.Pack pack = Levels.packs[packPos];
 
                 DataBaseHandler db = new DataBaseHandler(MainActivity.this);
                 boolean isCompleted = db.isCompletedTutorial(0);
                 boolean goToTutorial = true;
-                while (isCompleted){
+                boolean stop = false;
+                while (!stop) {
                     pack = Levels.packs[packPos];
-                    if (goToTutorial){
+                    if (goToTutorial && pack.getNumTutorials() > 0){
+                        levelPos = 0;
+                        while (db.isCompletedTutorial(db.getId(packPos, levelPos)) && levelPos < pack.getNumTutorials()){
+                            levelPos++;
+                        }
                         if (levelPos == pack.getNumTutorials()){
                             goToTutorial = false;
-                            levelPos = 0;
                         } else {
-                            levelPos++;
+                            stop = true;
                         }
-                        isCompleted = db.isCompletedTutorial(db.getId(packPos, levelPos));
                     } else {
-                        if (levelPos == length - 1) {
-                            packPos++;
-                            length = Levels.packs[packPos].getLength();
-                            levelPos = 0;
+                        levelPos = db.howManyCompletedInPack(packPos);
+                        if (levelPos == pack.getLength()){
                             goToTutorial = true;
                         } else {
-                            levelPos++;
+                            stop = true;
                         }
-                        isCompleted = db.isCompleted(db.getId(packPos, levelPos));
+                    }
+                    if (packPos == Levels.packs.length){
+                        stop = true;
                     }
                 }
-
                 editor.putInt(getString(R.string.LEVELPOS), levelPos);
                 editor.putInt(getString(R.string.PACKPOS), packPos);
                 startActivity(selectPack);

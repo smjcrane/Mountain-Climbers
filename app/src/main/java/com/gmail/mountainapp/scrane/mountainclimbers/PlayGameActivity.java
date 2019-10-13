@@ -248,6 +248,10 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
 
     @Override
     public void onBackPressed() {
+        if (game.victory){
+            finish();
+            return;
+        }
         mountainView.cancelHint();
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.are_you_sure_you_want_to_leave, null);

@@ -227,6 +227,10 @@ public class TutorialActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (game.victory){
+            finish();
+            return;
+        }
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.are_you_sure_you_want_to_leave, null);
         Button yes = dialogView.findViewById(R.id.leaveYes);
