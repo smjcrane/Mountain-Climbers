@@ -58,7 +58,7 @@ public class LevelSelectActivity extends AppCompatActivity {
                     editor.putInt(getString(R.string.LEVELPOS), position);
                     editor.apply();
                     startActivity(tutorial);
-                } else {
+                } else if (position < pack.getNumTutorials() + pack.getLength()){
                     int levelPos = position - pack.getNumTutorials();
                     Log.d("LVL", "you clicked on " + levelPos);
                     if (!db.isLocked(db.getId(packpos, levelPos))) {

@@ -1,6 +1,8 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.Toast;
@@ -10,6 +12,10 @@ import androidx.core.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class Game {
 
@@ -20,12 +26,12 @@ public class Game {
     boolean victory;
     Moving moving;
     private OnVictoryListener victoryListener;
-    private Solver solver;
+    private Future<Solver> solver;
     private int movesTaken;
     private OnGo onGo;
     private CountUpTimer movingTimer;
 
-    public Game(Mountain mountain){
+    public Game(final Mountain mountain){
         if (speed < 1){
             speed = 1;
         }
@@ -56,13 +62,12 @@ public class Game {
     }
 
     public void setUpSolver(){
-        if (solver == null || solver.numClimbers != climbers.size()){
-            solver = new Solver(mountain, climbers.size());
-        }
-    }
-
-    public void saveMoves(DataBaseHandler db, int id, int[] start){
-        db.setOptimalMoves(id, solver.solve(start).size());
+        solver = Executors.newSingleThreadExecutor().submit(new Callable<Solver>() {
+            @Override
+            public Solver call(){
+                return new Solver(mountain, climbers.size());
+            }
+        });
     }
 
     public void setOnGo(OnGo onGo){
@@ -184,14 +189,22 @@ public class Game {
         return positions;
     }
 
-    public Solver.Move getHint(Context context){
-        if (solver == null || solver.numClimbers != climbers.size()){
+    public Future<Solver.Move> getHint(Context context){
+        if (solver == null || !solver.isDone()){
             if (climbers.size() >= 5){
-                Toast.makeText(context, "Calculating...", Toast.LENGTH_LONG).show();
+                Log.d("GAME", "Lots of climbers");
+                Toast.makeText(context, "Calculating...", Toast.LENGTH_SHORT).show();
             }
-            solver = new Solver(mountain, climbers.size());
+            if (solver == null){
+                setUpSolver();
+            }
         }
-        return solver.solve(getPositions()).get(0);
+        return Executors.newSingleThreadExecutor().submit(new Callable<Solver.Move>() {
+            @Override
+            public Solver.Move call() throws Exception {
+                return solver.get().solve(getPositions()).get(0);
+            }
+        });
     }
 
     public enum Moving{

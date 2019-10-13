@@ -18,6 +18,7 @@ public class TutorialMountainView extends MountainView {
     private boolean actionInProgress;
     protected TextPaint textHintPaint;
     TutorialGame game;
+    private Solver.Move hint;
 
     public TutorialMountainView(Context context, AttributeSet attrs) {
         super(context, attrs);

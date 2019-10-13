@@ -30,6 +30,8 @@ import java.util.Map;
 import java.lang.Math;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class MountainView extends View {
 
@@ -40,7 +42,7 @@ public class MountainView extends View {
     public static String victoryMessage = "!";
     protected Paint mountainPaint, victoryTextPaint;
     private ColorFilter hintFilter;
-    protected Solver.Move hint;
+    protected Future<Solver.Move> hint;
     private boolean hintFlashOn;
     protected Map<MountainClimber, PorterDuffColorFilter> climberFilters;
     protected Map<MountainClimber, PorterDuffColorFilter> arrowFilters;
@@ -103,6 +105,11 @@ public class MountainView extends View {
         clickable = true;
     }
 
+    public void cancelHint(){
+        hintTimer.cancel();
+        this.hintFlashOn = false;
+    }
+
     public void addClimber(MountainClimber climber){
         int i = new ArrayList<>(colorsAvailable).get(random.nextInt(colorsAvailable.size()));
         game.climbers.add(climber);
@@ -145,9 +152,9 @@ public class MountainView extends View {
 
     public void showHint(){
         if (hint == null){
-            hint = game.getHint(context);
             hintFlashOn = true;
             hintTimer.start();
+            hint = game.getHint(context);
             invalidate();
         }
     }
@@ -190,13 +197,18 @@ public class MountainView extends View {
     }
 
     protected void drawHint(Canvas canvas){
-        if (hint == null || !hintFlashOn){
+        if (hint == null || !hintFlashOn || !hint.isDone()){
             return;
         }
-        Log.d("MVIEW", "Drawing hint");
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - PADDING - PADDING_TOP;
-        MountainClimber.Direction[] directions = hint.getDirections();
+        MountainClimber.Direction[] directions;
+        try {
+            directions = hint.get().getDirections();
+        } catch (InterruptedException| ExecutionException e){
+            e.printStackTrace();
+            return;
+        }
         for (int i = 0; i < game.climbers.size(); i++) {
             MountainClimber climber = game.climbers.get(i);
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;

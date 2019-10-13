@@ -47,11 +47,13 @@ public class PackSelectActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent selectLevel = new Intent();
-                selectLevel.setClass(PackSelectActivity.this, LevelSelectActivity.class);
-                editor.putInt(getString(R.string.PACKPOS), position);
-                editor.apply();
-                startActivity(selectLevel);
+                if (position < Levels.packs.length){
+                    Intent selectLevel = new Intent();
+                    selectLevel.setClass(PackSelectActivity.this, LevelSelectActivity.class);
+                    editor.putInt(getString(R.string.PACKPOS), position);
+                    editor.apply();
+                    startActivity(selectLevel);
+                }
             }
         });
     }

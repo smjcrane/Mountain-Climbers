@@ -105,13 +105,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
                 if (game.victory || game.moving != Game.Moving.NONE){
                     return;
                 }
-                new Thread(new Runnable() {
-                    public void run() {
-                        Solver.Move hint = game.getHint(PlayGameActivity.this);
-                        Log.d("MTN", hint.toString());
-                        mountainView.showHint();
-                    }
-                }).start();
+                mountainView.showHint();
             }
         });
 
@@ -200,19 +194,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
 
             while(game.removeClimbers() != null){}
             game.updateVictory();
-
-            new Thread(new Runnable() {
-                public void run() {
-                    game.setUpSolver();
-                    if (savedInstanceState == null){
-                        int[] start = new int[climberString.length];
-                        for (int i = 0; i < climberString.length; i++){
-                            start[i] = Integer.parseInt(climberString[i]);
-                        }
-                        game.saveMoves(db, db.getId(packPos, levelPos), start);
-                    }
-                }
-            }).start();
+            game.setUpSolver();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -266,6 +248,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
 
     @Override
     public void onBackPressed() {
+        mountainView.cancelHint();
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.are_you_sure_you_want_to_leave, null);
         Button yes = dialogView.findViewById(R.id.leaveYes);

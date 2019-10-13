@@ -100,7 +100,6 @@ public class Solver {
         HashSet<Vertex> vertices = new HashSet<> ();
 
         for (Integer x1 : turningHeights){
-            Log.d("SOLVE", "x " + x1);
             for (Vertex v : getAllVerticesAtHeight(x1)){
                 boolean good = false;
                 for (int i = 0; i < numClimbers; i++){
@@ -144,7 +143,6 @@ public class Solver {
     }
 
     private List<List<Integer>> getIndices(int numPoints, int numC) {
-        Log.d("SOLVE", "Getting indices for " + numC + " climbers and " + numPoints + "points");
         Pair<Integer, Integer> climbersAndPoints = new Pair<>(numC, numPoints);
         List<List<Integer>> indices;
         if (!allIndices.containsKey(climbersAndPoints)) {
@@ -154,7 +152,6 @@ public class Solver {
                     List<Integer> index = new ArrayList<>();
                     index.add(i);
                     indices.add(index);
-                    Log.d("SOLVE", "new index " + index.size());
                 }
             } else {
                 List<List<Integer>> indicesNMinus1 = getIndices(numPoints, numC - 1);
@@ -163,7 +160,6 @@ public class Solver {
                         List<Integer> newIndex = new ArrayList<>(index);
                         newIndex.add(j);
                         indices.add(newIndex);
-                        Log.d("SOLVE", "new index " + newIndex.size()  + " new coord " + j);
                     }
                 }
             }
@@ -178,7 +174,6 @@ public class Solver {
         List<Integer> possibleXs = getAllX(height);
         List<Vertex> vertices = new ArrayList<>();
         for (List<Integer> index : getIndices(possibleXs.size(), numClimbers)){
-            Log.d("SOLVE", "finding vertices, i have " + numClimbers + " climbers and " + index.size() + " coords");
             int[] coords = new int[numClimbers];
             for (int i = 0; i < numClimbers; i++){
                 coords[i] = possibleXs.get(index.get(i));
@@ -373,7 +368,6 @@ public class Solver {
                                 exploring.add(neighbour);
                             }
                         } else {
-                            Log.d("SOLVE", "Already explored that one");
                         }
                     }
                 }

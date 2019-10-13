@@ -9,6 +9,7 @@ import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class PlayPuzzleModeActivity extends PlayGameActivity {
 
@@ -16,7 +17,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
     public static final String[] MESSAGES = new String[] {"", "YOU WIN!", "GREAT!", "PERFECT!"};
 
     private TextView movesText;
-    private int optimalMoves;
+    private Future<Integer> optimalMoves;
 
     @Override
     protected void setup(){
@@ -36,15 +37,18 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         if (moves < previousBest || previousBest == -1) {
             db.setBestMoves(levelDBID, moves);
         }
-        if (optimalMoves != -1){
-            int stars = LevelListAdapter.howManyStars(moves, optimalMoves);
-            if (moves < previousBest || previousBest == -1){
-                MountainView.victoryMessage = MESSAGES[stars];
-            } else {
-                MountainView.victoryMessage = "YOU WIN!";
+        MountainView.victoryMessage = "YOU WIN!";
+        try {
+            if (optimalMoves.isDone() && optimalMoves.get() != -1) {
+                int stars = LevelListAdapter.howManyStars(moves, optimalMoves.get());
+                if (moves < previousBest || previousBest == -1) {
+                    MountainView.victoryMessage = MESSAGES[stars];
+                }
             }
-        } else {
-            MountainView.victoryMessage = "YOU WIN!";
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         Log.d("STARS", MountainView.victoryMessage);
         mountainView.invalidate();
@@ -58,7 +62,6 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
     protected void loadLevel(Bundle savedInstanceState){
         super.loadLevel(savedInstanceState);
         buttonHint.setVisibility(View.INVISIBLE);
-        optimalMoves = -1;
         int moves = 0;
         if (savedInstanceState != null){
             moves = savedInstanceState.getInt(SAVED_MOVES);
@@ -72,18 +75,13 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
             }
         });
         int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
-        try {
-            optimalMoves = db.getOptimalMoves(db.getId(packPos, levelPos), PlayPuzzleModeActivity.this).get();
-        } catch (ExecutionException e){
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        optimalMoves = db.getOptimalMoves(db.getId(packPos, levelPos), PlayPuzzleModeActivity.this);
     }
 
     @Override
     protected void onSaveInstanceState (Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_MOVES, game.getMovesTaken());
+        optimalMoves.cancel(true);
     }
 }
