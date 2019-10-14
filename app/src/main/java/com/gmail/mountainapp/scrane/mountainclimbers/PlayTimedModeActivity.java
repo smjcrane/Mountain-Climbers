@@ -38,9 +38,9 @@ public class PlayTimedModeActivity extends PlayGameActivity {
         int previousBest = db.getBestTimeSeconds(levelDBID);
         if (seconds < previousBest || previousBest == -1){
             db.setBestTimeSeconds(levelDBID, seconds);
-            MountainView.victoryMessage = "NEW RECORD!";
+            MountainView.victoryMessage = getString(R.string.newrecord);
         } else {
-            MountainView.victoryMessage = "YOU WIN!";
+            MountainView.victoryMessage = getString(R.string.youwin);
         }
         if (shouldUpdateAchievements){
             AchievementsClient client = Games.getAchievementsClient(PlayTimedModeActivity.this, account);

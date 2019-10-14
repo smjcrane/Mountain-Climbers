@@ -65,10 +65,9 @@ public class MainActivity extends SignedInActivity {
 
                 int packPos = 0;
                 int levelPos = 0;
-                Levels.Pack pack = Levels.packs[packPos];
+                Levels.Pack pack;
 
                 DataBaseHandler db = new DataBaseHandler(MainActivity.this);
-                boolean isCompleted = db.isCompletedTutorial(0);
                 boolean goToTutorial = true;
                 boolean stop = false;
                 while (!stop) {
@@ -80,19 +79,29 @@ public class MainActivity extends SignedInActivity {
                         }
                         if (levelPos == pack.getNumTutorials()){
                             goToTutorial = false;
+                            levelPos = 0;
                         } else {
                             stop = true;
                         }
+                    } else if (goToTutorial && pack.getNumTutorials() == 0) {
+                        goToTutorial = false;
                     } else {
-                        levelPos = db.howManyCompletedInPack(packPos);
+                        levelPos = 0;
+                        while(db.isCompleted(db.getId(packPos, levelPos)) && levelPos < pack.getLength()){
+                            levelPos++;
+                        }
                         if (levelPos == pack.getLength()){
                             goToTutorial = true;
+                            levelPos = 0;
+                            packPos++;
                         } else {
                             stop = true;
                         }
                     }
                     if (packPos == Levels.packs.length){
                         stop = true;
+                        levelPos = 0;
+                        packPos = 0;
                     }
                 }
                 editor.putInt(getString(R.string.LEVELPOS), levelPos);
@@ -171,7 +180,7 @@ public class MainActivity extends SignedInActivity {
     @Override
     protected void onAccountChanged(){
         if (account == null){
-            userNameText.setText("Sign in");
+            userNameText.setText(getString(R.string.sign_in));
             userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
             return;
         }

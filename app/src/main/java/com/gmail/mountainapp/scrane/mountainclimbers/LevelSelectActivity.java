@@ -40,7 +40,7 @@ public class LevelSelectActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
         TextView titleText = findViewById(R.id.listHeader);
-        titleText.setText(Levels.packs[packpos].getName().toUpperCase());
+        titleText.setText(Levels.packs[packpos].getName(this).toUpperCase());
 
         View footer = new ImageView(this);
         footer.setMinimumHeight(500);

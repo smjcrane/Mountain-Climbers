@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
 public class PlayPuzzleModeActivity extends PlayGameActivity {
 
     public static final String SAVED_MOVES = "savedmoves";
-    public static final String[] MESSAGES = new String[] {"", "YOU WIN!", "GREAT!", "PERFECT!"};
+    public static final int[] MESSAGES = new int[] {0, R.string.youwin, R.string.stars2, R.string.stars3};
 
     private TextView movesText;
     private Future<Integer> optimalMoves;
@@ -42,7 +42,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
             if (optimalMoves.isDone() && optimalMoves.get() != -1) {
                 int stars = LevelListAdapter.howManyStars(moves, optimalMoves.get());
                 if (moves < previousBest || previousBest == -1) {
-                    MountainView.victoryMessage = MESSAGES[stars];
+                    MountainView.victoryMessage = PlayPuzzleModeActivity.this.getString(MESSAGES[stars]);
                 }
             }
         } catch (ExecutionException e) {
@@ -71,7 +71,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         game.setOnGo(new Game.OnGo() {
             @Override
             public void onGo() {
-                movesText.setText("Moves: " + game.getMovesTaken());
+                movesText.setText(getString(R.string.moves) + ": " + game.getMovesTaken());
             }
         });
         int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
@@ -82,6 +82,5 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
     protected void onSaveInstanceState (Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_MOVES, game.getMovesTaken());
-        optimalMoves.cancel(true);
     }
 }

@@ -94,7 +94,7 @@ public abstract class SignedInActivity extends AppCompatActivity {
                 editor.putBoolean(getString(R.string.SHOULD_SIGN_IN), false);
                 editor.commit();
                 onAccountChanged();
-                Toast.makeText(SignedInActivity.this, "Sign in failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(SignedInActivity.this, getString(R.string.sign_in_failed), Toast.LENGTH_LONG).show();
                 Log.d("SIGNIN",
                         "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + result.getStatus().getStatusMessage());
             }

@@ -35,7 +35,7 @@ public class PackListAdapter extends ArrayAdapter<Integer> {
 
         Levels.Pack pack = Levels.packs[position];
 
-        String packName = pack.getName();
+        String packName = pack.getName(context);
 
         TextView packNameText = v.findViewById(R.id.listItemPackText);
 

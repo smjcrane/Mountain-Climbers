@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="play">Joue</string>
+    <string name="speed">Vitesse</string>
+    <string name="sign_out">Déconnecter</string>
+    <string name="timed_mode">Mode chronométré</string>
+    <string name="puzzle_mode">Mode puzzle</string>
+    <string name="settings">Réglage</string>
+    <string name="select_pack">CHOISIR UN PAQUET</string>
+    <string name="profile">Mon Compte</string>
+    <string name="nobody">Personne</string>
+    <string name="levels">Niveaux</string>
+    <string name="landscape_only">Paysage</string>
+    <string name="go">ALLEZ</string>
+    <string name="done">Fini</string>
+    <string name="climbers">Grimpeurs</string>
+    <string name="app_name">Grimpeurs des Montagnes</string>
+    <string name="backup_restore">Sauvegarder / Restaurer</string>
+    <string name="achievements">Accomplissements</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
+    <string name="are_you_sure_leave">Êtes-vous sûr de vouloir partir?</string>
+    <string name="sign_in">Connecter</string>
+    <string name="level">Niveau</string>
+    <string name="tutorial">Instruction</string>
+    <string name="youwin">VOUS GAGNEZ!</string>
+    <string name="stars2">CHOUETTE!</string>
+    <string name="stars3">PARFAIT!</string>
+    <string name="moves">Pas</string>
+    <string name="newrecord">Briseur de Record!</string>
+    <string name="not_signed_in">Vous n\'etez pas connect</string>
+    <string name="sign_in_failed">La connexion a échoué</string>
+    <string name="select_backup">Choisir sauvegard</string>
+    <string name="sign_in_for_achieve">Vous devez connector pour voir vos accomplissements</string>
+    <string name="sign_in_for_backup">Vous devez connecter pour sauvegarder vos progrès</string>
+    <string name="error_generic">Une erreur est survenue</string>
+    <string name="error_getting_backup">Une erreur est survenue.  Impossible d\'obtenir le fichier</string>
+    <string name="error_reading_backup">Une erreur est survenue.  Impossible de lire le fichier</string>
+    <string name="error_connecting_gpg">Impossible de connecter au Google</string>
+    <string name="error_connecting_drive">Impossible de connecter au Google</string>
+    <string name="backup_success">Sauvegarde réussie</string>
+    <string name="backup_fail">Une erreur est survenue. Sauvegarde ne réussie pas</string>
+</resources>

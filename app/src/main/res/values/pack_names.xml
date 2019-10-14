@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pack_beginning">In The Beginning</string>
+    <string name="pack_ttw3">Then There Were Three</string>
+    <string name="pack_easy">Easy Pack</string>
+    <string name="pack_hard">Hard Pack</string>
+    <string name="pack_gen">Computer Generated Pack</string>
+    <string name="pack_wolf">Wolf Pack</string>
+    <string name="pack_big">Big Pack</string>
+    <string name="pack_valley">In The Valley</string>
+    <string name="pack_uyt">Pack Up Your Troubles</string>
+</resources>

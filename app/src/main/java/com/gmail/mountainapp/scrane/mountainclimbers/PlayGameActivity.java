@@ -57,7 +57,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
         editor.commit();
         packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
 
-        MountainView.victoryMessage = "YOU WIN!";
+        MountainView.victoryMessage = getString(R.string.youwin);
 
         mountainView = findViewById(R.id.mountainView);
         snowView = findViewById(R.id.snowView);

@@ -1,10 +1,5 @@
 <resources>
     <string name="app_name">Mountain Climbers</string>
-    <string name="SHOULD_SIGN_IN">shouldsignin</string>
-    <string name="PREFERENCES">preferences</string>
-    <string name="SPEED">speed</string>
-    <string name="LANDSCAPE_LOCKED">landscape_locked</string>
-    <string name="CLIMBER_APPEARANCE">climberappearance</string>
     <string name="select_pack">SELECT PACK</string>
     <string name="nobody">Nobody</string>
     <string name="puzzle_mode">Puzzle mode</string>
@@ -20,12 +15,28 @@
     <string name="profile">Profile</string>
     <string name="achievements">Achievements</string>
     <string name="sign_out">Sign Out</string>
-    <string name="backup">Back Up My Progress</string>
-    <string name="SAVED_GAME_ID">savedgameid</string>
-    <string name="restore_from_backup">Restore from backup</string>
-    <string name="MODE">mode</string>
-    <string name="PACKPOS">packpos</string>
-    <string name="LEVELPOS">levelpos</string>
-    <string name="TUTORIAL">tutorial</string>
     <string name="backup_restore">Backup / Restore</string>
+    <string name="are_you_sure_leave">Are you sure you want to leave?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="sign_in">Sign in</string>
+    <string name="level">Level</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="youwin">YOU WIN!</string>
+    <string name="stars2">GREAT!</string>
+    <string name="stars3">PERFECT!</string>
+    <string name="moves">Moves</string>
+    <string name="newrecord">NEW RECORD!</string>
+    <string name="error_reading_backup">Could not read backup</string>
+    <string name="error_getting_backup">Error getting backup file</string>
+    <string name="sign_in_for_achieve">You must sign in to view achievements</string>
+    <string name="error_connecting_gpg">Could not connect to Google Play Games</string>
+    <string name="sign_in_for_backup">You must sign in save your progress</string>
+    <string name="error_connecting_drive">Could not connect to Google Drive</string>
+    <string name="error_generic">An error occurred</string>
+    <string name="select_backup">Select backup</string>
+    <string name="backup_success">Backup successful</string>
+    <string name="backup_fail">Something went wrong. Backup unsuccessful</string>
+    <string name="not_signed_in">You are not signed in</string>
+    <string name="sign_in_failed">Sign in failed</string>
 </resources>

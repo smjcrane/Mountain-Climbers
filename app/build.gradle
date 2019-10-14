@@ -6,7 +6,7 @@ android {
         applicationId "com.gmail.mountainapp.scrane.mountainclimbers"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 10
+        versionCode 11
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,6 +35,7 @@ android {
                             'src/main/res/levels/wolf_pack',
                             'src/main/res/levels/big_pack',
                             'src/main/res/levels/inv',
+                            'src/main/res/levels/pack_up_your_troubles',
                             'src/main/res'
                     ]
         }

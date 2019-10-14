@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="SHOULD_SIGN_IN" translatable="false">shouldsignin</string>
+    <string name="PREFERENCES" translatable="false">preferences</string>
+    <string name="SPEED" translatable="false">speed</string>
+    <string name="LANDSCAPE_LOCKED" translatable="false">landscape_locked</string>
+    <string name="CLIMBER_APPEARANCE" translatable="false">climberappearance</string>
+    <string name="SAVED_GAME_ID" translatable="false">savedgameid</string>
+    <string name="MODE" translatable="false">mode</string>
+    <string name="PACKPOS" translatable="false">packpos</string>
+    <string name="LEVELPOS" translatable="false">levelpos</string>
+    <string name="TUTORIAL" translatable="false">tutorial</string>
+</resources>

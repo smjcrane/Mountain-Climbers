@@ -65,7 +65,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
 
         String displayName;
         if (position < pack.getNumTutorials()){
-            displayName = "Tutorial " + (position + 1);
+            displayName = context.getString(R.string.tutorial) + " " + (position + 1);
             if (db.isCompletedTutorial(db.getId(packPos, position))){
                 completedImage.setImageDrawable(completedDrawable);
             } else {
@@ -74,7 +74,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
             starLayout.setVisibility(View.INVISIBLE);
             timeText.setText("");
         } else {
-            displayName = "Level " + (position - pack.getNumTutorials() + 1);
+            displayName = context.getString(R.string.level) + " " + (position - pack.getNumTutorials() + 1);
             int levelPos = position - pack.getNumTutorials();
             final int levelID = db.getId(packPos, levelPos);
             switch (mode){

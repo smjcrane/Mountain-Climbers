@@ -68,11 +68,11 @@ public class ActivityViewProfile extends SignedInActivity {
             @Override
             public void onClick(View v) {
                 if (account == null || !shouldSignIn) {
-                    Toast.makeText(ActivityViewProfile.this, "You must sign in to view acheivements", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.sign_in_for_achieve), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (achievementsClient == null) {
-                    Toast.makeText(ActivityViewProfile.this, "Could not connect to Google Play Games", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.error_connecting_gpg), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 acheivementText.setOnClickListener(new View.OnClickListener() {
@@ -95,20 +95,20 @@ public class ActivityViewProfile extends SignedInActivity {
             @Override
             public void onClick(View v) {
                 if (account == null || !shouldSignIn) {
-                    Toast.makeText(ActivityViewProfile.this, "You must sign in save your progress", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.sign_in_for_backup), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (snapshotsClient == null) {
-                    Toast.makeText(ActivityViewProfile.this, "Could not connect to Google Drive", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.error_connecting_drive), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Task<Intent> task = snapshotsClient.getSelectSnapshotIntent("Select backup", true, true, 10);
+                Task<Intent> task = snapshotsClient.getSelectSnapshotIntent(getString(R.string.select_backup), true, true, 10);
                 task.addOnCompleteListener(new OnCompleteListener<Intent>() {
                     @Override
                     public void onComplete(@NonNull Task<Intent> task) {
                         Intent intent = task.getResult();
                         if (intent == null){
-                            Toast.makeText(ActivityViewProfile.this, "An error occurred", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityViewProfile.this, getString(R.string.error_generic), Toast.LENGTH_SHORT).show();
                         } else {
                             startActivityForResult(intent, RC_RESTORE);
                         }
@@ -161,9 +161,9 @@ public class ActivityViewProfile extends SignedInActivity {
                             .setDescription(new Date().toString())
                             .build();
                     snapshotsClient.commitAndClose(snapshot, metadataChange);
-                    Toast.makeText(ActivityViewProfile.this, "Backup successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.backup_success), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ActivityViewProfile.this, "Something went wrong. Backup unsuccessful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.backup_fail), Toast.LENGTH_SHORT).show();
                     Log.d("PROFILE", task.getException() == null ? "null" : "except " + task.getException().toString());
                 }
 
@@ -174,12 +174,12 @@ public class ActivityViewProfile extends SignedInActivity {
     @Override
     protected void onAccountChanged(){
         if (account == null){
-            userInfoText.setText("You are not signed in");
-            signOutButton.setText("Sign in");
+            userInfoText.setText(getString(R.string.not_signed_in));
+            signOutButton.setText(getString(R.string.sign_in));
             return;
         }
         userInfoText.setText(account.getDisplayName());
-        signOutButton.setText("Sign out");
+        signOutButton.setText(getString(R.string.sign_out));
         DataBaseHandler db = new DataBaseHandler(this);
         achievementsClient = Games.getAchievementsClient(this, account);
         achievementsClient.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
@@ -219,7 +219,7 @@ public class ActivityViewProfile extends SignedInActivity {
                         if (task.isSuccessful()){
                             SnapshotsClient.DataOrConflict<Snapshot> result = task.getResult();
                             if (result.isConflict()){
-                                Toast.makeText(ActivityViewProfile.this, "Error getting backup file", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
                             } else {
                                 try{
                                     byte[] bytes = result.getData().getSnapshotContents().readFully();
@@ -228,11 +228,11 @@ public class ActivityViewProfile extends SignedInActivity {
                                     db.close();
                                 } catch (IOException e) {
                                     e.printStackTrace();
-                                    Toast.makeText(ActivityViewProfile.this, "Could not read backup", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ActivityViewProfile.this, getString(R.string.error_reading_backup), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } else {
-                            Toast.makeText(ActivityViewProfile.this, "Error getting backup file", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

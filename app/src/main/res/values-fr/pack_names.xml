@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pack_beginning">Au Début</string>
+    <string name="pack_ttw3">Ménage à Trois</string>
+    <string name="pack_easy">Paquet Facil</string>
+    <string name="pack_hard">Paquet Difficil</string>
+    <string name="pack_gen">Paquet Ordinateur</string>
+    <string name="pack_wolf">Meute de loups</string>
+    <string name="pack_big">Paquet Gros</string>
+    <string name="pack_valley">Dans la Vallée</string>
+    <string name="pack_uyt">Paquet de Biscuit</string>
+</resources>

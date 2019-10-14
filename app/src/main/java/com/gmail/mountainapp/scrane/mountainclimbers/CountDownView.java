@@ -64,7 +64,7 @@ public class CountDownView extends View {
             return;
         }
         Rect rect = new Rect();
-        String text = timeLeft > 1000? Integer.toString((int) timeLeft / 1000) : "Go!";
+        String text = timeLeft > 1000? Integer.toString((int) timeLeft / 1000) : context.getString(R.string.go) + "!";
         int textSize = getWidth() * (int) (timeLeft % 1000) / 500;
         if (textSize < 400){
             textSize = 400;
@@ -77,6 +77,6 @@ public class CountDownView extends View {
     }
 
     public interface OnCounted {
-        public void onCounted();
+        void onCounted();
     }
 }
