@@ -80,9 +80,9 @@ public final class Levels {
                     R.raw.inv011, R.raw.inv012, R.raw.inv013, R.raw.inv014, R.raw.inv015,
                     R.raw.inv016, R.raw.inv017, R.raw.inv018, R.raw.inv019, R.raw.inv020
             }),
-            new Pack(R.string.pack_uyt, new Integer[] {
-                    R.raw.puyt_01
-            })
+            //new Pack(R.string.pack_uyt, new Integer[] {
+            //        R.raw.puyt_01, R.raw.puyt_02, R.raw.puyt_03, R.raw.puyt_04, R.raw.puyt_05
+            //})
     };
 
     public static int totalLevels(){

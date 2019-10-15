@@ -33,8 +33,6 @@ import java.net.URL;
 
 public class MainActivity extends SignedInActivity {
 
-    private static int RC_SIGN_IN = 0;
-
     private Button playButton, levelSelectButton, timedButton, puzzleButton;
     private ImageView settingsButton;
     private TextView userNameText;

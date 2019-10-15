@@ -6,7 +6,7 @@ android {
         applicationId "com.gmail.mountainapp.scrane.mountainclimbers"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 11
+        versionCode 12
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

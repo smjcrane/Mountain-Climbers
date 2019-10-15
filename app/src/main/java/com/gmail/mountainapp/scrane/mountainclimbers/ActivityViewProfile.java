@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -208,36 +209,41 @@ public class ActivityViewProfile extends SignedInActivity {
         }
         if (requestCode == RC_RESTORE && resultCode == RESULT_OK) {
             Log.d("PROFILE", "Got result from 'Restore'");
-            if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA)) {
-                // Load a snapshot.
-                SnapshotMetadata snapshotMetadata =
-                        intent.getParcelableExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA);
-                // Load the game data from the Snapshot
-                snapshotsClient.open(snapshotMetadata).addOnCompleteListener(new OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
-                    @Override
-                    public void onComplete(@NonNull Task<SnapshotsClient.DataOrConflict<Snapshot>> task) {
-                        if (task.isSuccessful()){
-                            SnapshotsClient.DataOrConflict<Snapshot> result = task.getResult();
-                            if (result.isConflict()){
-                                Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
-                            } else {
-                                try{
-                                    byte[] bytes = result.getData().getSnapshotContents().readFully();
-                                    DataBaseHandler db = new DataBaseHandler(ActivityViewProfile.this);
-                                    db.mergeWithBytes(ActivityViewProfile.this, bytes);
-                                    db.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(ActivityViewProfile.this, getString(R.string.error_reading_backup), Toast.LENGTH_SHORT).show();
+            try {
+                if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA)) {
+                    // Load a snapshot.
+                    SnapshotMetadata snapshotMetadata =
+                            intent.getParcelableExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA);
+                    // Load the game data from the Snapshot
+                    snapshotsClient.open(snapshotMetadata).addOnCompleteListener(new OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
+                        @Override
+                        public void onComplete(@NonNull Task<SnapshotsClient.DataOrConflict<Snapshot>> task) {
+                            if (task.isSuccessful()) {
+                                SnapshotsClient.DataOrConflict<Snapshot> result = task.getResult();
+                                if (result.isConflict()) {
+                                    Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    try {
+                                        byte[] bytes = result.getData().getSnapshotContents().readFully();
+                                        DataBaseHandler db = new DataBaseHandler(ActivityViewProfile.this);
+                                        db.mergeWithBytes(ActivityViewProfile.this, bytes);
+                                        db.close();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Toast.makeText(ActivityViewProfile.this, getString(R.string.error_reading_backup), Toast.LENGTH_SHORT).show();
+                                    }
                                 }
+                            } else {
+                                Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
-            } else if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
-                backUpFromDatabase();
+                    });
+                } else if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
+                    backUpFromDatabase();
+                }
+            } catch (BadParcelableException e){
+                e.printStackTrace();
+                Toast.makeText(ActivityViewProfile.this, getString(R.string.error_generic), Toast.LENGTH_SHORT).show();
             }
         } else if (requestCode == RC_BACKUP){
             Log.d("PROFILE", "Got result from 'Backup'");
