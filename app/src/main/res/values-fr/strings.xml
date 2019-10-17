@@ -16,7 +16,7 @@
     <string name="climbers">Grimpeurs</string>
     <string name="app_name">Grimpeurs des Montagnes</string>
     <string name="backup_restore">Sauvegarder / Restaurer</string>
-    <string name="achievements">Accomplissements</string>
+    <string name="achievements">Réussites</string>
     <string name="no">Non</string>
     <string name="yes">Oui</string>
     <string name="are_you_sure_leave">Êtes-vous sûr de vouloir partir?</string>
@@ -31,7 +31,7 @@
     <string name="not_signed_in">Vous n\'etez pas connect</string>
     <string name="sign_in_failed">La connexion a échoué</string>
     <string name="select_backup">Choisir sauvegard</string>
-    <string name="sign_in_for_achieve">Vous devez connector pour voir vos accomplissements</string>
+    <string name="sign_in_for_achieve">Vous devez connector pour voir vos réussites</string>
     <string name="sign_in_for_backup">Vous devez connecter pour sauvegarder vos progrès</string>
     <string name="error_generic">Une erreur est survenue</string>
     <string name="error_getting_backup">Une erreur est survenue.  Impossible d\'obtenir le fichier</string>

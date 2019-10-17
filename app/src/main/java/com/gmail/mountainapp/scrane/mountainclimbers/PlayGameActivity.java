@@ -134,11 +134,11 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
         int levelDBID = db.getId(packPos, levelPos);
         db.markCompleted(levelDBID);
         if (shouldUpdateAchievements){
-            AchievementsClient client = Games.getAchievementsClient(PlayGameActivity.this, account);
-            client.setSteps(getString(Common.packCompletedAchievementIDs[packPos]),
-                    db.howManyCompletedInPack(packPos));
-            client.setSteps(getString(R.string.achievement_master), db.howManyCompleted() * 728 / Levels.totalLevels());
-            client.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
+            //AchievementsClient client = Games.getAchievementsClient(PlayGameActivity.this, account);
+            //client.setSteps(getString(Common.packCompletedAchievementIDs[packPos]),
+            //        db.howManyCompletedInPack(packPos));
+            //client.setSteps(getString(R.string.achievement_master), db.howManyCompleted() * 728 / Levels.totalLevels());
+            //client.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
         }
         db.close();
 

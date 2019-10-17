@@ -55,6 +55,7 @@
         android:id="@+id/mainSettingsButton"
         android:src="@drawable/cog"
         android:tint="@color/skyTextBlue"
+        android:contentDescription="@string/settings"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_margin="15dp"

@@ -10,6 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.gms.games.AchievementsClient;
+import com.google.android.gms.games.Games;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +25,7 @@ import static com.gmail.mountainapp.scrane.mountainclimbers.Common.DIRECTIONS;
 import static com.gmail.mountainapp.scrane.mountainclimbers.PlayGameActivity.SAVED_DIRECTIONS;
 import static com.gmail.mountainapp.scrane.mountainclimbers.PlayGameActivity.SAVED_POSITIONS;
 
-public class TutorialActivity extends AppCompatActivity {
+public class TutorialActivity extends SignedInActivity {
 
     static final String SAVED_INDEX = "savedindex";
 
@@ -191,6 +195,8 @@ public class TutorialActivity extends AppCompatActivity {
                     int packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
                     int levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
                     db.markCompletedTutorial(db.getId(packPos, levelPos));
+                    AchievementsClient client = Games.getAchievementsClient(TutorialActivity.this, account);
+                    client.setSteps(getString(R.string.achievement_learning_the_ropes), db.howManyPerfect());
 
                     if (levelPos < levelIDs.length - 1){
                         buttonNextLevel.setVisibility(View.VISIBLE);

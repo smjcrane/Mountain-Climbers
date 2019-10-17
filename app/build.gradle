@@ -1,12 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+    }
     compileSdkVersion 28
+
     defaultConfig {
         applicationId "com.gmail.mountainapp.scrane.mountainclimbers"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 12
+        versionCode 16
         versionName "1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -43,6 +47,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.apis:google-api-services-androidpublisher:v3-rev103-1.25.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

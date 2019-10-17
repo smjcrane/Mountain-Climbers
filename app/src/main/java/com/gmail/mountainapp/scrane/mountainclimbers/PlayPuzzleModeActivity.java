@@ -54,7 +54,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         mountainView.invalidate();
         if (shouldUpdateAchievements){
             AchievementsClient client = Games.getAchievementsClient(PlayPuzzleModeActivity.this, account);
-            client.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
+            //client.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
         }
     }
 

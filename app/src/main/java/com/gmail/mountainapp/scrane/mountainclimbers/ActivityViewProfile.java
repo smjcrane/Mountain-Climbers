@@ -32,7 +32,7 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.Random;
 
-import static com.gmail.mountainapp.scrane.mountainclimbers.Common.packCompletedAchievementIDs;
+//import static com.gmail.mountainapp.scrane.mountainclimbers.Common.packCompletedAchievementIDs;
 
 public class ActivityViewProfile extends SignedInActivity {
     public static final int RC_ACHIEVEMENT_UI = 1;
@@ -46,6 +46,10 @@ public class ActivityViewProfile extends SignedInActivity {
     private AchievementsClient achievementsClient;
     private SharedPreferences.Editor preferences;
     private SnapshotsClient snapshotsClient;
+
+    OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>> onReceiveBackupListener;
+    OnCompleteListener<Intent> onRestoreCompleteListener;
+    OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>> onBackupCreationCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,64 @@ public class ActivityViewProfile extends SignedInActivity {
                 finish();
             }
         });
+
+        onReceiveBackupListener = new OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
+            @Override
+            public void onComplete(@NonNull Task<SnapshotsClient.DataOrConflict<Snapshot>> task) {
+                if (task.isSuccessful()) {
+                    SnapshotsClient.DataOrConflict<Snapshot> result = task.getResult();
+                    if (result.isConflict()) {
+                        Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
+                    } else {
+                        try {
+                            byte[] bytes = result.getData().getSnapshotContents().readFully();
+                            DataBaseHandler db = new DataBaseHandler(ActivityViewProfile.this);
+                            db.mergeWithBytes(ActivityViewProfile.this, bytes);
+                            db.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ActivityViewProfile.this, getString(R.string.error_reading_backup), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } else {
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+
+        onRestoreCompleteListener = new OnCompleteListener<Intent>() {
+            @Override
+            public void onComplete(@NonNull Task<Intent> task) {
+                Intent intent = task.getResult();
+                if (intent == null){
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.error_generic), Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivityForResult(intent, RC_RESTORE);
+                }
+            }
+        };
+
+        onBackupCreationCompleted = new OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
+            @Override
+            public void onComplete(@NonNull Task<SnapshotsClient.DataOrConflict<Snapshot>> task) {
+                if (task.isSuccessful()){
+                    DataBaseHandler db = new DataBaseHandler(ActivityViewProfile.this);
+                    final byte[] bytes = db.getBytes(ActivityViewProfile.this);
+                    db.close();
+                    Snapshot snapshot = task.getResult().getData();
+                    snapshot.getSnapshotContents().writeBytes(bytes);
+                    SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
+                            .setDescription(new Date().toString())
+                            .build();
+                    snapshotsClient.commitAndClose(snapshot, metadataChange);
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.backup_success), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ActivityViewProfile.this, getString(R.string.backup_fail), Toast.LENGTH_SHORT).show();
+                    Log.d("PROFILE", task.getException() == null ? "null" : "except " + task.getException().toString());
+                }
+
+            }
+        };
 
         acheivementText = findViewById(R.id.achievementText);
         acheivementText.setOnClickListener(new View.OnClickListener() {
@@ -104,17 +166,7 @@ public class ActivityViewProfile extends SignedInActivity {
                     return;
                 }
                 Task<Intent> task = snapshotsClient.getSelectSnapshotIntent(getString(R.string.select_backup), true, true, 10);
-                task.addOnCompleteListener(new OnCompleteListener<Intent>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Intent> task) {
-                        Intent intent = task.getResult();
-                        if (intent == null){
-                            Toast.makeText(ActivityViewProfile.this, getString(R.string.error_generic), Toast.LENGTH_SHORT).show();
-                        } else {
-                            startActivityForResult(intent, RC_RESTORE);
-                        }
-                    }
-                });
+                task.addOnCompleteListener(onRestoreCompleteListener);
             }
         });
 
@@ -141,35 +193,16 @@ public class ActivityViewProfile extends SignedInActivity {
                     shouldSignIn = true;
                     signInWithActivity();
                 }
+                preferences.apply();
             }
         });
     }
 
     private void backUpFromDatabase() {
-        DataBaseHandler db = new DataBaseHandler(ActivityViewProfile.this);
-        final byte[] bytes = db.getBytes(ActivityViewProfile.this);
-        db.close();
         Date date = new Date();
         final String saveName = "Backup-" + date.getTime();
         Task<SnapshotsClient.DataOrConflict<Snapshot>> task = snapshotsClient.open(saveName, true, conflictResolutionPolicy);
-        task.addOnCompleteListener(new OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
-            @Override
-            public void onComplete(@NonNull Task<SnapshotsClient.DataOrConflict<Snapshot>> task) {
-                if (task.isSuccessful()){
-                    Snapshot snapshot = task.getResult().getData();
-                    snapshot.getSnapshotContents().writeBytes(bytes);
-                    SnapshotMetadataChange metadataChange = new SnapshotMetadataChange.Builder()
-                            .setDescription(new Date().toString())
-                            .build();
-                    snapshotsClient.commitAndClose(snapshot, metadataChange);
-                    Toast.makeText(ActivityViewProfile.this, getString(R.string.backup_success), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(ActivityViewProfile.this, getString(R.string.backup_fail), Toast.LENGTH_SHORT).show();
-                    Log.d("PROFILE", task.getException() == null ? "null" : "except " + task.getException().toString());
-                }
-
-            }
-        });
+        task.addOnCompleteListener(onBackupCreationCompleted);
     }
 
     @Override
@@ -183,14 +216,15 @@ public class ActivityViewProfile extends SignedInActivity {
         signOutButton.setText(getString(R.string.sign_out));
         DataBaseHandler db = new DataBaseHandler(this);
         achievementsClient = Games.getAchievementsClient(this, account);
-        achievementsClient.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
-        achievementsClient.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
-        achievementsClient.setSteps(getString(R.string.achievement_speed_demon), db.howManyInUnder10Seconds());
-        achievementsClient.setSteps(getString(R.string.achievement_learn_the_ropes), db.howManyTutorialCompletedInPack(0));
-        for (int i = 0; i < packCompletedAchievementIDs.length; i++){
-            achievementsClient.setSteps(getString(packCompletedAchievementIDs[i]), db.howManyCompletedInPack(i));
-        }
-        achievementsClient.setSteps(getString(R.string.achievement_master), db.howManyLevelsCompleted());
+        //achievementsClient.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
+        //achievementsClient.setSteps(getString(R.string.achievement_perfect_score), db.howManyPerfect());
+        //achievementsClient.setSteps(getString(R.string.achievement_speed_demon), db.howManyInUnder10Seconds());
+        achievementsClient.setSteps(getString(R.string.achievement_learning_the_ropes), db.howManyTutorialCompletedInPack(0));
+        //for (int i = 0; i < packCompletedAchievementIDs.length; i++){
+        //    achievementsClient.setSteps(getString(packCompletedAchievementIDs[i]), db.howManyCompletedInPack(i));
+        //}
+        //achievementsClient.setSteps(getString(R.string.achievement_master), db.howManyLevelsCompleted());
+        //achievementsClient.setSteps(getString(R.string.achievement_master), db.howManyLevelsCompleted());
         db.close();
         snapshotsClient = Games.getSnapshotsClient(this, account);
     }
@@ -215,29 +249,7 @@ public class ActivityViewProfile extends SignedInActivity {
                     SnapshotMetadata snapshotMetadata =
                             intent.getParcelableExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA);
                     // Load the game data from the Snapshot
-                    snapshotsClient.open(snapshotMetadata).addOnCompleteListener(new OnCompleteListener<SnapshotsClient.DataOrConflict<Snapshot>>() {
-                        @Override
-                        public void onComplete(@NonNull Task<SnapshotsClient.DataOrConflict<Snapshot>> task) {
-                            if (task.isSuccessful()) {
-                                SnapshotsClient.DataOrConflict<Snapshot> result = task.getResult();
-                                if (result.isConflict()) {
-                                    Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    try {
-                                        byte[] bytes = result.getData().getSnapshotContents().readFully();
-                                        DataBaseHandler db = new DataBaseHandler(ActivityViewProfile.this);
-                                        db.mergeWithBytes(ActivityViewProfile.this, bytes);
-                                        db.close();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                        Toast.makeText(ActivityViewProfile.this, getString(R.string.error_reading_backup), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            } else {
-                                Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    snapshotsClient.open(snapshotMetadata).addOnCompleteListener(onReceiveBackupListener);
                 } else if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
                     backUpFromDatabase();
                 }

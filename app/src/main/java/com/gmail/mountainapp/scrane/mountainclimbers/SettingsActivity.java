@@ -196,7 +196,7 @@ public class SettingsActivity extends SignedInActivity {
             return;
         }
         AchievementsClient achievementsClient = Games.getAchievementsClient(this, account);
-        achievementsClient.unlock(getString(R.string.achievement_tinker));
+        //achievementsClient.unlock(getString(R.string.achievement_tinker));
         DataBaseHandler db = new DataBaseHandler(this);
         db.saveAchievementProgress(Common.ACHIEVEMENT_TINKER, 1);
         db.close();
