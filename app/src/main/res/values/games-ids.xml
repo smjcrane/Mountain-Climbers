@@ -10,4 +10,32 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="package_name" translatable="false">com.gmail.mountainapp.scrane.mountainclimbers</string>
     <!-- achievement Learning the Ropes -->
     <string name="achievement_learning_the_ropes" translatable="false">CggIwrap9x8QAhAB</string>
+    <!-- achievement Getting Started -->
+    <string name="achievement_getting_started" translatable="false">CggIwrap9x8QAhAD</string>
+    <!-- achievement Teamwork -->
+    <string name="achievement_teamwork" translatable="false">CggIwrap9x8QAhAG</string>
+    <!-- achievement Easy Pack -->
+    <string name="achievement_easy_pack" translatable="false">CggIwrap9x8QAhAH</string>
+    <!-- achievement Hard Pack -->
+    <string name="achievement_hard_pack" translatable="false">CggIwrap9x8QAhAI</string>
+    <!-- achievement Computer Generated Pack -->
+    <string name="achievement_computer_generated_pack" translatable="false">CggIwrap9x8QAhAJ</string>
+    <!-- achievement Wolf Pack -->
+    <string name="achievement_wolf_pack" translatable="false">CggIwrap9x8QAhAL</string>
+    <!-- achievement Big Pack -->
+    <string name="achievement_big_pack" translatable="false">CggIwrap9x8QAhAK</string>
+    <!-- achievement In The Valley -->
+    <string name="achievement_in_the_valley" translatable="false">CggIwrap9x8QAhAM</string>
+    <!-- achievement Five Peaks -->
+    <string name="achievement_five_peaks" translatable="false">CggIwrap9x8QAhAN</string>
+    <!-- achievement Customise -->
+    <string name="achievement_customise" translatable="false">CggIwrap9x8QAhAE</string>
+    <!-- achievement Perfect 10 -->
+    <string name="achievement_perfect_10" translatable="false">CggIwrap9x8QAhAO</string>
+    <!-- achievement Perfect 100 -->
+    <string name="achievement_perfect_100" translatable="false">CggIwrap9x8QAhAP</string>
+    <!-- achievement Quick 10 -->
+    <string name="achievement_quick_10" translatable="false">CggIwrap9x8QAhAQ</string>
+    <!-- achievement Quick 100 -->
+    <string name="achievement_quick_100" translatable="false">CggIwrap9x8QAhAR</string>
 </resources>

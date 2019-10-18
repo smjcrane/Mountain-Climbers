@@ -1,6 +1,7 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +15,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -29,6 +32,7 @@ public abstract class SignedInActivity extends AppCompatActivity {
     private GoogleSignInOptions signInOptions;
     protected boolean shouldSignIn;
     protected SharedPreferences sharedPreferences;
+    GamesClient gamesClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +41,7 @@ public abstract class SignedInActivity extends AppCompatActivity {
         shouldSignIn = sharedPreferences.getBoolean(getString(R.string.SHOULD_SIGN_IN), false);
 
         signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(Games.SCOPE_GAMES_LITE)
+                .requestScopes(Games.SCOPE_GAMES)
                 .requestScopes(SCOPE_APPFOLDER)
                 .build();
         signInClient = GoogleSignIn.getClient(this, signInOptions);
@@ -96,8 +100,21 @@ public abstract class SignedInActivity extends AppCompatActivity {
                 onAccountChanged();
                 Toast.makeText(SignedInActivity.this, getString(R.string.sign_in_failed), Toast.LENGTH_LONG).show();
                 Log.d("SIGNIN",
-                        "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + result.getStatus().getStatusMessage());
+                        "Sign in unsuccessful " + (result.getStatus().getStatusCode()) + " " + GoogleSignInStatusCodes.getStatusCodeString(result.getStatus().getStatusCode()));
+                if (result.getStatus().getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_REQUIRED){
+                    signInClient.signOut();
+                    signInClient.revokeAccess();
+                    signInWithActivity();
+                    //try{
+                    //    result.getStatus().startResolutionForResult(this, RC_SIGN_IN);
+                    //} catch (IntentSender.SendIntentException e){
+                    //    e.printStackTrace();
+                    //}
+                } else {
+                    Log.d("SIGNING", "No resolution available");
+                }
             }
+            return;
         }
     }
 

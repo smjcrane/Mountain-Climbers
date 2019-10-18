@@ -12,16 +12,17 @@ public class Common {
             new MountainClimber.Direction[]{null, MountainClimber.Direction.LEFT, MountainClimber.Direction.RIGHT
             };
 
-//    public static final int[] packCompletedAchievementIDs = new int[] {
-//            R.string.achievement_getting_started,
-//            R.string.achievement_teamwork,
-//            R.string.achievement_this_is_easy,
-//            R.string.achievement_hard_worker,
-//            R.string.achievement_01101001,
-//            R.string.achievement_awoooo,
-//            R.string.achievement_the_big_one,
-//            R.string.achievement_upside_down
-//    };
+    public static final int[] packCompletedAchievementIDs = new int[] {
+            R.string.achievement_getting_started,
+            R.string.achievement_teamwork,
+            R.string.achievement_easy_pack,
+            R.string.achievement_hard_pack,
+            R.string.achievement_computer_generated_pack,
+            R.string.achievement_wolf_pack,
+            R.string.achievement_big_pack,
+            R.string.achievement_in_the_valley,
+            R.string.achievement_five_peaks
+    };
 
     public static final int ACHIEVEMENT_TINKER = 0;
 }

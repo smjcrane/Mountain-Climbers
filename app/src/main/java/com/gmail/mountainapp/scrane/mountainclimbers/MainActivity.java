@@ -2,6 +2,7 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.images.ImageManager;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
+import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -177,23 +182,31 @@ public class MainActivity extends SignedInActivity {
 
     @Override
     protected void onAccountChanged(){
-        if (account == null){
+        if (account == null || !shouldSignIn){
             userNameText.setText(getString(R.string.sign_in));
             userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
             return;
         }
-        userNameText.setText(account.getGivenName());
-        if (account.getPhotoUrl() == null){
-            userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
-        } else {
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), account.getPhotoUrl());
-                userProfilePicture.setImageBitmap(bitmap);
-            } catch (IOException e){
-                Log.d("MAIN", "Couldn't retrieve profile image from URI");
-                e.printStackTrace();
-                userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
+        PlayersClient playersClient = Games.getPlayersClient(this, account);
+        playersClient.getCurrentPlayer().addOnCompleteListener(new OnCompleteListener<Player>() {
+            @Override
+            public void onComplete(@NonNull Task<Player> task) {
+                if (!task.isSuccessful()){
+                    return;
+                }
+                Player player = task.getResult();
+                if (player == null){
+                    return;
+                }
+                userNameText.setText(player.getName());
+                if (player.getIconImageUri() == null){
+                    userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
+                } else {
+                    ImageManager.create(MainActivity.this).loadImage(userProfilePicture, player.getIconImageUri());
+                }
             }
-        }
+        });
+        gamesClient = Games.getGamesClient(this, account);
+        gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
     }
 }

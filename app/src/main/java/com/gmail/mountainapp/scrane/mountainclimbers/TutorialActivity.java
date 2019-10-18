@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -195,9 +196,10 @@ public class TutorialActivity extends SignedInActivity {
                     int packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
                     int levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
                     db.markCompletedTutorial(db.getId(packPos, levelPos));
-                    AchievementsClient client = Games.getAchievementsClient(TutorialActivity.this, account);
-                    client.setSteps(getString(R.string.achievement_learning_the_ropes), db.howManyPerfect());
-
+                    if (shouldSignIn && account != null){
+                        AchievementsClient client = Games.getAchievementsClient(TutorialActivity.this, account);
+                        client.setSteps(getString(R.string.achievement_learning_the_ropes), db.howManyTutorialCompletedInPack(packPos));
+                    }
                     if (levelPos < levelIDs.length - 1){
                         buttonNextLevel.setVisibility(View.VISIBLE);
                     }
@@ -257,6 +259,18 @@ public class TutorialActivity extends SignedInActivity {
             }
         });
         dialog.show();
+    }
+
+    @Override
+    protected void onAccountChanged(){
+        if (shouldSignIn && account != null){
+            Log.d("TUT", "Setting pop up view");
+            gamesClient = Games.getGamesClient(this, account);
+            gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
+        }
+        else {
+            gamesClient = null;
+        }
     }
 
 }

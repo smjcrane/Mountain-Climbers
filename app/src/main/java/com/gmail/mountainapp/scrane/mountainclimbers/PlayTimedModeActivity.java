@@ -44,7 +44,8 @@ public class PlayTimedModeActivity extends PlayGameActivity {
         }
         if (shouldUpdateAchievements){
             AchievementsClient client = Games.getAchievementsClient(PlayTimedModeActivity.this, account);
-            //client.setSteps(getString(R.string.achievement_speed_demon), db.howManyInUnder10Seconds());
+            client.setSteps(getString(R.string.achievement_quick_10), db.howManyInUnder10Seconds());
+            client.setSteps(getString(R.string.achievement_quick_100), db.howManyInUnder10Seconds());
         }
     }
 

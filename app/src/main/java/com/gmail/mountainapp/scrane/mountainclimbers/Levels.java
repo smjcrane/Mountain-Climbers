@@ -51,7 +51,8 @@ public final class Levels {
                     R.raw.gen_096, R.raw.gen_097, R.raw.gen_098, R.raw.gen_099, R.raw.gen_100}),
             new Pack(R.string.pack_wolf, new Integer[] {
                     R.raw.wolf_01, R.raw.wolf_02, R.raw.wolf_03, R.raw.wolf_04, R.raw.wolf_05,
-                    R.raw.wolf_06, R.raw.wolf_07, R.raw.wolf_08}),
+                    R.raw.wolf_06, R.raw.wolf_07, R.raw.wolf_08, R.raw.wolf_09, R.raw.wolf_10,
+                    R.raw.wolf_11, R.raw.wolf_12, R.raw.wolf_13, R.raw.wolf_14}),
             new Pack(R.string.pack_big, new Integer[] {
                     R.raw.pymtn_001, R.raw.pymtn_002, R.raw.pymtn_003, R.raw.pymtn_004, R.raw.pymtn_005,
                     R.raw.pymtn_006, R.raw.pymtn_007, R.raw.pymtn_008, R.raw.pymtn_009, R.raw.pymtn_010,
@@ -80,9 +81,12 @@ public final class Levels {
                     R.raw.inv011, R.raw.inv012, R.raw.inv013, R.raw.inv014, R.raw.inv015,
                     R.raw.inv016, R.raw.inv017, R.raw.inv018, R.raw.inv019, R.raw.inv020
             }),
-            //new Pack(R.string.pack_uyt, new Integer[] {
-            //        R.raw.puyt_01, R.raw.puyt_02, R.raw.puyt_03, R.raw.puyt_04, R.raw.puyt_05
-            //})
+            new Pack(R.string.peak5, new Integer[] {
+                    R.raw.peak5_001, R.raw.peak5_002, R.raw.peak5_003, R.raw.peak5_004, R.raw.peak5_005,
+                    R.raw.peak5_006, R.raw.peak5_007, R.raw.peak5_008, R.raw.peak5_009, R.raw.peak5_010,
+                    R.raw.peak5_011, R.raw.peak5_012, R.raw.peak5_013, R.raw.peak5_014, R.raw.peak5_015,
+                    R.raw.peak5_016, R.raw.peak5_017, R.raw.peak5_018, R.raw.peak5_019, R.raw.peak5_020
+            })
     };
 
     public static int totalLevels(){

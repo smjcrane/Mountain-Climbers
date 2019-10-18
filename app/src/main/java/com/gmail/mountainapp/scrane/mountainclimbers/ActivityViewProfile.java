@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.BadParcelableException;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,23 +12,20 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.Player;
+import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadata;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Date;
-import java.util.Random;
 
 //import static com.gmail.mountainapp.scrane.mountainclimbers.Common.packCompletedAchievementIDs;
 
@@ -41,7 +36,7 @@ public class ActivityViewProfile extends SignedInActivity {
 
     public static final int conflictResolutionPolicy = SnapshotsClient.RESOLUTION_POLICY_MOST_RECENTLY_MODIFIED;
 
-    private TextView acheivementText, userInfoText, restoreText, backupText;
+    private TextView achievementText, userInfoText, restoreText, backupText;
     private Button signOutButton, doneButton;
     private AchievementsClient achievementsClient;
     private SharedPreferences.Editor preferences;
@@ -88,6 +83,7 @@ public class ActivityViewProfile extends SignedInActivity {
                     }
                 } else {
                     Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
+                    Log.e("PROFILE", "error: " + task.getException().getMessage());
                 }
             }
         };
@@ -98,6 +94,7 @@ public class ActivityViewProfile extends SignedInActivity {
                 Intent intent = task.getResult();
                 if (intent == null){
                     Toast.makeText(ActivityViewProfile.this, getString(R.string.error_generic), Toast.LENGTH_SHORT).show();
+                    Log.e("PROFILE", "error: " + task.getException().getMessage());
                 } else {
                     startActivityForResult(intent, RC_RESTORE);
                 }
@@ -120,14 +117,14 @@ public class ActivityViewProfile extends SignedInActivity {
                     Toast.makeText(ActivityViewProfile.this, getString(R.string.backup_success), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ActivityViewProfile.this, getString(R.string.backup_fail), Toast.LENGTH_SHORT).show();
-                    Log.d("PROFILE", task.getException() == null ? "null" : "except " + task.getException().toString());
+                    Log.d("PROFILE", task.getException() == null ? "null" : "except " + task.getException().getMessage());
                 }
 
             }
         };
 
-        acheivementText = findViewById(R.id.achievementText);
-        acheivementText.setOnClickListener(new View.OnClickListener() {
+        achievementText = findViewById(R.id.achievementText);
+        achievementText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (account == null || !shouldSignIn) {
@@ -138,7 +135,7 @@ public class ActivityViewProfile extends SignedInActivity {
                     Toast.makeText(ActivityViewProfile.this, getString(R.string.error_connecting_gpg), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                acheivementText.setOnClickListener(new View.OnClickListener() {
+                achievementText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         achievementsClient.getAchievementsIntent()
@@ -212,7 +209,15 @@ public class ActivityViewProfile extends SignedInActivity {
             signOutButton.setText(getString(R.string.sign_in));
             return;
         }
-        userInfoText.setText(account.getDisplayName());
+        PlayersClient playersClient = Games.getPlayersClient(this, account);
+        playersClient.getCurrentPlayer().addOnCompleteListener(new OnCompleteListener<Player>() {
+            @Override
+            public void onComplete(@NonNull Task<Player> task) {
+                userInfoText.setText(task.getResult().getName());
+            }
+        });
+        gamesClient = Games.getGamesClient(this, account);
+        gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
         signOutButton.setText(getString(R.string.sign_out));
         DataBaseHandler db = new DataBaseHandler(this);
         achievementsClient = Games.getAchievementsClient(this, account);
@@ -227,6 +232,7 @@ public class ActivityViewProfile extends SignedInActivity {
         //achievementsClient.setSteps(getString(R.string.achievement_master), db.howManyLevelsCompleted());
         db.close();
         snapshotsClient = Games.getSnapshotsClient(this, account);
+
     }
 
     @Override
@@ -246,8 +252,8 @@ public class ActivityViewProfile extends SignedInActivity {
             try {
                 if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA)) {
                     // Load a snapshot.
-                    SnapshotMetadata snapshotMetadata =
-                            intent.getParcelableExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA);
+                    SnapshotMetadata snapshotMetadata = SnapshotsClient.getSnapshotFromBundle(intent.getExtras());
+                            //intent.getParcelableExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA);
                     // Load the game data from the Snapshot
                     snapshotsClient.open(snapshotMetadata).addOnCompleteListener(onReceiveBackupListener);
                 } else if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {

@@ -62,6 +62,7 @@ public class SettingsActivity extends SignedInActivity {
         landscapeLockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                unlockTheAchievement();
                 editor.putBoolean(getString(R.string.LANDSCAPE_LOCKED), isChecked);
             }
         });
@@ -69,6 +70,7 @@ public class SettingsActivity extends SignedInActivity {
         imageTortoise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                unlockTheAchievement();
                 Log.d("SETTINGS", "Clicked on tortoise");
                 imageTortoise.setBackground(selected);
                 imageHare.setBackground(null);
@@ -81,6 +83,7 @@ public class SettingsActivity extends SignedInActivity {
         imageHare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                unlockTheAchievement();
                 Log.d("SETTINGS", "Clicked on hare");
                 imageHare.setBackground(selected);
                 imageTortoise.setBackground(null);
@@ -93,6 +96,7 @@ public class SettingsActivity extends SignedInActivity {
         imageLightning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                unlockTheAchievement();
                 Log.d("SETTINGS", "Clicked on lightning");
                 imageLightning.setBackground(selected);
                 imageTortoise.setBackground(null);
@@ -105,6 +109,7 @@ public class SettingsActivity extends SignedInActivity {
         imageInfinity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                unlockTheAchievement();
                 Log.d("SETTINGS", "Clicked on infinity");
                 imageLightning.setBackground(null);
                 imageTortoise.setBackground(null);
@@ -134,6 +139,7 @@ public class SettingsActivity extends SignedInActivity {
         imageCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                unlockTheAchievement();
                 imageCircle.setBackground(selected);
                 imagePeg.setBackground(null);
                 imageHollow.setBackground(null);
@@ -144,6 +150,7 @@ public class SettingsActivity extends SignedInActivity {
         imagePeg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                unlockTheAchievement();
                 imageCircle.setBackground(null);
                 imagePeg.setBackground(selected);
                 imageHollow.setBackground(null);
@@ -154,6 +161,7 @@ public class SettingsActivity extends SignedInActivity {
         imageHollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                unlockTheAchievement();
                 imageCircle.setBackground(null);
                 imagePeg.setBackground(null);
                 imageHollow.setBackground(selected);
@@ -190,15 +198,23 @@ public class SettingsActivity extends SignedInActivity {
         editor.commit();
     }
 
+    private void unlockTheAchievement(){
+        if (!shouldSignIn || account == null){
+            return;
+        }
+        AchievementsClient achievementsClient = Games.getAchievementsClient(SettingsActivity.this, account);
+        achievementsClient.unlock(getString(R.string.achievement_customise));
+        DataBaseHandler db = new DataBaseHandler(SettingsActivity.this);
+        db.saveAchievementProgress(Common.ACHIEVEMENT_TINKER, 1);
+        db.close();
+    }
+
     @Override
     protected void onAccountChanged(){
         if (!shouldSignIn || account == null){
             return;
         }
-        AchievementsClient achievementsClient = Games.getAchievementsClient(this, account);
-        //achievementsClient.unlock(getString(R.string.achievement_tinker));
-        DataBaseHandler db = new DataBaseHandler(this);
-        db.saveAchievementProgress(Common.ACHIEVEMENT_TINKER, 1);
-        db.close();
+        gamesClient = Games.getGamesClient(this, account);
+        gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
     }
 }
