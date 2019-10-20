@@ -688,9 +688,10 @@ class DataBaseHandler extends SQLiteOpenHelper {
             }
         }
         res.close();
-        if (backupDB.rawQuery(
-                "SELECT * FROM sqlite_master WHERE type='table' AND name='" + TABLE_DAILY + "'", null)
-                .getCount() > 0){
+        Cursor hasDaily = backupDB.rawQuery(
+                "SELECT * FROM sqlite_master WHERE type='table' AND name='" + TABLE_DAILY + "'", null);
+        if (hasDaily.getCount() > 0){
+            hasDaily.close();
             res = backupDB.rawQuery("SELECT * FROM " + TABLE_DAILY, null);
             if (res != null) {
                 res.moveToFirst();
