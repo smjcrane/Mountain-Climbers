@@ -717,6 +717,25 @@ class DataBaseHandler extends SQLiteOpenHelper {
         Toast.makeText(context, "Transfer complete", Toast.LENGTH_LONG).show();
     }
 
+    public int getTotalTimeInPack(int packPos) {
+        int seconds = 0;
+        for (int i = 0; i < Levels.packs[packPos].getLength(); i++){
+            seconds += getBestTimeSeconds(getId(packPos, i));
+        }
+        return seconds;
+    }
+
+    public int howManyCompletedTimedInPack(int packpos) {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES + " WHERE " +
+                COLUMN_BEST_TIME + "<>-1"  + " AND " +
+                COLUMN_ID + " BETWEEN " + (1000 * packpos) + " AND " + (1000 * (packpos + 1) - 1), null );
+        int ans = res.getCount();
+        res.close();
+        db.close();
+        return ans;
+    }
+
     private class BackUpHandler extends SQLiteOpenHelper {
 
         public static final String BACKUP_NAME = "backup.db";

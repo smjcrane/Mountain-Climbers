@@ -2,6 +2,7 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,15 @@ public class PackListAdapter extends ArrayAdapter<Integer> {
                 break;
             case Common.MODE_TIMED:
                 completedImage.setVisibility(View.INVISIBLE);
-                progressText.setVisibility(View.INVISIBLE);
+                int numCompletedTimed = db.howManyCompletedTimedInPack(position);
+                if (numCompletedTimed < pack.getLength()){
+                    progressText.setVisibility(View.VISIBLE);
+                    progressText.setText(numCompletedTimed + "/" + pack.getLength());
+                    progressText.setTextColor(context.getColor(R.color.darkTextBlue));
+                } else {
+                    progressText.setText(LevelListAdapter.formatTimeSeconds(db.getTotalTimeInPack(position)));
+                    progressText.setTextColor(Color.BLACK);
+                }
                 break;
         }
 
