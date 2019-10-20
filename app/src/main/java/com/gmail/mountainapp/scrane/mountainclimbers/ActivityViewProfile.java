@@ -69,6 +69,7 @@ public class ActivityViewProfile extends SignedInActivity {
                 if (task.isSuccessful()) {
                     SnapshotsClient.DataOrConflict<Snapshot> result = task.getResult();
                     if (result.isConflict()) {
+                        //TODO
                         Toast.makeText(ActivityViewProfile.this, getString(R.string.error_getting_backup), Toast.LENGTH_SHORT).show();
                     } else {
                         try {
@@ -255,6 +256,7 @@ public class ActivityViewProfile extends SignedInActivity {
                     SnapshotMetadata snapshotMetadata = SnapshotsClient.getSnapshotFromBundle(intent.getExtras());
                             //intent.getParcelableExtra(SnapshotsClient.EXTRA_SNAPSHOT_METADATA);
                     // Load the game data from the Snapshot
+                    Log.d("PROFILE", "loading id: " + snapshotMetadata.getSnapshotId());
                     snapshotsClient.open(snapshotMetadata).addOnCompleteListener(onReceiveBackupListener);
                 } else if (intent.hasExtra(SnapshotsClient.EXTRA_SNAPSHOT_NEW)) {
                     backUpFromDatabase();

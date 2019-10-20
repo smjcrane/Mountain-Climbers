@@ -19,4 +19,7 @@
     <color name="skyTextBlue">#479EAB</color>
     <color name="darkTextBlue">#174E7B</color>
     <color name="darkTextGrey">#36454f</color>
+    <color name="streak0">#B0B0B0</color>
+    <color name="streak1_9">#7070B0</color>
+    <color name="streak10_plus">#00B000</color>
 </resources>

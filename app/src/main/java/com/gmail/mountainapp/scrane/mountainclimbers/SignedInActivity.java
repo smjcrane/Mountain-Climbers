@@ -40,7 +40,7 @@ public abstract class SignedInActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
         shouldSignIn = sharedPreferences.getBoolean(getString(R.string.SHOULD_SIGN_IN), false);
 
-        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
                 .requestScopes(Games.SCOPE_GAMES)
                 .requestScopes(SCOPE_APPFOLDER)
                 .build();

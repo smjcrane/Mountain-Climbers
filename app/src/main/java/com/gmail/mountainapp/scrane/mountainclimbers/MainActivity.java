@@ -3,28 +3,14 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
@@ -32,16 +18,14 @@ import com.google.android.gms.games.PlayersClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Date;
 
 public class MainActivity extends SignedInActivity {
 
-    private Button playButton, levelSelectButton, timedButton, puzzleButton;
+    private Button playButton, levelSelectButton, timedButton, puzzleButton, dailyButton;
     private ImageView settingsButton;
-    private TextView userNameText;
-    private ImageView userProfilePicture;
+    private TextView userNameText, streakText;
+    private ImageView userProfilePicture, streakBlob;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
@@ -167,6 +151,16 @@ public class MainActivity extends SignedInActivity {
             }
         });
 
+        dailyButton = findViewById(R.id.mainDailyPuzzle);
+        dailyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent playDaily = new Intent();
+                playDaily.setClass(MainActivity.this, PlayDailyLevel.class);
+                startActivity(playDaily);
+            }
+        });
+
         userNameText = findViewById(R.id.userName);
         userProfilePicture = findViewById(R.id.userProfilePicture);
 
@@ -178,6 +172,9 @@ public class MainActivity extends SignedInActivity {
                 startActivity(viewProfile);
             }
         });
+
+        streakBlob = findViewById(R.id.streakBlob);
+        streakText = findViewById(R.id.streakText);
     }
 
     @Override
@@ -187,6 +184,7 @@ public class MainActivity extends SignedInActivity {
             userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
             return;
         }
+        userNameText.setText(account.getGivenName());
         PlayersClient playersClient = Games.getPlayersClient(this, account);
         playersClient.getCurrentPlayer().addOnCompleteListener(new OnCompleteListener<Player>() {
             @Override
@@ -198,7 +196,6 @@ public class MainActivity extends SignedInActivity {
                 if (player == null){
                     return;
                 }
-                userNameText.setText(player.getName());
                 if (player.getIconImageUri() == null){
                     userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
                 } else {
@@ -208,5 +205,27 @@ public class MainActivity extends SignedInActivity {
         });
         gamesClient = Games.getGamesClient(this, account);
         gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        DataBaseHandler db = new DataBaseHandler(this);
+        Date date = new Date();
+        int days = (int) (date.getTime() / (1000 * 24 * 60 * 60));
+        int streak = db.getDailyStreak(days);
+        streakText.setText(Integer.toString(streak));
+        if (streak == 0){
+            streakBlob.setColorFilter(getColor(R.color.streak0));
+        } else if (streak < 10){
+            streakBlob.setColorFilter(getColor(R.color.streak1_9));
+        } else {
+            streakBlob.setColorFilter(getColor(R.color.streak10_plus));
+        }
+        if (db.howManyCompletedOnDay(days) > 0){
+            dailyButton.setClickable(false);
+            dailyButton.setTextColor(getColor(R.color.darkTextBlue));
+        }
+        db.close();
     }
 }

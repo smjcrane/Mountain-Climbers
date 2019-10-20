@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.core.graphics.drawable.TintAwareDrawable;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +35,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
     public static final String TABLE_SCORES = "tablescores";
     public static final String TABLE_TUTORIAL = "tabletutorial";
     public static final String TABLE_ACHIEVEMENTS = "tableachievements";
+    public static final String TABLE_DAILY = "tabledaily";
 
     //columns
     public static final String COLUMN_ID = "columnid";
@@ -41,6 +44,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
     public static final String COLUMN_BEST_TIME = "columnbesttime";
     public static final String COLUMN_OPTIMAL_MOVES = "columnoptimalmoves";
     public static final String COLUMN_INCREMENTS = "columnincrements";
+    public static final String COLUMN_DATE = "columndate";
 
     public DataBaseHandler(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -113,6 +117,63 @@ class DataBaseHandler extends SQLiteOpenHelper {
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
+    }
+
+    public void markDailyCompleted(long daysSinceEpoch){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_DAILY + "(" +
+                COLUMN_DATE + " INTEGER PRIMARY KEY, " +
+                COLUMN_COMPLETED + " INTEGER " + ")");
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_DATE, daysSinceEpoch);
+        cv.put(COLUMN_COMPLETED, 1);
+        db.replace(TABLE_DAILY, null, cv);
+        db.close();
+    }
+
+    public int howManyCompletedOnDay(long daysSinceEpoch){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_DAILY + "(" +
+                COLUMN_DATE + " INTEGER PRIMARY KEY, " +
+                COLUMN_COMPLETED + " INTEGER " + ")");
+        Cursor res = db.rawQuery(
+                "SELECT * FROM " + TABLE_DAILY + " WHERE " + COLUMN_DATE + "=" + daysSinceEpoch,
+                null);
+        if (res == null || res.getCount() == 0){
+            if (res != null){
+                res.close();
+            }
+            db.close();
+            return 0;
+        }
+        res.moveToFirst();
+        int completed = res.getInt(res.getColumnIndex(COLUMN_COMPLETED));
+        res.close();
+        db.close();
+        return completed;
+    }
+
+    public int getDailyStreak(long todayDaysSinceEpoch){
+        Log.d("DB", "Getting daily streak");
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_DAILY + "(" +
+                COLUMN_DATE + " INTEGER PRIMARY KEY, " +
+                COLUMN_COMPLETED + " INTEGER " + ")");
+        int streak = 0;
+        if (howManyCompletedOnDay(todayDaysSinceEpoch) > 0){
+            streak = 1;
+        }
+        int i = 1;
+        while (true){
+            Log.d("DB", "Checking " + i + " days ago");
+            int completed = howManyCompletedOnDay(todayDaysSinceEpoch - i);
+            if (completed == 0){
+                db.close();
+                return streak;
+            }
+            streak++;
+            i++;
+        }
     }
 
     public void saveAchievementProgress(int id, int progress){
@@ -627,6 +688,28 @@ class DataBaseHandler extends SQLiteOpenHelper {
             }
         }
         res.close();
+        if (backupDB.rawQuery(
+                "SELECT * FROM sqlite_master WHERE type='table' AND name='" + TABLE_DAILY + "'", null)
+                .getCount() > 0){
+            res = backupDB.rawQuery("SELECT * FROM " + TABLE_DAILY, null);
+            if (res != null) {
+                res.moveToFirst();
+                while (!res.isAfterLast()) {
+                    int id = res.getInt(res.getColumnIndex(COLUMN_DATE));
+                    ContentValues cv = new ContentValues();
+                    Log.d("DB", "Merging " + id);
+                    int completed =  res.getInt(res.getColumnIndex(COLUMN_COMPLETED));
+                    if (completed > 0){
+                        cv.put(COLUMN_COMPLETED, res.getInt(res.getColumnIndex(COLUMN_COMPLETED)));
+                    }
+                    if (cv.size() > 0){
+                        db.update(TABLE_DAILY, cv, COLUMN_DATE + "=" + id, null);
+                    }
+                    res.moveToNext();
+                }
+            }
+            res.close();
+        }
         backupDB.close();
         db.close();
         context.getDatabasePath(BackUpHandler.BACKUP_NAME).delete();

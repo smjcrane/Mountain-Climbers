@@ -40,4 +40,5 @@
     <string name="error_connecting_drive">Impossible de connecter au Google</string>
     <string name="backup_success">Sauvegarde réussie</string>
     <string name="backup_fail">Une erreur est survenue. Sauvegarde ne réussie pas</string>
+    <string name="daily_puzzle">Puzzle du Jour</string>
 </resources>

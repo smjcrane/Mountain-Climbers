@@ -3,6 +3,8 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 import android.telephony.CellSignalStrengthGsm;
 import android.util.Log;
 
+import java.util.Random;
+
 public class Mountain {
 
     private MountainSegment[] segments;
@@ -27,6 +29,46 @@ public class Mountain {
         if (heights[heights.length - 1] > this.maxHeight){
             this.maxHeight = heights[heights.length - 1];
         }
+    }
+
+    public static Mountain generateRandomMountain(long seed){
+        Random random = new Random(seed);
+        int numPeaks = random.nextInt(4) + 4;
+        int[] heights = new int[numPeaks * 2 + 1];
+        heights[0] = 0;
+        int valley = 0;
+        int peak = 100;
+        boolean got100 = false;
+        for (int i = 0; i < numPeaks; i++){
+            if (valley < 80){
+                peak = (random.nextInt(8 - valley / 10) + valley / 10 + 2) * 10;
+            } else {
+                peak = 100;
+            }
+            Log.d("DAILY", "peak: " + peak);
+            if (peak > 20){
+                valley = random.nextInt(peak / 10 - 2) * 10;
+            } else {
+                valley = 0;
+            }
+            Log.d("DAILY", "peak: " + peak + " valley: " + valley);
+            heights[2 * i + 1] = peak;
+            heights[2 * i + 2] = valley;
+            if (peak == 100){
+                got100 = true;
+            }
+        }
+        heights[2 * numPeaks] = 0;
+        String s = "";
+        for (int i : heights){
+            s = s + " " + i;
+        }
+        Log.d("DAILY", "Mountain is " + s);
+        if (!got100){
+            int tallest = random.nextInt(numPeaks - 3) + 1;
+            heights[2 * tallest + 1] = 100;
+        }
+        return new Mountain(heights);
     }
 
     public int getWidth(){
