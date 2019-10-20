@@ -282,6 +282,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                onResume();
             }
         });
         dialog.show();

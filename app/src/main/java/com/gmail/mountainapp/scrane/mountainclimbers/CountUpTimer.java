@@ -59,5 +59,4 @@ public abstract class CountUpTimer {
     }
 
     public abstract void onTick(long millisElapsed);
-
 }

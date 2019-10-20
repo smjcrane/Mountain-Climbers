@@ -69,11 +69,12 @@ public class CountDownView extends View {
         if (textSize < 400){
             textSize = 400;
         }
-        Log.d("Count", "text size is" + textSize);
         paint.setTextSize(textSize);
         paint.getTextBounds(text, 0, 1, rect);
         canvas.drawText(text, (getWidth() + rect.left - rect.right) / 2, (getHeight() - rect.top + rect.bottom) / 2, paint);
-        postInvalidateDelayed(5);
+        if (going){
+            postInvalidateDelayed(1000 / FPS);
+        }
     }
 
     public interface OnCounted {

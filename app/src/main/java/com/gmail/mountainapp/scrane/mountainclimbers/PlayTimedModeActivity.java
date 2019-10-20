@@ -17,15 +17,19 @@ public class PlayTimedModeActivity extends PlayGameActivity {
     private CountDownView countDownView;
     private CountUpTimer timer;
     private int seconds;
+    private boolean paused;
+    long millis;
 
     @Override
     protected void setup() {
         super.setup();
+        millis = 0;
         timerText = findViewById(R.id.mountainTimerText);
         timerText.setVisibility(View.VISIBLE);
 
         countDownView = findViewById(R.id.mountainCountdown);
         countDownView.setVisibility(View.VISIBLE);
+        paused = false;
     }
 
     @Override
@@ -50,6 +54,7 @@ public class PlayTimedModeActivity extends PlayGameActivity {
 
     protected void loadLevel(Bundle savedInstanceState){
         super.loadLevel(savedInstanceState);
+        millis = 0;
         buttonHint.setVisibility(View.INVISIBLE);
         mountainView.deActivate();
         timerText.setText("0:00");
@@ -97,5 +102,46 @@ public class PlayTimedModeActivity extends PlayGameActivity {
         if (timer != null){
             timer.cancel();
         }
+    }
+
+    @Override
+    public void onBackPressed(){
+        if (timer != null){
+            millis = timer.getMillisAtStart();
+            timer.cancel();
+        } else {
+            millis = 0;
+        }
+        if (countDownView != null) {
+                countDownView.cancel();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        countDownView.start(3);
+        countDownView.setOnCounted(new CountDownView.OnCounted() {
+            @Override
+            public void onCounted() {
+                if (timer != null){
+                    timer.cancel();
+                }
+                timer = new CountUpTimer(1000) {
+                    public void onTick(long millis) {
+                        int second = (int) millis / 1000;
+                        timerText.setText(LevelListAdapter.formatTimeSeconds(second));
+                        seconds = second;
+                        Log.d("TIME", Integer.toString(second));
+                    }
+                };
+                mountainView.activate();
+                timer.start();
+                if (millis != 0){
+                    timer.setMillisAtStart(millis + 1000 * seconds);
+                }
+            }
+        });
     }
 }
