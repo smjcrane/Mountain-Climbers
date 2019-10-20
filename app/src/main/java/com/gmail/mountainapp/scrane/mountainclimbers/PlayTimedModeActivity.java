@@ -28,7 +28,6 @@ public class PlayTimedModeActivity extends PlayGameActivity {
         countDownView.setVisibility(View.VISIBLE);
     }
 
-
     @Override
     public void onVictory() {
         super.onVictory();

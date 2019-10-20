@@ -33,12 +33,14 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
     protected Game game;
     protected Button buttonBack, buttonNextLevel;
     protected ImageView buttonReset, buttonHint, settingsButton;
-    protected TextView goButton, levelNumberText;
+    protected TextView goButton, levelNumberText, victoryText;
     protected DataBaseHandler db;
     protected boolean shouldUpdateAchievements;
     protected SharedPreferences preferences;
     protected SharedPreferences.Editor editor;
     protected int packPos;
+
+    protected String victoryMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +52,8 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
         }
 
     protected void setup() {
-
+        victoryMessage = "YOU WIN!";
+        victoryText = findViewById(R.id.victoryText);
         preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
         editor = preferences.edit();
         editor.putBoolean(getString(R.string.TUTORIAL), false);
@@ -128,6 +131,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
         buttonHint.setVisibility(View.INVISIBLE);
         buttonBack.setVisibility(View.VISIBLE);
         mountainView.invalidate();
+        victoryText.setText(victoryMessage);
 
         int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
         db = new DataBaseHandler(PlayGameActivity.this);
@@ -148,6 +152,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
     }
 
     protected void loadLevel(final Bundle savedInstanceState){
+        victoryText.setText("");
         final int[] positions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_POSITIONS);
         int[] directions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_DIRECTIONS);
 
@@ -194,8 +199,9 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
 
             while(game.removeClimbers() != null){}
             game.updateVictory();
-            game.setUpSolver();
-
+            if (!game.victory){
+                game.setUpSolver();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

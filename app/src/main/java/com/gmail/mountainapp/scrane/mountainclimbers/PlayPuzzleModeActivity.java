@@ -1,15 +1,32 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+
+import static android.view.View.SCALE_X;
+import static android.view.View.SCALE_Y;
+import static android.view.View.TRANSLATION_X;
+import static android.view.View.TRANSLATION_Y;
 
 public class PlayPuzzleModeActivity extends PlayGameActivity {
 
@@ -18,12 +35,16 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
 
     private TextView movesText;
     private Future<Integer> optimalMoves;
+    private RelativeLayout starBlock;
+    private ImageView[] starFills;
 
     @Override
     protected void setup(){
         super.setup();
         movesText = findViewById(R.id.mountainTimerText);
         movesText.setVisibility(View.VISIBLE);
+        starBlock = findViewById(R.id.starBlock);
+        starFills = new ImageView[] {findViewById(R.id.starFill1), findViewById(R.id.starFill2), findViewById(R.id.starFill3)};
     }
 
     @Override
@@ -37,13 +58,36 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         if (moves < previousBest || previousBest == -1) {
             db.setBestMoves(levelDBID, moves);
         }
-        MountainView.victoryMessage = "YOU WIN!";
         try {
+            if (optimalMoves == null){
+                optimalMoves = db.getOptimalMoves(db.getId(packPos, levelPos), PlayPuzzleModeActivity.this);
+            }
             if (optimalMoves.isDone() && optimalMoves.get() != -1) {
                 int stars = LevelListAdapter.howManyStars(moves, optimalMoves.get());
-                if (moves < previousBest || previousBest == -1) {
-                    MountainView.victoryMessage = PlayPuzzleModeActivity.this.getString(MESSAGES[stars]);
+                starBlock.setVisibility(View.VISIBLE);
+                AnimatorSet animatorSet = new AnimatorSet();
+                List<Animator> animators = new ArrayList<>();
+                PropertyValuesHolder pvhX = PropertyValuesHolder.ofFloat(SCALE_X, 0, 1);
+                PropertyValuesHolder pvhY = PropertyValuesHolder.ofFloat(SCALE_Y, 0, 1);
+                for (int i = 0; i < 3; i++){
+                    if (i < stars){
+                        starFills[i].setVisibility(View.VISIBLE);
+                    } else {
+                        starFills[i].setVisibility(View.INVISIBLE);
+                    }
+                    Rect bounds = new Rect();
+                    Point globalOffset = new Point();
+
+                    starFills[i].getGlobalVisibleRect(bounds, globalOffset);
+                    bounds.offset(-globalOffset.x, -globalOffset.y);
+                    ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(starFills[i], pvhX, pvhY);
+                    animator.setDuration(getResources().getInteger(android.R.integer.config_longAnimTime));
+                    animators.add(animator);
                 }
+                animatorSet.playTogether(animators);
+                animatorSet.start();
+                victoryMessage = PlayPuzzleModeActivity.this.getString(MESSAGES[stars]);
+                victoryText.setText(victoryMessage);
             }
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -63,6 +107,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
     protected void loadLevel(Bundle savedInstanceState){
         super.loadLevel(savedInstanceState);
         buttonHint.setVisibility(View.INVISIBLE);
+        starBlock.setVisibility(View.INVISIBLE);
         int moves = 0;
         if (savedInstanceState != null){
             moves = savedInstanceState.getInt(SAVED_MOVES);
@@ -77,6 +122,9 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         });
         int levelPos = preferences.getInt(getString(R.string.LEVELPOS),0);
         optimalMoves = db.getOptimalMoves(db.getId(packPos, levelPos), PlayPuzzleModeActivity.this);
+        if (game.victory){
+            game.callOnVictoryListener();
+        }
     }
 
     @Override

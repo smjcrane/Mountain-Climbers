@@ -240,20 +240,6 @@ public class MountainView extends View {
         }
         }
 
-    protected void drawCenteredText(Canvas canvas, Paint paint, String text) {
-        TEXT_SIZE = (int) ((getWidth() - 2 * PADDING) / text.length() * 1.8);
-        paint.setTextAlign(Paint.Align.LEFT);
-        paint.setTextSize(TEXT_SIZE);
-        canvas.getClipBounds(r);
-        float cHeight = r.height();
-        float cWidth = r.width();
-        paint.setTextAlign(Paint.Align.LEFT);
-        paint.getTextBounds(text, 0, text.length(), r);
-        float x = cWidth / 2f - r.width() / 2f - r.left;
-        float y = cHeight / 2f + r.height() / 2f - r.bottom;
-        canvas.drawText(text, x, y, paint);
-    }
-
     protected void drawMountain(Canvas canvas){
         int height = getHeight() - PADDING - PADDING_TOP;
         int width = getWidth() - 2 * PADDING;
@@ -286,10 +272,6 @@ public class MountainView extends View {
         drawDirections(canvas);
         drawHint(canvas);
         drawClimbers(canvas);
-
-        if (game.victory && game.moving == Game.Moving.NONE){
-            drawCenteredText(canvas, victoryTextPaint, victoryMessage);
-        }
 
         if (game.moving != Game.Moving.NONE){
             postInvalidateDelayed(5);
