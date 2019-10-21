@@ -6,9 +6,6 @@
         android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen"
         android:required="false" />
-    <meta-data android:name="com.google.android.gms.games.APP_ID"
-        android:value="@string/app_id" />
-
     <application
         android:allowBackup="true"
         android:appComponentFactory="android.support.app.CoreComponentFactory"

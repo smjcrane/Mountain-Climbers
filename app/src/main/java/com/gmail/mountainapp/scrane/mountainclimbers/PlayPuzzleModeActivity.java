@@ -55,7 +55,7 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         int levelDBID = db.getId(packPos, levelPos);
         int previousBest = db.getBestMoves(levelDBID);
         int moves = game.getMovesTaken();
-        if (moves < previousBest || previousBest == -1) {
+        if (moves < previousBest || previousBest <=0) {
             db.setBestMoves(levelDBID, moves);
         }
         try {

@@ -59,7 +59,6 @@ public class MountainView extends View {
     private Random random;
     private Set<Integer> colorsAvailable;
     private List<Tree> trees;
-
     private Drawable climberDrawable;
     static final int[] climberDrawableIDs = new int[] {R.drawable.circle, R.drawable.peg_person, R.drawable.hollow};
 

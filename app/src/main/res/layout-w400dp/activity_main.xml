@@ -124,9 +124,9 @@
         android:id="@+id/userProfilePicture"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
         app:layout_constraintBottom_toTopOf="@+id/userName"
-        app:layout_constraintLeft_toLeftOf="@+id/userName"
-        app:layout_constraintRight_toRightOf="@+id/userName"
+        app:layout_constraintLeft_toLeftOf="parent"
         android:src="@drawable/nobody"/>
 
     <TextView

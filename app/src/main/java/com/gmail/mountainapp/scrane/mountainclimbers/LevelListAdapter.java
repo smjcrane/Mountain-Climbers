@@ -155,7 +155,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
     }
 
     public static int howManyStars(int moves, int bestPossibleMoves){
-        if (moves == -1){
+        if (moves <= 0){
             return 0;
         } else {
             if (moves == bestPossibleMoves){

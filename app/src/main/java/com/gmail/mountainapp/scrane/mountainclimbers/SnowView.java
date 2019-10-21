@@ -2,7 +2,9 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.DrawFilter;
 import android.graphics.Paint;
+import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.View;
@@ -25,7 +27,8 @@ public class SnowView extends View {
     private int width;
     private int height;
     private Paint snowPaint, skyPaint;
-
+    private List<Flying> flyings;
+    private DrawFilter filter;
 
     public SnowView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -36,14 +39,34 @@ public class SnowView extends View {
         this.skyPaint.setColor(context.getColor(R.color.skyBlue));
         snowFlakePositions = new ArrayList<>();
         snowFlakeVelocities = new ArrayList<>();
+        flyings = new ArrayList<>();
         timer = new CountUpTimer(1000 / FPS) {
             @Override
             public void onTick(long millisElapsed) {
                 moveAllSnowflakes();
+                moveAllFlyings();
                 invalidate();
             }
         };
         timer.start();
+        filter = new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, 1);
+    }
+
+    private void moveAllFlyings(){
+        for (Flying f: flyings){
+            f.move();
+        }
+        while(removeFlyings()){}
+    }
+
+    private boolean removeFlyings(){
+        for (Flying f: flyings){
+            if (f.getX() > getWidth()){
+                flyings.remove(f);
+                return true;
+            }
+        }
+        return false;
     }
 
     private void moveAllSnowflakes(){
@@ -75,6 +98,7 @@ public class SnowView extends View {
     @Override
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
+        canvas.setDrawFilter(filter);
         width = canvas.getWidth();
         height = canvas.getHeight();
         canvas.drawRect(0,  getHeight(), getWidth(), 0, skyPaint);
@@ -84,8 +108,15 @@ public class SnowView extends View {
                 snowFlakeVelocities.add(new Point(0, GRAVITY));
             }
         }
+        float r = random.nextFloat();
+        if (r < 0.001){
+            flyings.add(new Flying(getContext(), getContext().getDrawable(R.drawable.witch), new Point(-200, 200 + random.nextInt(200))));
+        }
         for (Point point : snowFlakePositions){
             canvas.drawCircle(point.x, point.y, RADIUS, snowPaint);
+        }
+        for (Flying f: flyings){
+            f.draw(canvas);
         }
     }
 
