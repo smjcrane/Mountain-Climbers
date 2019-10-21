@@ -62,9 +62,9 @@ public class PlayTimedModeActivity extends PlayGameActivity {
             if (timer != null){
                 timer.cancel();
             }
-            countDownView.setOnCounted(new CountDownView.OnCounted() {
+            countDownView.setOnFinish(new Runnable() {
                 @Override
-                public void onCounted() {
+                public void run() {
                     if (timer != null){
                         timer.cancel();
                     }
@@ -122,9 +122,9 @@ public class PlayTimedModeActivity extends PlayGameActivity {
     public void onResume(){
         super.onResume();
         countDownView.start(3);
-        countDownView.setOnCounted(new CountDownView.OnCounted() {
+        countDownView.setOnFinish(new Runnable() {
             @Override
-            public void onCounted() {
+            public void run() {
                 if (timer != null){
                     timer.cancel();
                 }

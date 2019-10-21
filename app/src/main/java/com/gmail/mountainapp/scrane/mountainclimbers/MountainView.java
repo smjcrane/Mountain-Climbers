@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
@@ -57,6 +58,7 @@ public class MountainView extends View {
     private Map<MountainClimber, Integer> coloursInUse;
     private Random random;
     private Set<Integer> colorsAvailable;
+    private List<Tree> trees;
 
     private Drawable climberDrawable;
     static final int[] climberDrawableIDs = new int[] {R.drawable.circle, R.drawable.peg_person, R.drawable.hollow};
@@ -137,6 +139,7 @@ public class MountainView extends View {
         this.hint = null;
         this.hintFlashOn = false;
         colorsAvailable = new HashSet<>(Arrays.asList(new Integer[] {0, 1, 2, 3, 4, 5}));
+        trees = null;
         invalidate();
     }
 
@@ -265,10 +268,23 @@ public class MountainView extends View {
                 mountainPaint);
     }
 
+    protected void drawTrees(Canvas canvas){
+        if (trees == null){
+            trees = new ArrayList<>();
+            for (int i = 0; i < 20; i++){
+                trees.add(new Tree(random, getWidth(), getHeight(), game.mountain, trees));
+            }
+        }
+        for (int i = 0; i < trees.size(); i++){
+            trees.get(i).draw(canvas);
+        }
+    }
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         drawMountain(canvas);
+        drawTrees(canvas);
         drawDirections(canvas);
         drawHint(canvas);
         drawClimbers(canvas);

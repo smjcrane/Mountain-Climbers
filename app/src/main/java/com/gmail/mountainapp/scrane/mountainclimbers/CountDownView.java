@@ -4,13 +4,25 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.TextView;
 
-public class CountDownView extends View {
+import androidx.annotation.Px;
+import androidx.core.widget.TextViewCompat;
+
+import org.w3c.dom.Text;
+
+import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+import static android.util.TypedValue.COMPLEX_UNIT_PX;
+
+public class CountDownView extends TextView {
 
     private static int FPS = 24;
 
@@ -18,66 +30,53 @@ public class CountDownView extends View {
     private TextPaint paint;
     private boolean going;
     private long stopMillis;
-    private OnCounted onCounted;
+    private CountDownTimer timer;
+    private Runnable onFinish;
 
 
     public CountDownView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        paint = new TextPaint();
-        paint.setColor(context.getColor(R.color.darkTextBlue));
-        paint.setTextAlign(Paint.Align.LEFT);
-        paint.setAlpha(100);
-        going = false;
-        onCounted = new OnCounted() {
-            @Override
-            public void onCounted() {
-                return;
-            }
-        };
+        setTextColor(context.getColor(R.color.darkTextBlue));
+        setAlpha(0.4f);
+        setGravity(Gravity.CENTER);
+        setEllipsize(TextUtils.TruncateAt.END);
+        setSingleLine(true);
     }
 
-    public void setOnCounted(OnCounted onCounted){
-        this.onCounted = onCounted;
+    public void setOnFinish(Runnable r){
+        onFinish = r;
     }
 
     public void start(int numberToShow){
-        stopMillis = SystemClock.elapsedRealtime() + (numberToShow + 1) * 1000;
         going = true;
-        invalidate();
+        timer = new CountDownTimer(1000 * (numberToShow + 1), 40) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (!going){
+                    return;
+                }
+                if (millisUntilFinished < 1000){
+                    setText(context.getString(R.string.go) + "!");
+                } else {
+                    int seconds = (int) millisUntilFinished / 1000;
+                    setText(Integer.toString(seconds));
+                }
+                int textSize = Math.max(200, getWidth() * (int) (millisUntilFinished % 1000) / 500);
+                setTextSize(COMPLEX_UNIT_DIP, textSize);
+            }
+
+            @Override
+            public void onFinish() {
+                if (onFinish != null){
+                    onFinish.run();
+                }
+            }
+        };
+        timer.start();
     }
 
     public void cancel(){
         going = false;
-    }
-
-    public void onDraw(Canvas canvas){
-        super.onDraw(canvas);
-        long timeLeft = stopMillis - SystemClock.elapsedRealtime();
-        if (timeLeft < 1000 ){
-            onCounted.onCounted();
-        }
-        if (timeLeft < 0){
-            going = false;
-        }
-        if (!going){
-            return;
-        }
-        Rect rect = new Rect();
-        String text = timeLeft > 1000? Integer.toString((int) timeLeft / 1000) : context.getString(R.string.go) + "!";
-        int textSize = getWidth() * (int) (timeLeft % 1000) / 500;
-        if (textSize < 400){
-            textSize = 400;
-        }
-        paint.setTextSize(textSize);
-        paint.getTextBounds(text, 0, 1, rect);
-        canvas.drawText(text, (getWidth() + rect.left - rect.right) / 2, (getHeight() - rect.top + rect.bottom) / 2, paint);
-        if (going){
-            postInvalidateDelayed(1000 / FPS);
-        }
-    }
-
-    public interface OnCounted {
-        void onCounted();
     }
 }
