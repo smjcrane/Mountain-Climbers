@@ -1,0 +1,15 @@
+0 50 0 100 0
+0 100 300
+N Quelques niveaux a plus de 2 grimpeurs
+N Tous les grimpeurs devent etre a la meme hauteur
+R0 Get the climbers on the left to meet
+L1 Get the climbers on the left to meet
+L2 Get the climbers on the left to meet
+G Allez!
+N When 2 climbers meet, they merge
+N Your goal is to merge all the climbers into 1
+R0 Send both climbers to the right
+R1 Send both climbers to the right
+G Allez!
+L1 Send them up the big mountain
+G Allez!

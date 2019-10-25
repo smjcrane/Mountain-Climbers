@@ -18,7 +18,6 @@ public class TutorialMountainView extends MountainView {
     private boolean actionInProgress;
     protected TextPaint textHintPaint;
     TutorialGame game;
-    private Solver.Move hint;
 
     public TutorialMountainView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -82,6 +81,7 @@ public class TutorialMountainView extends MountainView {
     }
 
     protected void onDraw(Canvas canvas) {
+        Log.d("HINT", hint == null ? "null" : "not null");
         super.onDraw(canvas);
         if (game.moving != Game.Moving.NONE){
             return;
@@ -162,9 +162,13 @@ public class TutorialMountainView extends MountainView {
                 while (game.getInstruction().isDone()){
                     game.markAsDone();
                 }
-                if (game.getInstruction().isHint()){
+                if (game.getInstruction().isHint() && hint == null){
                     hint = game.getInstruction().getHint();
-                    Log.d("HINT", hint == null ? "null" : hint.toString());
+                    hintFlashOn = true;
+                    hintTimer.start();
+                } else if (!game.getInstruction().isHint()) {
+                    hint = null;
+                    hintTimer.cancel();
                 }
                 invalidate();
                 return true;

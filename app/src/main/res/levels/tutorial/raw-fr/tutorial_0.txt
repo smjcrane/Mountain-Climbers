@@ -1,0 +1,5 @@
+0 100
+0
+N Aidez lui grimpeur la montagne
+R0 Glissez the climber to the right to set its movement direction
+G Appuyez sur <<allez>>

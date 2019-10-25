@@ -10,7 +10,7 @@ android {
         applicationId "com.gmail.mountainapp.scrane.mountainclimbers"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 19
+        versionCode 20
         versionName "1.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -58,4 +58,12 @@ dependencies {
     implementation 'com.google.android.gms:play-services-games:18.0.1'
     implementation 'com.google.android.gms:play-services-identity:17.0.0'
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.apis:google-api-services-tasks:v1-rev48-1.23.0' exclude module: 'httpclient'
+    implementation 'com.google.api-client:google-api-client-android:1.26.0' exclude module: 'httpclient'
+    implementation 'com.google.http-client:google-http-client-gson:1.26.0' exclude module: 'httpclient'
+    implementation 'com.google.api-client:google-api-client:1.23.0'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
+    implementation('com.google.apis:google-api-services-drive:v3-rev136-1.25.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
 }

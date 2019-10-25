@@ -1,6 +1,5 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -11,10 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 
@@ -23,7 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class PlayGameActivity extends SignedInActivity implements Game.OnVictoryListener{
+public class PlayGameActivity extends DriveActivity implements Game.OnVictoryListener{
 
     static final String SAVED_POSITIONS = "savedpositions";
     static final String SAVED_DIRECTIONS = "saveddirections";
@@ -39,6 +38,7 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
     protected SharedPreferences preferences;
     protected SharedPreferences.Editor editor;
     protected int packPos;
+    protected AchievementsClient client;
 
     protected String victoryMessage;
 
@@ -59,8 +59,6 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
         editor.putBoolean(getString(R.string.TUTORIAL), false);
         editor.commit();
         packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
-
-        MountainView.victoryMessage = getString(R.string.youwin);
 
         mountainView = findViewById(R.id.mountainView);
         snowView = findViewById(R.id.snowView);
@@ -137,12 +135,9 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
         db = new DataBaseHandler(PlayGameActivity.this);
         int levelDBID = db.getId(packPos, levelPos);
         db.markCompleted(levelDBID);
-        if (shouldUpdateAchievements){
-            AchievementsClient client = Games.getAchievementsClient(PlayGameActivity.this, account);
+        if (signedIn){
             client.setSteps(getString(Common.packCompletedAchievementIDs[packPos]),
                     db.howManyCompletedInPack(packPos));
-            //client.setSteps(getString(R.string.achievement_master), db.howManyCompleted() * 728 / Levels.totalLevels());
-            //client.setSteps(getString(R.string.achievement_unstoppable), db.howManyCompleted());
         }
         db.close();
 
@@ -208,8 +203,9 @@ public class PlayGameActivity extends SignedInActivity implements Game.OnVictory
     }
 
     @Override
-    protected void onAccountChanged(){
-        shouldUpdateAchievements = shouldSignIn && (account != null);
+    protected void onSignIn(GoogleSignInAccount account){
+        super.onSignIn(account);
+        client = Games.getAchievementsClient(PlayGameActivity.this, account);
         if (shouldUpdateAchievements){
             gamesClient = Games.getGamesClient(this, account);
             gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));

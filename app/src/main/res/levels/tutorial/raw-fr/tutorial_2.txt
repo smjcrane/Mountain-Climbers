@@ -1,0 +1,8 @@
+0 60 30 100 0
+0
+R0 Go up the mountain
+G Allez!
+G Allez!
+N When the climber is stationary, you can change its direction
+L0 Swipe the climber to the left
+G Allez!

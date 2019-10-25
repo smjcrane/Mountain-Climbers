@@ -28,6 +28,8 @@ import java.util.concurrent.TimeoutException;
 
 class DataBaseHandler extends SQLiteOpenHelper {
 
+    public static final String BACKUP_NAME = "backup.db";
+
     //database
     public static final String DATABASE_NAME = "userprogress.db";
 
@@ -592,15 +594,17 @@ class DataBaseHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void mergeWithBytes(Context context, byte[] bytes){
+    public void mergeWithBackup(Context context){
         Log.d("DB", "Merging with backup");
-        try (FileOutputStream fos = new FileOutputStream(context.getDatabasePath(BackUpHandler.BACKUP_NAME))) {
+        /*
+        try (FileOutputStream fos = new FileOutputStream(context.getDatabasePath(BACKUP_NAME))) {
             fos.write(bytes);
         } catch (IOException e){
             e.printStackTrace();
             Toast.makeText(context, "Error restoring backup", Toast.LENGTH_SHORT).show();
             return;
         }
+         */
         SQLiteDatabase db = getWritableDatabase();
         BackUpHandler backUpHandler = new BackUpHandler(context);
         SQLiteDatabase backupDB = backUpHandler.getReadableDatabase();
@@ -713,7 +717,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
         }
         backupDB.close();
         db.close();
-        context.getDatabasePath(BackUpHandler.BACKUP_NAME).delete();
+        context.getDatabasePath(BACKUP_NAME).delete();
         Toast.makeText(context, "Transfer complete", Toast.LENGTH_LONG).show();
     }
 
@@ -738,7 +742,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
 
     private class BackUpHandler extends SQLiteOpenHelper {
 
-        public static final String BACKUP_NAME = "backup.db";
         public BackUpHandler(Context context) {
             super(context, BACKUP_NAME, null, 1);
         }

@@ -24,5 +24,5 @@ public class Common {
             R.string.achievement_five_peaks
     };
 
-    public static final int ACHIEVEMENT_TINKER = 0;
+    public static final int ACHIEVEMENT_CUSTOMISE = 0;
 }

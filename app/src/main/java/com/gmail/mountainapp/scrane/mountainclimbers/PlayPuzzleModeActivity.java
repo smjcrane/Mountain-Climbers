@@ -10,13 +10,9 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.google.android.gms.games.AchievementsClient;
-import com.google.android.gms.games.Games;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +21,6 @@ import java.util.concurrent.Future;
 
 import static android.view.View.SCALE_X;
 import static android.view.View.SCALE_Y;
-import static android.view.View.TRANSLATION_X;
-import static android.view.View.TRANSLATION_Y;
 
 public class PlayPuzzleModeActivity extends PlayGameActivity {
 
@@ -94,10 +88,8 @@ public class PlayPuzzleModeActivity extends PlayGameActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.d("STARS", MountainView.victoryMessage);
         mountainView.invalidate();
         if (shouldUpdateAchievements){
-            AchievementsClient client = Games.getAchievementsClient(PlayPuzzleModeActivity.this, account);
             client.setSteps(getString(R.string.achievement_perfect_10), db.howManyPerfect());
             client.setSteps(getString(R.string.achievement_perfect_100), db.howManyPerfect());
         }

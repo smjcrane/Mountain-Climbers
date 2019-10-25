@@ -2,6 +2,11 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.util.Log;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 
 public class Instruction {
     public static final int GO_BUTTON = -1;
@@ -27,6 +32,7 @@ public class Instruction {
     public Instruction(String text, int objectID, MountainClimber.Direction direction, boolean isHint){
         this(text, objectID, direction);
         this.isHint = isHint;
+        Log.d("INST", "I am " + (isHint ? "" : "not ") + "a hint");
         this.hint = new Solver.Move(new MountainClimber.Direction[] {direction});
     }
 
@@ -34,8 +40,33 @@ public class Instruction {
         return isHint;
     }
 
-    public Solver.Move getHint(){
-        return hint;
+    public Future<Solver.Move> getHint(){
+        return new Future<Solver.Move>() {
+            @Override
+            public boolean cancel(boolean mayInterruptIfRunning) {
+                return false;
+            }
+
+            @Override
+            public boolean isCancelled() {
+                return false;
+            }
+
+            @Override
+            public boolean isDone() {
+                return true;
+            }
+
+            @Override
+            public Solver.Move get() throws ExecutionException, InterruptedException {
+                return hint;
+            }
+
+            @Override
+            public Solver.Move get(long timeout, TimeUnit unit) throws ExecutionException, InterruptedException, TimeoutException {
+                return hint;
+            }
+        };
     }
 
     public void setClimber(MountainClimber climber){

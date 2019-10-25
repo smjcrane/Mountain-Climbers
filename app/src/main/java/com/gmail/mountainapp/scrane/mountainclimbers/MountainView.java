@@ -41,11 +41,10 @@ public class MountainView extends View {
     public static int PADDING = 150;
     private static int TEXT_SIZE = 1000;
     private static int HINT_FLASH_TIME = 500;
-    public static String victoryMessage = "!";
     protected Paint mountainPaint, victoryTextPaint;
     private ColorFilter hintFilter;
     protected Future<Solver.Move> hint;
-    private boolean hintFlashOn;
+    protected boolean hintFlashOn;
     protected Map<MountainClimber, PorterDuffColorFilter> climberFilters;
     protected Map<MountainClimber, PorterDuffColorFilter> arrowFilters;
     protected Map<MountainClimber, PorterDuffColorFilter> highlightedArrowFilters;
@@ -81,7 +80,7 @@ public class MountainView extends View {
         this.arrowFilters = new HashMap<>();
         this.highlightedArrowFilters = new HashMap<>();
         this.selectedClimber = null;
-        this.hintTimer = new CountUpTimer(HINT_FLASH_TIME) {
+        this.hintTimer = new CountUpTimer(HINT_FLASH_TIME, new CountUpTimer.Ticker() {
             @Override
             public void onTick(long millisElapsed) {
                 if (hintFlashOn){
@@ -91,7 +90,7 @@ public class MountainView extends View {
                 }
                 invalidate();
             }
-        };
+        });
         SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
         int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
         if (PUMPKINS){
@@ -281,7 +280,6 @@ public class MountainView extends View {
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         drawMountain(canvas);
         drawTrees(canvas);
         drawDirections(canvas);

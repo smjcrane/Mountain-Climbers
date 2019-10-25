@@ -50,6 +50,9 @@ public class CountDownView extends TextView {
 
     public void start(int numberToShow){
         going = true;
+        if (timer!= null){
+            timer.cancel();
+        }
         timer = new CountDownTimer(1000 * (numberToShow + 1), 40) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -62,12 +65,13 @@ public class CountDownView extends TextView {
                     int seconds = (int) millisUntilFinished / 1000;
                     setText(Integer.toString(seconds));
                 }
-                int textSize = Math.max(200, getWidth() * (int) (millisUntilFinished % 1000) / 500);
+                int textSize = Math.max(200, getWidth() * (int) (millisUntilFinished % 1000) / 1000);
                 setTextSize(COMPLEX_UNIT_DIP, textSize);
             }
 
             @Override
             public void onFinish() {
+                setText("");
                 if (onFinish != null){
                     onFinish.run();
                 }

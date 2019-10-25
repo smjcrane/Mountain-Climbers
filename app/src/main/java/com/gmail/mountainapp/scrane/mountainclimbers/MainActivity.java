@@ -6,11 +6,14 @@ import androidx.annotation.NonNull;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.common.images.ImageManager;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.Player;
@@ -20,7 +23,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.Date;
 
-public class MainActivity extends SignedInActivity {
+public class MainActivity extends DriveActivity {
 
     private Button playButton, levelSelectButton, timedButton, puzzleButton, dailyButton;
     private ImageView settingsButton;
@@ -178,8 +181,10 @@ public class MainActivity extends SignedInActivity {
     }
 
     @Override
-    protected void onAccountChanged(){
-        if (account == null || !shouldSignIn){
+    protected void onSignIn(GoogleSignInAccount account){
+        super.onSignIn(account);
+        Log.d("MAIN", "Signed in");
+        if (account == null || !signedIn){
             userNameText.setText(getString(R.string.sign_in));
             userProfilePicture.setImageDrawable(getDrawable(R.drawable.nobody));
             return;

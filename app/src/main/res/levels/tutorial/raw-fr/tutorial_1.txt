@@ -1,0 +1,7 @@
+0 70 30 100
+0
+N The climber will stop when it reaches a peak or a valley
+R0 Get the climber to the right
+G Allez!
+G Allez encore!
+G Allez encore!

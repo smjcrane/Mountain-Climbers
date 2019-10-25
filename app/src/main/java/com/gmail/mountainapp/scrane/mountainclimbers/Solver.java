@@ -133,7 +133,7 @@ public class Solver {
     }
 
     private List<Integer> getAllX(int height){
-        List xs = new ArrayList();
+        List<Integer> xs = new ArrayList<>();
         for (int x = 0; x <= mountain.getWidth(); x++){
             if (mountain.getHeightAt(x) == height){
                 xs.add(x);

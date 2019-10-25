@@ -2,7 +2,6 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,11 +10,12 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 
 
-public class SettingsActivity extends SignedInActivity {
+public class SettingsActivity extends DriveActivity {
 
     public static final int SPEED_TORTOISE = 1;
     public static final int SPEED_HARE = 2;
@@ -31,6 +31,7 @@ public class SettingsActivity extends SignedInActivity {
     private SharedPreferences.Editor editor;
     private ImageView imageTortoise, imageHare, imageLightning, imageInfinity;
     private ImageView imageCircle, imagePeg, imageHollow;
+    private AchievementsClient achievementsClient;
 
     private Button doneButton;
 
@@ -199,22 +200,22 @@ public class SettingsActivity extends SignedInActivity {
     }
 
     private void unlockTheAchievement(){
-        if (!shouldSignIn || account == null){
+        if (!signedIn){
             return;
         }
-        AchievementsClient achievementsClient = Games.getAchievementsClient(SettingsActivity.this, account);
         achievementsClient.unlock(getString(R.string.achievement_customise));
         DataBaseHandler db = new DataBaseHandler(SettingsActivity.this);
-        db.saveAchievementProgress(Common.ACHIEVEMENT_TINKER, 1);
+        db.saveAchievementProgress(Common.ACHIEVEMENT_CUSTOMISE, 1);
         db.close();
     }
 
     @Override
-    protected void onAccountChanged(){
-        if (!shouldSignIn || account == null){
+    protected void onSignIn(GoogleSignInAccount account){
+        if (!signedIn){
             return;
         }
         gamesClient = Games.getGamesClient(this, account);
         gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
+        achievementsClient = Games.getAchievementsClient(SettingsActivity.this, account);
     }
 }

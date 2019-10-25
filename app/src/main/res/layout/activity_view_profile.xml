@@ -90,8 +90,25 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/restoreBackup"
-                android:text="@string/backup_restore"
+                android:id="@+id/backup"
+                android:text="@string/backup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/restore"
+                android:text="@string/restore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -108,7 +125,7 @@
 
             <Button
                 android:id="@+id/signOutButton"
-                android:text="@string/sign_out"
+                android:text="@string/sign_in"
                 style="@style/MainButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

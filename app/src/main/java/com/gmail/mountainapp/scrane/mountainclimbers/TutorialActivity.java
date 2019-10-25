@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.Games;
 
@@ -26,7 +26,7 @@ import static com.gmail.mountainapp.scrane.mountainclimbers.Common.DIRECTIONS;
 import static com.gmail.mountainapp.scrane.mountainclimbers.PlayGameActivity.SAVED_DIRECTIONS;
 import static com.gmail.mountainapp.scrane.mountainclimbers.PlayGameActivity.SAVED_POSITIONS;
 
-public class TutorialActivity extends SignedInActivity {
+public class TutorialActivity extends DriveActivity {
 
     static final String SAVED_INDEX = "savedindex";
 
@@ -42,6 +42,8 @@ public class TutorialActivity extends SignedInActivity {
 
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
+    AchievementsClient client;
+
 
     int levelPos;
 
@@ -172,6 +174,7 @@ public class TutorialActivity extends SignedInActivity {
                     int startOfText = s.indexOf(" ");
                     String text = s.substring(startOfText + 1);
                     boolean isHint = s.substring(startOfText - 1, startOfText).equals("H");
+                    Log.d("TUT", "The instruction is " + (isHint ? "" : "not ") + "a hint");
                     MountainClimber.Direction d = type.equals("R") ? MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT;
                     int objectID;
                     if (isHint) {
@@ -196,8 +199,7 @@ public class TutorialActivity extends SignedInActivity {
                     int packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
                     int levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
                     db.markCompletedTutorial(db.getId(packPos, levelPos));
-                    if (shouldSignIn && account != null){
-                        AchievementsClient client = Games.getAchievementsClient(TutorialActivity.this, account);
+                    if (signedIn){
                         client.setSteps(getString(R.string.achievement_learning_the_ropes), db.howManyTutorialCompletedInPack(packPos));
                     }
                     if (levelPos < levelIDs.length - 1){
@@ -262,14 +264,16 @@ public class TutorialActivity extends SignedInActivity {
     }
 
     @Override
-    protected void onAccountChanged(){
-        if (shouldSignIn && account != null){
+    protected void onSignIn(GoogleSignInAccount account){
+        if (signedIn){
             Log.d("TUT", "Setting pop up view");
             gamesClient = Games.getGamesClient(this, account);
             gamesClient.setViewForPopups(findViewById(R.id.container_pop_up));
+            client = Games.getAchievementsClient(TutorialActivity.this, account);
         }
         else {
             gamesClient = null;
+            client = null;
         }
     }
 

@@ -15,7 +15,8 @@
     <string name="done">Fini</string>
     <string name="climbers">Grimpeurs</string>
     <string name="app_name">Grimpeurs des Montagnes</string>
-    <string name="backup_restore">Sauvegarder / Restaurer</string>
+    <string name="backup">Sauvegardez</string>
+    <string name="restore">Restaurez</string>
     <string name="achievements">Réussites</string>
     <string name="no">Non</string>
     <string name="yes">Oui</string>

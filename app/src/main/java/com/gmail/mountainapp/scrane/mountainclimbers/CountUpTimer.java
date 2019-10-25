@@ -1,14 +1,12 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.os.Handler;
-import android.os.Message;
 import android.os.SystemClock;
 
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public abstract class CountUpTimer {
+public class CountUpTimer {
 
     boolean cancelled = false;
     private long millisAtStart;
@@ -16,8 +14,9 @@ public abstract class CountUpTimer {
     private Handler handler;
     private Timer timer;
     private Runnable runnable;
+    private Ticker ticker;
 
-    public CountUpTimer(long interval) {
+    public CountUpTimer(long interval, Ticker ticker) {
         this.interval = interval;
         handler = new Handler();
         runnable = new Runnable() {
@@ -26,7 +25,7 @@ public abstract class CountUpTimer {
                 onTick(SystemClock.elapsedRealtime() - millisAtStart);
             }
         };
-
+        this.ticker = ticker;
     }
 
     public void cancel() {
@@ -58,5 +57,15 @@ public abstract class CountUpTimer {
         this.millisAtStart = millisAtStart;
     }
 
-    public abstract void onTick(long millisElapsed);
+    public void onTick(long millisElapsed){
+        ticker.onTick(millisElapsed);
+    };
+
+    public long getMillisCounted() {
+        return SystemClock.elapsedRealtime() - millisAtStart;
+    }
+
+    public interface Ticker {
+        public void onTick(long millisElapsed);
+    }
 }

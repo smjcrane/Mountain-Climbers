@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.core.util.Pair;
 
+import com.google.common.base.Ticker;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -53,12 +55,11 @@ public class Game {
                 return;
             }
         };
-        movingTimer = new CountUpTimer(1000 / 48) {
-            @Override
+        movingTimer = new CountUpTimer(1000 / 48, new CountUpTimer.Ticker() {
             public void onTick(long millisElapsed) {
                 moveStep();
             }
-        };
+        });
     }
 
     public void setUpSolver(){

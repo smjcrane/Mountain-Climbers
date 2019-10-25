@@ -11,3 +11,5 @@
 /build
 /captures
 .externalNativeBuild
+*credentials.json
+/app/src/main/resources/

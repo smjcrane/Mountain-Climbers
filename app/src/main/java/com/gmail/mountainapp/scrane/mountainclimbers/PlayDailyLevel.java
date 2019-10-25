@@ -11,6 +11,7 @@ public class PlayDailyLevel extends PlayGameActivity {
 
     @Override
     public void loadLevel(Bundle savedInstanceState){
+        victoryText.setText("");
         final int[] positions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_POSITIONS);
         int[] directions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_DIRECTIONS);
 
@@ -55,8 +56,13 @@ public class PlayDailyLevel extends PlayGameActivity {
         goButton.setVisibility(View.INVISIBLE);
         buttonHint.setVisibility(View.INVISIBLE);
         mountainView.invalidate();
+        victoryText.setText(getString(R.string.youwin) + "!");
         DataBaseHandler db = new DataBaseHandler(this);
         db.markDailyCompleted(daysSinceEpoch);
         db.close();
+        if (shouldUpdateAchievements) {
+            client.setSteps(getString(R.string.achievement_addicted),
+                    db.getDailyStreak(daysSinceEpoch));
+        }
     }
 }

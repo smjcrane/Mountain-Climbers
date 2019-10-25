@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.util.Log;
 
 import java.util.List;
 import java.util.Random;
@@ -26,13 +25,12 @@ public class Tree {
             int x = random.nextInt(mountain.getWidth());
             int y = mountain.getHeightAt(x) * parentHeight / mountain.getMaxHeight() + 1;
             p = new Point(PADDING + x * parentWidth / mountain.getWidth(), random.nextInt(maxHeight));
-            if (p.y > parentHeight + PADDING_TOP - y && p.y < parentHeight + PADDING){
+            if (p.y > parentHeight + PADDING_TOP + 50 - y && p.y < parentHeight + PADDING){
                 good = true;
             }
             for (Tree other : others){
                 if (Math.abs(other.getPoint().x - p.x) < 30 && Math.abs(other.getPoint().y - p.y) < 80){
                     good = false;
-                    Log.d("TREE", "Not there! Other: " + other.getPoint().toString() + " Me: " + p.toString());
                 }
             }
         }

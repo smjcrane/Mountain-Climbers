@@ -40,14 +40,13 @@ public class SnowView extends View {
         snowFlakePositions = new ArrayList<>();
         snowFlakeVelocities = new ArrayList<>();
         flyings = new ArrayList<>();
-        timer = new CountUpTimer(1000 / FPS) {
-            @Override
+        timer = new CountUpTimer(1000 / FPS, new CountUpTimer.Ticker() {
             public void onTick(long millisElapsed) {
                 moveAllSnowflakes();
                 moveAllFlyings();
                 invalidate();
             }
-        };
+        });
         timer.start();
         filter = new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, 1);
     }

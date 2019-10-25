@@ -15,7 +15,8 @@
     <string name="profile">Profile</string>
     <string name="achievements">Achievements</string>
     <string name="sign_out">Sign Out</string>
-    <string name="backup_restore">Backup / Restore</string>
+    <string name="backup">Backup</string>
+    <string name="restore">Restore</string>
     <string name="are_you_sure_leave">Are you sure you want to leave?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
