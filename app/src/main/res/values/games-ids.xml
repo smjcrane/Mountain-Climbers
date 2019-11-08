@@ -28,6 +28,8 @@ Save this file as res/values/games-ids.xml in your project.
     <string name="achievement_in_the_valley" translatable="false">CggIwrap9x8QAhAM</string>
     <!-- achievement Five Peaks -->
     <string name="achievement_five_peaks" translatable="false">CggIwrap9x8QAhAN</string>
+    <!-- achievement Six Peaks -->
+    <string name="achievement_six_peaks" translatable="false">CggIwrap9x8QAhAT</string>
     <!-- achievement Customise -->
     <string name="achievement_customise" translatable="false">CggIwrap9x8QAhAE</string>
     <!-- achievement Perfect 10 -->

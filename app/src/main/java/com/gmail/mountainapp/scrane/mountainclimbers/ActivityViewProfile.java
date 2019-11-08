@@ -114,6 +114,8 @@ public class ActivityViewProfile extends DriveActivity {
             @Override
             public void onClick(View v) {
                 if (signOutButton.getText().equals(getString(R.string.sign_in))){
+                    preferences.putBoolean(getString(R.string.SHOULD_SIGN_IN), true);
+                    preferences.apply();
                     requestSignIn();
                 } else {
                     signInClient.signOut();

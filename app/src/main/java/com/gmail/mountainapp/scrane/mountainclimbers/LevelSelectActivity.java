@@ -61,7 +61,7 @@ public class LevelSelectActivity extends AppCompatActivity {
                 } else if (position < pack.getNumTutorials() + pack.getLength()){
                     int levelPos = position - pack.getNumTutorials();
                     Log.d("LVL", "you clicked on " + levelPos);
-                    if (!db.isLocked(db.getId(packpos, levelPos))) {
+                    if (true || !db.isLocked(db.getId(packpos, levelPos))) {
                         Intent playLevel = new Intent();
                         switch (mode){
                             case MODE_DEFAULT:

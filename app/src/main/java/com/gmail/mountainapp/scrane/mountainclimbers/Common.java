@@ -21,7 +21,8 @@ public class Common {
             R.string.achievement_wolf_pack,
             R.string.achievement_big_pack,
             R.string.achievement_in_the_valley,
-            R.string.achievement_five_peaks
+            R.string.achievement_five_peaks,
+            R.string.achievement_six_peaks
     };
 
     public static final int ACHIEVEMENT_CUSTOMISE = 0;

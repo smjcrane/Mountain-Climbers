@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class MountainView extends View {
-    public static boolean PUMPKINS = true;
+    public static boolean PUMPKINS = false;
 
     public static int PADDING_TOP = 200;
     public static int PADDING = 150;
@@ -144,7 +144,7 @@ public class MountainView extends View {
     private void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - PADDING - PADDING_TOP;
-        int climberSize = Math.max(30, Math.max(width, height) / 30);
+        int climberSize = Math.max(30, Math.max(width, height) / 40);
         for (MountainClimber climber : game.climbers){
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *

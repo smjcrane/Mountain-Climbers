@@ -10,8 +10,8 @@ android {
         applicationId "com.gmail.mountainapp.scrane.mountainclimbers"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 21
-        versionName "1.5"
+        versionCode 24
+        versionName "1.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -41,6 +41,7 @@ android {
                             'src/main/res/levels/inv',
                             'src/main/res/levels/pack_up_your_troubles',
                             'src/main/res/levels/peak5',
+                            'src/main/res/levels/peak6',
                             'src/main/res'
                     ]
         }

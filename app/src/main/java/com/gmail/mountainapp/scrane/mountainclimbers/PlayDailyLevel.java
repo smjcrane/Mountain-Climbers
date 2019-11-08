@@ -56,7 +56,7 @@ public class PlayDailyLevel extends PlayGameActivity {
         goButton.setVisibility(View.INVISIBLE);
         buttonHint.setVisibility(View.INVISIBLE);
         mountainView.invalidate();
-        victoryText.setText(getString(R.string.youwin) + "!");
+        victoryText.setText(getString(R.string.youwin));
         DataBaseHandler db = new DataBaseHandler(this);
         db.markDailyCompleted(daysSinceEpoch);
         db.close();

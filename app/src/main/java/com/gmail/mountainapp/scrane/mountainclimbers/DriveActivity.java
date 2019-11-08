@@ -20,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -33,6 +34,7 @@ import com.google.api.services.drive.DriveScopes;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -57,7 +59,14 @@ public abstract class DriveActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         signedIn = false;
-        requestSignIn();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if (getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE).getBoolean(getString(R.string.SHOULD_SIGN_IN), false) && !signedIn){
+            requestSignIn();
+        }
     }
 
     @Override
@@ -66,6 +75,10 @@ public abstract class DriveActivity extends AppCompatActivity {
             case REQUEST_CODE_SIGN_IN:
                 if (resultCode == Activity.RESULT_OK && resultData != null) {
                     handleSignInResult(resultData);
+                } else {
+                    SharedPreferences.Editor editor = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE).edit();
+                    editor.putBoolean(getString(R.string.SHOULD_SIGN_IN), false);
+                    editor.apply();
                 }
                 break;
         }
@@ -82,6 +95,7 @@ public abstract class DriveActivity extends AppCompatActivity {
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         .requestEmail()
                         .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
+                        .requestScopes(new Scope(Scopes.GAMES_LITE))
                         .build();
         signInClient = GoogleSignIn.getClient(this, signInOptions);
 
@@ -126,7 +140,7 @@ public abstract class DriveActivity extends AppCompatActivity {
                         AndroidHttp.newCompatibleTransport(),
                         new GsonFactory(),
                         credential)
-                        .setApplicationName("Drive API Migration")
+                        .setApplicationName(getString(R.string.app_name))
                         .build();
 
         // The DriveServiceHelper encapsulates all REST API and SAF functionality.

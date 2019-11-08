@@ -52,7 +52,8 @@ public final class Levels {
             new Pack(R.string.pack_wolf, new Integer[] {
                     R.raw.wolf_01, R.raw.wolf_02, R.raw.wolf_03, R.raw.wolf_04, R.raw.wolf_05,
                     R.raw.wolf_06, R.raw.wolf_07, R.raw.wolf_08, R.raw.wolf_09, R.raw.wolf_10,
-                    R.raw.wolf_11, R.raw.wolf_12, R.raw.wolf_13, R.raw.wolf_14}),
+                    R.raw.wolf_11, R.raw.wolf_12, R.raw.wolf_13, R.raw.wolf_14, R.raw.wolf_15,
+                    R.raw.wolf_16, R.raw.wolf_17, R.raw.wolf_18, R.raw.wolf_19, R.raw.wolf_20}),
             new Pack(R.string.pack_big, new Integer[] {
                     R.raw.pymtn_001, R.raw.pymtn_002, R.raw.pymtn_003, R.raw.pymtn_004, R.raw.pymtn_005,
                     R.raw.pymtn_006, R.raw.pymtn_007, R.raw.pymtn_008, R.raw.pymtn_009, R.raw.pymtn_010,
@@ -86,6 +87,18 @@ public final class Levels {
                     R.raw.peak5_006, R.raw.peak5_007, R.raw.peak5_008, R.raw.peak5_009, R.raw.peak5_010,
                     R.raw.peak5_011, R.raw.peak5_012, R.raw.peak5_013, R.raw.peak5_014, R.raw.peak5_015,
                     R.raw.peak5_016, R.raw.peak5_017, R.raw.peak5_018, R.raw.peak5_019, R.raw.peak5_020
+            }),
+            new Pack(R.string.peak6, new Integer[] {
+                    R.raw.peak6_001,R.raw.peak6_002,R.raw.peak6_003,R.raw.peak6_004,R.raw.peak6_005,
+                    R.raw.peak6_006,R.raw.peak6_007,R.raw.peak6_008,R.raw.peak6_009,R.raw.peak6_010,
+                    R.raw.peak6_011,R.raw.peak6_012,R.raw.peak6_013,R.raw.peak6_014,R.raw.peak6_015,
+                    R.raw.peak6_016,R.raw.peak6_017,R.raw.peak6_018,R.raw.peak6_019,R.raw.peak6_020,
+                    R.raw.peak6_021,R.raw.peak6_022,R.raw.peak6_023,R.raw.peak6_024,R.raw.peak6_025,
+                    R.raw.peak6_026,R.raw.peak6_027,R.raw.peak6_028,R.raw.peak6_029,R.raw.peak6_030,
+                    R.raw.peak6_031,R.raw.peak6_032,R.raw.peak6_033,R.raw.peak6_034,R.raw.peak6_035,
+                    R.raw.peak6_036,R.raw.peak6_037,R.raw.peak6_038,R.raw.peak6_039,R.raw.peak6_040,
+                    R.raw.peak6_041,R.raw.peak6_042,R.raw.peak6_043,R.raw.peak6_044,R.raw.peak6_045,
+                    R.raw.peak6_046,R.raw.peak6_047,R.raw.peak6_048,R.raw.peak6_049,R.raw.peak6_050
             })
     };
 
