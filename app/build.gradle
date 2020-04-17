@@ -42,6 +42,7 @@ android {
                             'src/main/res/levels/pack_up_your_troubles',
                             'src/main/res/levels/peak5',
                             'src/main/res/levels/peak6',
+                            'src/main/res/levels/quarantine_pack',
                             'src/main/res'
                     ]
         }

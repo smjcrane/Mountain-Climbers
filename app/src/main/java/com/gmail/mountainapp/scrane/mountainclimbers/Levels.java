@@ -99,6 +99,9 @@ public final class Levels {
                     R.raw.peak6_036,R.raw.peak6_037,R.raw.peak6_038,R.raw.peak6_039,R.raw.peak6_040,
                     R.raw.peak6_041,R.raw.peak6_042,R.raw.peak6_043,R.raw.peak6_044,R.raw.peak6_045,
                     R.raw.peak6_046,R.raw.peak6_047,R.raw.peak6_048,R.raw.peak6_049,R.raw.peak6_050
+            }),
+            new Pack(R.string.quarantine, new Integer[] {
+                    R.raw.quarantine_01
             })
     };
 
