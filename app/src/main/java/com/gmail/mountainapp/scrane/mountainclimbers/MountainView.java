@@ -35,12 +35,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class MountainView extends View {
-    public static boolean PUMPKINS = false;
-
     public static int PADDING_TOP = 200;
     public static int PADDING = 150;
     private static int TEXT_SIZE = 1000;
     private static int HINT_FLASH_TIME = 500;
+    private static int NUM_TREES = 30;
     protected Paint mountainPaint, victoryTextPaint;
     private ColorFilter hintFilter;
     protected Future<Solver.Move> hint;
@@ -58,8 +57,10 @@ public class MountainView extends View {
     private Random random;
     private Set<Integer> colorsAvailable;
     private List<Tree> trees;
-    private Drawable climberDrawable;
-    static final int[] climberDrawableIDs = new int[] {R.drawable.circle, R.drawable.peg_person, R.drawable.hollow};
+    private Drawable climberDrawableRight, climberDrawableLeft;
+    private boolean colorClimbers;
+    static final int[] climberDrawableRightIDs = new int[] {R.drawable.circle, R.drawable.peg_person, R.drawable.hollow, R.drawable.climber_steampunk_right};
+    static final int[] climberDrawableLeftIDs = new int[] {R.drawable.circle, R.drawable.peg_person, R.drawable.hollow, R.drawable.climber_steampunk_left};
 
     public MountainView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -91,13 +92,7 @@ public class MountainView extends View {
                 invalidate();
             }
         });
-        SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
-        int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
-        if (PUMPKINS){
-            this.climberDrawable = context.getDrawable(R.drawable.pumpkin);
-        } else {
-            this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
-        }
+        updateClimberDrawable();
         coloursInUse = new HashMap<>();
         random = new Random(SystemClock.elapsedRealtime());
     }
@@ -144,13 +139,18 @@ public class MountainView extends View {
     private void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - PADDING - PADDING_TOP;
-        int climberSize = Math.max(30, Math.max(width, height) / 40);
+        int climberSize = Math.max(40, Math.max(width, height) / 30);
         for (MountainClimber climber : game.climbers){
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
-            Drawable d = climberDrawable.getConstantState().newDrawable().mutate();
-            if (!PUMPKINS){
+            Drawable d;
+            if (climber.getDirection() == MountainClimber.Direction.LEFT){
+                d = climberDrawableLeft.getConstantState().newDrawable().mutate();
+            } else {
+                d = climberDrawableRight.getConstantState().newDrawable().mutate();
+            }
+            if (colorClimbers){
                 d.setColorFilter(climberFilters.get(climber));
             }
             d.setBounds(cx - climberSize, cy - climberSize, cx + climberSize, cy + climberSize);
@@ -269,8 +269,8 @@ public class MountainView extends View {
     protected void drawTrees(Canvas canvas){
         if (trees == null){
             trees = new ArrayList<>();
-            for (int i = 0; i < 20; i++){
-                trees.add(new Tree(random, getWidth(), getHeight(), game.mountain, trees));
+            for (int i = 0; i < NUM_TREES; i++){
+                trees.add(new Tree(this.context, random, getWidth(), getHeight(), game.mountain, trees));
             }
         }
         for (int i = 0; i < trees.size(); i++){
@@ -332,18 +332,11 @@ public class MountainView extends View {
     public void updateClimberDrawable(){
         SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.PREFERENCES), Context.MODE_PRIVATE);
         int climberAppearance = preferences.getInt(context.getString(R.string.CLIMBER_APPEARANCE), SettingsActivity.CLIMBER_CIRCLE);
-        if (PUMPKINS){
-            this.climberDrawable = context.getDrawable(R.drawable.pumpkin);
-        } else {
-            this.climberDrawable = context.getDrawable(climberDrawableIDs[climberAppearance]);
-        }
+        // climberAppearance = 3;
+        colorClimbers = climberAppearance < 3;
+        this.climberDrawableRight = context.getDrawable(climberDrawableRightIDs[climberAppearance]);
+        this.climberDrawableLeft = context.getDrawable(climberDrawableLeftIDs[climberAppearance]);
         invalidate();
-    }
-
-    public void resetClimberDrawableColor(){
-        if (!PUMPKINS){
-            climberDrawable.setColorFilter(new PorterDuffColorFilter(context.getColor(R.color.darkTextGrey), PorterDuff.Mode.SRC_ATOP));
-        }
     }
 
     @Override

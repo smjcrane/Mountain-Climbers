@@ -114,7 +114,6 @@ public class PlayGameActivity extends DriveActivity implements Game.OnVictoryLis
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mountainView.resetClimberDrawableColor();
                 Intent settings = new Intent();
                 settings.setClass(PlayGameActivity.this, SettingsActivity.class);
                 startActivity(settings);
@@ -246,12 +245,6 @@ public class PlayGameActivity extends DriveActivity implements Game.OnVictoryLis
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
         mountainView.updateClimberDrawable();
-    }
-
-    @Override
-    protected void onPause(){
-        super.onPause();
-        mountainView.resetClimberDrawableColor();
     }
 
     @Override

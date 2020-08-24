@@ -1,10 +1,13 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import java.util.List;
@@ -14,52 +17,42 @@ import static com.gmail.mountainapp.scrane.mountainclimbers.MountainView.PADDING
 import static com.gmail.mountainapp.scrane.mountainclimbers.MountainView.PADDING_TOP;
 
 public class Tree {
-    private Path path;
-    private Paint paint;
+    private Drawable leafDrawable, trunkDrawable, shadowDrawable;
     private Point p;
 
-    public Tree(Random random, int maxWidth, int maxHeight, Mountain mountain, List<Tree> others){
+    public Tree(Context context, Random random, int maxWidth, int maxHeight, Mountain mountain, List<Tree> others) {
         boolean good = false;
         int parentHeight = maxHeight - PADDING - PADDING_TOP;
         int parentWidth = maxWidth - 2 * PADDING;
         float scaleFactor = Math.min(parentHeight, parentWidth) / 800f;
-        while(!good){
+        while (!good) {
             int x = random.nextInt(mountain.getWidth());
             int y = mountain.getHeightAt(x) * parentHeight / mountain.getMaxHeight() + 1;
             p = new Point(PADDING + x * parentWidth / mountain.getWidth(), random.nextInt(maxHeight));
-            if (p.y > parentHeight + PADDING_TOP + 50 * scaleFactor - y && p.y < parentHeight + PADDING){
+            if (p.y > parentHeight + PADDING_TOP + 50 * scaleFactor - y && p.y < parentHeight + PADDING) {
                 good = true;
             }
-            for (Tree other : others){
-                if (Math.abs(other.getPoint().x - p.x) < 30 * scaleFactor && Math.abs(other.getPoint().y - p.y) < 80 * scaleFactor){
+            for (Tree other : others) {
+                if (Math.abs(other.getPoint().x - p.x) < 20 * scaleFactor && Math.abs(other.getPoint().y - p.y) < 40 * scaleFactor) {
                     good = false;
                 }
             }
         }
-        paint = new Paint();
-        paint.setColor(Color.rgb(random.nextInt(120), random.nextInt(70) + 60, random.nextInt(10) + 10));
-        paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(2);
-        path = new Path();
-        path.setFillType(Path.FillType.EVEN_ODD);
-        path.moveTo(p.x - 5  * scaleFactor , p.y);
-        path.lineTo(p.x + 5 * scaleFactor, p.y);
-        path.lineTo(p.x + 3 * scaleFactor, p.y - 20 * scaleFactor);
-        int numBranches = random.nextInt(2) + 3;
-        for (int i = 1; i <= numBranches; i++) {
-            path.lineTo(p.x + (25 - random.nextInt(5) - 2 * i)  * scaleFactor, p.y  + (- 15 * i + random.nextInt(4))  * scaleFactor);
-            path.lineTo(p.x + 3 * scaleFactor, p.y + (- 15 * i - 15) * scaleFactor);
-        }
-        for (int i = numBranches; i > 0; i--){
-            path.lineTo(p.x - 3 * scaleFactor, p.y + (- 15 * i - 15) * scaleFactor);
-            path.lineTo(p.x + (- 25 + random.nextInt(5) + 2 * i) * scaleFactor, p.y +( - 15 * i + random.nextInt(4)) * scaleFactor);
-        }
-        path.lineTo(p.x - 3 * scaleFactor, p.y - 20 * scaleFactor);
-        path.close();    }
+        leafDrawable = context.getDrawable(R.drawable.treetop).getConstantState().newDrawable().mutate();
+        int green = random.nextInt(70) + 60;
+        int leafColor = Color.rgb(green + random.nextInt(40) - 60, green, random.nextInt(10) + 10);
+        leafDrawable.setColorFilter(new PorterDuffColorFilter(leafColor, PorterDuff.Mode.SRC_ATOP));
+        leafDrawable.setBounds(p.x - 50, p.y - 100, p.x + 50, p.y);
+
+        trunkDrawable = context.getDrawable(R.drawable.treetrunk).getConstantState().newDrawable().mutate();
+        int trunkColor = Color.rgb(120 + random.nextInt(20), 50 + random.nextInt(20), random.nextInt(10));
+        trunkDrawable.setColorFilter(new PorterDuffColorFilter(trunkColor, PorterDuff.Mode.SRC_ATOP));
+        trunkDrawable.setBounds(p.x - 50, p.y - 100, p.x + 50, p.y);
+    }
 
     public void draw(Canvas canvas){
-        canvas.drawPath(path, paint);
+        trunkDrawable.draw(canvas);
+        leafDrawable.draw(canvas);
     }
 
     public Point getPoint(){

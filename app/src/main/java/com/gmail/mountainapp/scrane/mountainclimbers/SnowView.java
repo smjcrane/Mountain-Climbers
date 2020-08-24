@@ -109,7 +109,7 @@ public class SnowView extends View {
         }
         float r = random.nextFloat();
         if (r < 0.001){
-            flyings.add(new Flying(getContext(), getContext().getDrawable(R.drawable.witch), new Point(-200, 200 + random.nextInt(200))));
+            flyings.add(new Bird(getContext(), new Point(-200, 200 + random.nextInt(200))));
         }
         for (Point point : snowFlakePositions){
             canvas.drawCircle(point.x, point.y, RADIUS, snowPaint);

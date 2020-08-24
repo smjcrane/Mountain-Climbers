@@ -8,19 +8,17 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-class Flying {
-    private Drawable drawable;
-    private Point pos;
-    private int yVelocity;
-    private int turns;
+abstract class Flying {
+    protected Point pos;
+    protected int turns;
+    protected Context context;
 
-    public Flying(Context context, Drawable drawable, Point initialPos){
-        this.drawable = drawable;
-        //this.drawable.setColorFilter(new PorterDuffColorFilter(context.getColor(R.color.streak0), PorterDuff.Mode.SRC_ATOP));
+    public Flying(Context context, Point initialPos){
+        this.context = context;
         pos = initialPos;
-        yVelocity = 0;
         turns = 0;
     }
+
 
     public void move(){
         this.pos.x += 7;
@@ -40,8 +38,5 @@ class Flying {
         return pos.x;
     }
 
-    public void draw(Canvas canvas){
-        drawable.setBounds(pos.x, pos.y - 100, pos.x + 100, pos.y);
-        drawable.draw(canvas);
-    }
+    public abstract void draw(Canvas canvas);
 }
