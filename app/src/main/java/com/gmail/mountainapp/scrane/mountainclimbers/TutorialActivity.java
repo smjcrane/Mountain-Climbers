@@ -156,18 +156,18 @@ public class TutorialActivity extends DriveActivity {
                 climbers.add(climber);
             }
 
-            List<Instruction> instructionList = new ArrayList<>();
+            List<TutorialInstruction> instructionList = new ArrayList<>();
             while (br.ready()){
                 String s = br.readLine();
                 String type = s.substring(0, 1);
                 if (type.equals("N")){
-                    instructionList.add(new Instruction(
-                            s.substring(2), Instruction.ANYWHERE, null
+                    instructionList.add(new TutorialInstruction(
+                            s.substring(2), TutorialInstruction.ANYWHERE, null
                     ));
                     //set text and wait for any tap
                 } else if (type.equals("G")){
-                    instructionList.add(new Instruction(
-                            s.substring(2), Instruction.GO_BUTTON, null
+                    instructionList.add(new TutorialInstruction(
+                            s.substring(2), TutorialInstruction.GO_BUTTON, null
                     ));
                     //set text and wait for go button
                 } else {
@@ -182,7 +182,7 @@ public class TutorialActivity extends DriveActivity {
                     } else {
                         objectID = Integer.parseInt(s.substring(1, startOfText));
                     }
-                    instructionList.add(new Instruction(text, objectID, d, isHint));
+                    instructionList.add(new TutorialInstruction(text, objectID, d, isHint));
                     //set text and wait to set climber direction
                 }
             }
@@ -219,10 +219,17 @@ public class TutorialActivity extends DriveActivity {
             }
 
             br.close();
+            game.setOnStopMoving(new Runnable() {
+                @Override
+                public void run() {
+                    mountainView.initialiseFinger();
+                }
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mountainView.initialiseFinger();
     }
 
     @Override

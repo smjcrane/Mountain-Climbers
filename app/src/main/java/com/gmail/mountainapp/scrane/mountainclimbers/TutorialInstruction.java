@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class Instruction {
+public class TutorialInstruction {
     public static final int GO_BUTTON = -1;
     public static final int ANYWHERE = -2;
 
@@ -20,7 +20,7 @@ public class Instruction {
     private boolean isHint;
     private Solver.Move hint;
 
-    public Instruction(String text, int objectID, MountainClimber.Direction direction){
+    public TutorialInstruction(String text, int objectID, MountainClimber.Direction direction){
         this.text = text;
         this.objectID = objectID;
         this.direction = direction;
@@ -29,7 +29,7 @@ public class Instruction {
         this.hint = null;
     }
 
-    public Instruction(String text, int objectID, MountainClimber.Direction direction, boolean isHint){
+    public TutorialInstruction(String text, int objectID, MountainClimber.Direction direction, boolean isHint){
         this(text, objectID, direction);
         this.isHint = isHint;
         Log.d("INST", "I am " + (isHint ? "" : "not ") + "a hint");
@@ -94,5 +94,13 @@ public class Instruction {
 
     public int getObjectID(){
         return objectID;
+    }
+
+    public MountainClimber.Direction getDirection() {
+        return direction;
+    }
+
+    public MountainClimber getClimber(){
+        return climber;
     }
 }

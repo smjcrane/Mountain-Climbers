@@ -6,20 +6,20 @@ import java.util.List;
 
 public class TutorialGame extends Game {
 
-    List<Instruction> instructionList;
+    List<TutorialInstruction> instructionList;
     int instructionIndex;
 
-    public TutorialGame(Mountain mountain, List<Instruction> instructions){
+    public TutorialGame(Mountain mountain, List<TutorialInstruction> instructions){
         super(mountain);
         this.instructionList = instructions;
         this.instructionIndex = 0;
     }
 
-    public Instruction getInstruction(){
+    public TutorialInstruction getInstruction(){
         if (instructionIndex >= instructionList.size()){
             return instructionList.get(instructionList.size() - 1);
         }
-        Instruction instruction = instructionList.get(instructionIndex);
+        TutorialInstruction instruction = instructionList.get(instructionIndex);
         if (instruction.getObjectID() >= 0){
             instruction.setClimber(climbers.get(instruction.getObjectID()));
         }

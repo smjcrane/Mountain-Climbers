@@ -31,6 +31,7 @@ public class Game {
     private Future<Solver> solver;
     private int movesTaken;
     private OnGo onGo;
+    private Runnable onStopMoving;
     private CountUpTimer movingTimer;
 
     public Game(final Mountain mountain){
@@ -73,6 +74,9 @@ public class Game {
 
     public void setOnGo(OnGo onGo){
         this.onGo = onGo;
+    }
+    public void setOnStopMoving(Runnable r){
+        this.onStopMoving = r;
     }
 
     public int getMovesTaken(){
@@ -175,6 +179,7 @@ public class Game {
             } else {
                 moving = Moving.NONE;
                 movingTimer.cancel();
+                onStopMoving.run();
                 updateVictory();
             }
             moved = true;
