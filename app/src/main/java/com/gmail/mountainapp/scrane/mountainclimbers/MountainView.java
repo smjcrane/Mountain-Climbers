@@ -217,23 +217,24 @@ public class MountainView extends View {
             e.printStackTrace();
             return;
         }
+        int arrowSize = Math.max(20, Math.max(width, height) / 35);
         for (int i = 0; i < game.climbers.size(); i++) {
             MountainClimber climber = game.climbers.get(i);
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
             MountainClimber.Direction direction = directions[i];
-            if (direction == MountainClimber.Direction.LEFT) {
+            if (direction == MountainClimber.Direction.LEFT && (climber.getDirection() != MountainClimber.Direction.LEFT)) {
                 Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_left);
                 d.setColorFilter(hintFilter);
                 d.setAlpha(150);
-                d.setBounds(cx - 80, cy - 30, cx - 35, cy + 30);
+                d.setBounds(cx - (int) (arrowSize * 2), cy - arrowSize, cx - arrowSize, cy + arrowSize);
                 d.draw(canvas);
-            } else if (direction == MountainClimber.Direction.RIGHT){
+            } else if (direction == MountainClimber.Direction.RIGHT && (climber.getDirection() != MountainClimber.Direction.RIGHT)){
                 Drawable d = ContextCompat.getDrawable(this.context, R.drawable.arrow_right);
                 d.setColorFilter(hintFilter);
                 d.setAlpha(150);
-                d.setBounds(cx + 35, cy - 30, cx + 80, cy + 30);
+                d.setBounds(cx + arrowSize, cy - arrowSize, cx + (int) (arrowSize * 2), cy + arrowSize);
                 d.draw(canvas);
             }
         }
@@ -351,9 +352,9 @@ public class MountainView extends View {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                hint = null;
-                hintFlashOn = false;
-                hintTimer.cancel();
+                //hint = null;
+                //hintFlashOn = false;
+                //hintTimer.cancel();
                 if (selectedClimber == null){
                     MountainClimber bestClimber = null;
                     int bestDistance = Math.max(width, height) / 10;

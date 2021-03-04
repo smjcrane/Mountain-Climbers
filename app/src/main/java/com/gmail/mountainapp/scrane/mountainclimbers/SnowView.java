@@ -21,6 +21,7 @@ public class SnowView extends View {
     static int GRAVITY = 5;
     static int WIND = 1;
 
+
     private Random random;
     private CountUpTimer timer;
     private List<Point> snowFlakePositions, snowFlakeVelocities;
@@ -29,6 +30,7 @@ public class SnowView extends View {
     private Paint snowPaint, skyPaint;
     private List<Flying> flyings;
     private DrawFilter filter;
+    private float spawnProbability;
 
     public SnowView(Context context, AttributeSet attrs){
         super(context, attrs);
@@ -49,6 +51,7 @@ public class SnowView extends View {
         });
         timer.start();
         filter = new PaintFlagsDrawFilter(Paint.ANTI_ALIAS_FLAG, 1);
+        spawnProbability = 0.001f;
     }
 
     private void moveAllFlyings(){
@@ -108,7 +111,7 @@ public class SnowView extends View {
             }
         }
         float r = random.nextFloat();
-        if (r < 0.001){
+        if (r < spawnProbability){
             flyings.add(new Bird(getContext(), new Point(-200, 200 + random.nextInt(200))));
         }
         for (Point point : snowFlakePositions){
@@ -117,6 +120,10 @@ public class SnowView extends View {
         for (Flying f: flyings){
             f.draw(canvas);
         }
+    }
+
+    public void setSpawnProbability(float p){
+        spawnProbability = p;
     }
 
     @Override

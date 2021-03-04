@@ -1,8 +1,6 @@
 0 60 30 100 0
-0
-R0 Go up the mountain. The climber will stop when it reaches a peak or a valley
+60
+R0 Go along the mountain. The climber will stop when it reaches a peak or a valley
 G Go!
-G Go!
-N When the climber is stationary, you can change its direction
-L0 Swipe the climber to the left
+L0 When it stops, you can change its direction. Swipe the climber to the left
 G Go!

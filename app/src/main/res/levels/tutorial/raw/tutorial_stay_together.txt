@@ -1,6 +1,8 @@
-0 100 0
-0 200
+0 70 30 100 30 70 0
+0 360
 N This time there are two climbers.  They have to keep the same height at all times.
 R0 Set the climbers to go towards the middle
 L1 Set the climbers to go towards the middle
 G Press GO
+G Down together...
+G ...and up together

@@ -57,6 +57,9 @@ public class TutorialActivity extends DriveActivity {
         levelIDs = Levels.Tutorial.getLevelIDs();
         levelID = levelIDs[levelPos];
 
+        SnowView snowView = findViewById(R.id.snowView);
+        snowView.setSpawnProbability(0);
+
         mountainView = findViewById(R.id.tutorialMountainView);
 
         goButton = findViewById(R.id.tutorialGoButton);
