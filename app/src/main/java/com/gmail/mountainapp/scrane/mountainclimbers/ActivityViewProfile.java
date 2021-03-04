@@ -285,7 +285,6 @@ public class ActivityViewProfile extends DriveActivity {
         achievementsClient.setSteps(getString(R.string.achievement_perfect_100), db.howManyPerfect());
         achievementsClient.setSteps(getString(R.string.achievement_quick_10), db.howManyInUnder10Seconds());
         achievementsClient.setSteps(getString(R.string.achievement_quick_100), db.howManyInUnder10Seconds());
-        achievementsClient.setSteps(getString(R.string.achievement_learning_the_ropes), db.howManyTutorialCompletedInPack(0));
         for (int i = 0; i < packCompletedAchievementIDs.length; i++){
             achievementsClient.setSteps(getString(packCompletedAchievementIDs[i]), db.howManyCompletedInPack(i));
         }

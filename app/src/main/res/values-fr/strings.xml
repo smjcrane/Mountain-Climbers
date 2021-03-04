@@ -42,4 +42,10 @@
     <string name="backup_success">Sauvegarde réussie</string>
     <string name="backup_fail">Une erreur est survenue. Sauvegarde ne réussie pas</string>
     <string name="daily_puzzle">Puzzle du Jour</string>
+    <string name="tut_moving">Mouvez</string>
+    <string name="tut_change_dir">Changez le direction</string>
+    <string name="tut_stay_together">Mouvez ensemble</string>
+    <string name="tut_aim">Le cel</string>
+    <string name="tut_hints">Utilisez des indices</string>
+    <string name="tut_many_climbers">Beaucoup des grimpeurs</string>
 </resources>

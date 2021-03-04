@@ -179,7 +179,9 @@ public class Game {
             } else {
                 moving = Moving.NONE;
                 movingTimer.cancel();
-                onStopMoving.run();
+                if (onStopMoving != null){
+                    onStopMoving.run();
+                }
                 updateVictory();
             }
             moved = true;

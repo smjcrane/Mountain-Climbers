@@ -1,0 +1,4 @@
+0 100
+0
+R0 Help the dot climb the mountain. Swipe it to the right to set its movement direction
+G Press go

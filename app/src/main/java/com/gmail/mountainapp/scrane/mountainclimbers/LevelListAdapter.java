@@ -44,7 +44,7 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
 
     @Override
     public int getCount(){
-        return pack.getLength() + pack.getNumTutorials();
+        return pack.getLength();
     }
 
     @Override
@@ -64,18 +64,8 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                 v.findViewById(R.id.starFill1), v.findViewById(R.id.starFill2), v.findViewById(R.id.starFill3)};
 
         String displayName;
-        if (position < pack.getNumTutorials()){
-            displayName = context.getString(R.string.tutorial) + " " + (position + 1);
-            if (db.isCompletedTutorial(db.getId(packPos, position))){
-                completedImage.setImageDrawable(completedDrawable);
-            } else {
-                completedImage.setImageDrawable(null);
-            }
-            starLayout.setVisibility(View.INVISIBLE);
-            timeText.setText("");
-        } else {
-            displayName = context.getString(R.string.level) + " " + (position - pack.getNumTutorials() + 1);
-            int levelPos = position - pack.getNumTutorials();
+            displayName = context.getString(R.string.level) + " " + (position + 1);
+            int levelPos = position;
             final int levelID = db.getId(packPos, levelPos);
             switch (mode){
                 case Common.MODE_DEFAULT:
@@ -139,7 +129,6 @@ public class LevelListAdapter extends ArrayAdapter<Integer> {
                         }
                     }
             }
-        }
 
         nameText.setText(displayName);
         return v;

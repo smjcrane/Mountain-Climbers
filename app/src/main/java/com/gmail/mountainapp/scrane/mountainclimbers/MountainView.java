@@ -144,7 +144,6 @@ public class MountainView extends View {
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
             int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
-            Log.d("FINGER", "drawing climber at " + Integer.toString(cx) + ", " + Integer.toString(cy));
             Drawable d;
             if (climber.getDirection() == MountainClimber.Direction.LEFT){
                 d = climberDrawableLeft.getConstantState().newDrawable().mutate();

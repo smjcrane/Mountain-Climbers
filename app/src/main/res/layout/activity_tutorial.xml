@@ -39,35 +39,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
-    <Button
-        android:id="@+id/mountainBackButton"
-        android:background="@drawable/back"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:layout_margin="15dp"
-        style="@style/MainButton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <Button
-        android:id="@+id/mountainNextLevelButton"
-        android:background="@drawable/next"
-        android:layout_width="40dp"
-        android:layout_height="50dp"
-        android:layout_margin="15dp"
-        style="@style/MainButton"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-    <Button
-        android:id="@+id/mountainReplayButton"
-        android:background="@drawable/reset"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_margin="5dp"
-        style="@style/MainButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

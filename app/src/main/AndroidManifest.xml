@@ -2,11 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.gmail.mountainapp.scrane.mountainclimbers">
-    <uses-feature android:name="android.software.leanback"
+
+    <uses-feature
+        android:name="android.software.leanback"
         android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen"
+    <uses-feature
+        android:name="android.hardware.touchscreen"
         android:required="false" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS "/>
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS " />
+
     <application
         android:allowBackup="true"
         android:appComponentFactory="android.support.app.CoreComponentFactory"
@@ -16,28 +21,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:appComponentFactory">
-        <activity android:name=".ActivityViewProfile">
-        </activity>
-
+        <activity android:name=".TutorialSelectActivity"></activity>
+        <activity android:name=".ActivityViewProfile"></activity>
         <activity android:name=".SettingsActivity" />
         <activity android:name=".PackSelectActivity" />
-
         <activity android:name=".TutorialActivity" />
         <activity android:name=".LevelSelectActivity" />
         <activity android:name=".PlayGameActivity" />
         <activity android:name=".PlayTimedModeActivity" />
         <activity android:name=".PlayPuzzleModeActivity" />
         <activity android:name=".PlayDailyLevel" />
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:banner="@drawable/pumpkin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />

@@ -4,19 +4,22 @@ import android.content.Context;
 
 public final class Levels {
 
+    public static final Pack Tutorial = new Pack(R.string.tutorial, new Integer[]{
+            R.raw.tutorial_moving, R.raw.tutorial_change_dir, R.raw.tutorial_stay_together,
+            R.raw.tutorial_aim, R.raw.tutorial_hints, R.raw.tutorial_many_climbers
+    });
+    public static final int[] TutorialNames = new int[] {R.string.tut_moving, R.string.tut_change_dir,
+            R.string.tut_stay_together, R.string.tut_aim, R.string.tut_hints, R.string.tut_many_climbers};
+
     public static final Pack[] packs = new Pack[]{
             new Pack(R.string.pack_beginning, new Integer[]{
                     R.raw.lvl_00, R.raw.lvl_01, R.raw.lvl_02, R.raw.lvl_03, R.raw.lvl_04,
                     R.raw.lvl_05, R.raw.lvl_06, R.raw.lvl_07, R.raw.lvl_08, R.raw.lvl_09,
                     R.raw.lvl_10, R.raw.lvl_11, R.raw.lvl_12, R.raw.lvl_13, R.raw.lvl_14,
-                    R.raw.lvl_15, R.raw.lvl_16, R.raw.lvl_17, R.raw.lvl_18, R.raw.lvl_19},
-                    new Integer[] {
-                            R.raw.tutorial_0, R.raw.tutorial_1, R.raw.tutorial_2, R.raw.tutorial_3,
-                            R.raw.tutorial_4, R.raw.tutorial_5}),
+                    R.raw.lvl_15, R.raw.lvl_16, R.raw.lvl_17, R.raw.lvl_18, R.raw.lvl_19}),
             new Pack(R.string.pack_ttw3, new Integer[] {
                     R.raw.ttw3_01, R.raw.ttw3_02, R.raw.ttw3_03, R.raw.ttw3_04, R.raw.ttw3_05,
-                    R.raw.ttw3_06, R.raw.ttw3_07, R.raw.ttw3_08, R.raw.ttw3_09, R.raw.ttw3_10},
-                    new Integer[] {R.raw.tutorial_ttw3_1}),
+                    R.raw.ttw3_06, R.raw.ttw3_07, R.raw.ttw3_08, R.raw.ttw3_09, R.raw.ttw3_10}),
             new Pack(R.string.pack_easy, new Integer[] {
                     R.raw.easy_01, R.raw.easy_02, R.raw.easy_03, R.raw.easy_04, R.raw.easy_05,
                     R.raw.easy_06, R.raw.easy_07, R.raw.easy_09, R.raw.easy_10,
@@ -117,16 +120,10 @@ public final class Levels {
 
         private int nameID;
         private Integer[] levelIDs;
-        private Integer[] tutorialLevelIDs;
 
         private Pack(int stringID, Integer[] levelIDs){
             this.nameID = stringID;
             this.levelIDs = levelIDs;
-        }
-
-        private Pack(int stringID, Integer[] levelIDs, Integer[] tutorialLevelIDs){
-            this(stringID, levelIDs);
-            this.tutorialLevelIDs = tutorialLevelIDs;
         }
 
         public String getName(Context context){
@@ -139,17 +136,6 @@ public final class Levels {
 
         public Integer[] getLevelIDs(){
             return levelIDs;
-        }
-
-        public Integer[] getTutorialLevelIDs() {
-            return tutorialLevelIDs;
-        }
-
-        public int getNumTutorials(){
-            if (tutorialLevelIDs == null){
-                return 0;
-            }
-            return tutorialLevelIDs.length;
         }
     }
 

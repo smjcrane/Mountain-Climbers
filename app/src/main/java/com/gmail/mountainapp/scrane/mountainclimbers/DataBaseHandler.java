@@ -35,7 +35,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
 
     //tables
     public static final String TABLE_SCORES = "tablescores";
-    public static final String TABLE_TUTORIAL = "tabletutorial";
     public static final String TABLE_ACHIEVEMENTS = "tableachievements";
     public static final String TABLE_DAILY = "tabledaily";
 
@@ -84,24 +83,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
                     row.put(COLUMN_BEST_TIME, -1);
                     row.put(COLUMN_OPTIMAL_MOVES, -1);
                     db.insert(TABLE_SCORES, null, row);
-                }
-            }
-        }
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_TUTORIAL + "(" +
-                COLUMN_ID + " INTEGER PRIMARY KEY, " +
-                COLUMN_COMPLETED + " INTEGER " + ")");
-        for (int i = 0; i < Levels.packs.length; i++){
-            Levels.Pack pack = Levels.packs[i];
-            for (int j = 0; j < pack.getNumTutorials(); j++){
-                int id = getId(i, j);
-                Cursor res = db.rawQuery("SELECT * FROM " + TABLE_SCORES +
-                                " WHERE " + COLUMN_ID + "=" + Integer.toString(id),
-                        null);
-                if (res == null || res.getCount() == 0) {
-                    ContentValues row = new ContentValues();
-                    row.put(COLUMN_ID, id);
-                    row.put(COLUMN_COMPLETED, 0);
-                    db.insert(TABLE_TUTORIAL, null, row);
                 }
             }
         }
@@ -226,28 +207,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
         return completed;
     }
 
-    public boolean isCompletedTutorial(int id){
-        SQLiteDatabase db = getReadableDatabase();
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_TUTORIAL + "(" +
-                COLUMN_ID + " INTEGER PRIMARY KEY, " +
-                COLUMN_COMPLETED + " INTEGER " + ")");
-        Cursor res = db.rawQuery(
-                "SELECT * FROM " + TABLE_TUTORIAL + " WHERE " + COLUMN_ID + "=" + id,
-                null);
-        if (res == null || res.getCount() == 0){
-            ContentValues row = new ContentValues();
-            row.put(COLUMN_ID, id);
-            row.put(COLUMN_COMPLETED, 0);
-            db.insert(TABLE_TUTORIAL, null, row);
-            return false;
-        }
-        res.moveToFirst();
-        boolean completed = res.getInt(res.getColumnIndex(COLUMN_COMPLETED)) == 1;
-        res.close();
-        db.close();
-        return completed;
-    }
-
     public void markCompleted(int id) {
         Log.d("DB", "completed level " + id);
         SQLiteDatabase db = getWritableDatabase();
@@ -268,41 +227,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
             db.update(TABLE_SCORES, row, COLUMN_ID + "=" + id, null);
         }
         db.close();
-    }
-
-    public void markCompletedTutorial(int id){
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_TUTORIAL +
-                        " WHERE " + COLUMN_ID + "=" + id,
-                null);
-        if (res == null || res.getCount() == 0){
-            ContentValues row = new ContentValues();
-            row.put(COLUMN_ID, id);
-            row.put(COLUMN_COMPLETED, 1);
-            db.insert(TABLE_TUTORIAL, null, row);
-        } else {
-            ContentValues row = new ContentValues();
-            row.put(COLUMN_COMPLETED, 1);
-            db.update(TABLE_TUTORIAL, row, COLUMN_ID + "=" + id, null);
-        }
-        db.close();
-    }
-
-    public int howManyTutorialCompletedInPack(int packpos){
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_TUTORIAL +
-                        " WHERE " + COLUMN_COMPLETED + "=1 AND " +
-                COLUMN_ID + " BETWEEN " + (1000 * packpos) + " AND " + (1000 * (packpos + 1) - 1),
-                null );
-        int ans;
-        if (res == null){
-            ans = 0;
-        } else {
-            ans = res.getCount();
-        }
-        res.close();
-        db.close();
-        return ans;
     }
 
     public int howManyLevelsCompleted(){
@@ -656,24 +580,6 @@ class DataBaseHandler extends SQLiteOpenHelper {
             }
         }
         res.close();
-        res = backupDB.rawQuery("SELECT * FROM " + TABLE_TUTORIAL, null);
-        if (res != null) {
-            res.moveToFirst();
-            while (!res.isAfterLast()) {
-                int id = res.getInt(res.getColumnIndex(COLUMN_ID));
-                ContentValues cv = new ContentValues();
-                Log.d("DB", "Merging " + id);
-                int completed =  res.getInt(res.getColumnIndex(COLUMN_COMPLETED));
-                if (completed > 0){
-                    cv.put(COLUMN_COMPLETED, res.getInt(res.getColumnIndex(COLUMN_COMPLETED)));
-                }
-                if (cv.size() > 0){
-                    db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
-                }
-                res.moveToNext();
-            }
-        }
-        res.close();
         res = backupDB.rawQuery("SELECT * FROM " + TABLE_ACHIEVEMENTS, null);
         if (res != null) {
             res.moveToFirst();
@@ -686,7 +592,7 @@ class DataBaseHandler extends SQLiteOpenHelper {
                     cv.put(COLUMN_COMPLETED, res.getInt(res.getColumnIndex(COLUMN_COMPLETED)));
                 }
                 if (cv.size() > 0){
-                    db.update(TABLE_SCORES, cv, COLUMN_ID + "=" + id, null);
+                    db.update(TABLE_ACHIEVEMENTS, cv, COLUMN_ID + "=" + id, null);
                 }
                 res.moveToNext();
             }

@@ -33,7 +33,6 @@ public class TutorialFinger {
     public TutorialFinger(Context context) {
         this.context = context;
         drawable = ContextCompat.getDrawable(context, R.drawable.finger_colour);
-        //drawable.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP));
         this.animationType = INVISIBLE;
         this.paint = new Paint();
         paint.setColor(Color.BLACK);
@@ -55,6 +54,7 @@ public class TutorialFinger {
     public void tapOnPoint(Point p){
         this.pos = p;
         this.animationType = TAPPING;
+        this.percentageSwiped = 0;
         timer.start();
     }
 
@@ -71,6 +71,10 @@ public class TutorialFinger {
             case INVISIBLE:
                 break;
             case TAPPING:
+                percentageSwiped += 2;
+                if (percentageSwiped > 30){
+                    percentageSwiped = 0;
+                }
                 break;
             case SWIPING:
                 percentageSwiped += 5;
@@ -84,18 +88,17 @@ public class TutorialFinger {
     }
 
     public void draw(Canvas canvas){
+        int p;
         switch(animationType) {
             case INVISIBLE:
                 return;
             case TAPPING:
-                // TODO
-                Log.d("FINGER", "Tapping on "+Integer.toString(pos.x) + ", "+Integer.toString(pos.y));
-                drawable.setBounds(pos.x - 20, pos.y - 25, pos.x + 130, pos.y + 225);
+                p = Math.min(percentageSwiped, 60 - 2 * percentageSwiped);
+                drawable.setBounds(pos.x - 20 + p, pos.y - 25 - p, pos.x + 130 + p, pos.y + 225 - p);
                 drawable.draw(canvas);
                 break;
             case SWIPING:
-                //TODO
-                int p = percentageSwiped - 30;
+                p = percentageSwiped - 30;
                 if (p < 0){
                     p = 0;
                 }
@@ -104,7 +107,6 @@ public class TutorialFinger {
                 }
                 int cx = (pos.x * (100 - p) + pos2.x * p) / 100;
                 int cy = (pos.y * (100 - p) + pos2.y * p) / 100;
-                Log.d("FINGER", "Drawing at " + Integer.toString(cx) + ", " + Integer.toString(cy));
                 drawable.setBounds(cx - 20, cy - 25, cx + 130, cy + 225);
                 drawable.draw(canvas);
                 break;

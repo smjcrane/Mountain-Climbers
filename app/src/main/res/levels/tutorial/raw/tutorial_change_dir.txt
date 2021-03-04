@@ -1,6 +1,6 @@
 0 60 30 100 0
 0
-R0 Go up the mountain
+R0 Go up the mountain. The climber will stop when it reaches a peak or a valley
 G Go!
 G Go!
 N When the climber is stationary, you can change its direction

@@ -25,7 +25,7 @@ import java.util.Date;
 
 public class MainActivity extends DriveActivity {
 
-    private Button playButton, levelSelectButton, timedButton, puzzleButton, dailyButton;
+    private Button playButton, levelSelectButton, tutorialButton, dailyButton;
     private ImageView settingsButton;
     private TextView userNameText, streakText;
     private ImageView userProfilePicture, streakBlob;
@@ -45,65 +45,45 @@ public class MainActivity extends DriveActivity {
             @Override
             public void onClick(View v) {
                 editor.putInt(getString(R.string.MODE), Common.MODE_DEFAULT);
-
-                Intent selectPack = new Intent();
-                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
-
-                Intent selectLevel = new Intent();
-                selectLevel.setClass(MainActivity.this, LevelSelectActivity.class);
                 Intent playGame = new Intent();
 
                 int packPos = 0;
                 int levelPos = 0;
-                Levels.Pack pack;
 
                 DataBaseHandler db = new DataBaseHandler(MainActivity.this);
-                boolean goToTutorial = true;
                 boolean stop = false;
-                while (!stop) {
-                    pack = Levels.packs[packPos];
-                    if (goToTutorial && pack.getNumTutorials() > 0){
-                        levelPos = 0;
-                        while (db.isCompletedTutorial(db.getId(packPos, levelPos)) && levelPos < pack.getNumTutorials()){
-                            levelPos++;
-                        }
-                        if (levelPos == pack.getNumTutorials()){
-                            goToTutorial = false;
-                            levelPos = 0;
-                        } else {
-                            stop = true;
-                        }
-                    } else if (goToTutorial && pack.getNumTutorials() == 0) {
-                        goToTutorial = false;
-                    } else {
-                        levelPos = 0;
-                        while(db.isCompleted(db.getId(packPos, levelPos)) && levelPos < pack.getLength()){
-                            levelPos++;
-                        }
-                        if (levelPos == pack.getLength()){
-                            goToTutorial = true;
-                            levelPos = 0;
-                            packPos++;
-                        } else {
+                for (packPos = 0; packPos < Levels.packs.length; packPos++){
+                    Log.i("PACK", "looking at pack "+Integer.toString(packPos));
+                    levelPos = 0;
+                    while (!stop && db.isCompleted(db.getId(packPos, levelPos)) && levelPos < Levels.packs[packPos].getLength()) {
+                        levelPos++;
+                        if (levelPos == Levels.packs[packPos].getLength()) {
                             stop = true;
                         }
                     }
-                    if (packPos == Levels.packs.length){
-                        stop = true;
-                        levelPos = 0;
-                        packPos = 0;
+                    if (levelPos < Levels.packs[packPos].getLength()){
+                        break;
                     }
                 }
+
+                if (packPos == Levels.packs.length - 1 && levelPos == Levels.packs[packPos].getLength()) {
+                    levelPos = 0;
+                    packPos = 0;
+                }
+
                 editor.putInt(getString(R.string.LEVELPOS), levelPos);
                 editor.putInt(getString(R.string.PACKPOS), packPos);
-                startActivity(selectPack);
-                startActivity(selectLevel);
-                if (goToTutorial){
-                    playGame.setClass(MainActivity.this, TutorialActivity.class);
-                } else {
-                    playGame.setClass(MainActivity.this, PlayGameActivity.class);
-                }
                 editor.apply();
+
+                Intent selectPack = new Intent();
+                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
+                startActivity(selectPack);
+
+                Intent selectLevel = new Intent();
+                selectLevel.setClass(MainActivity.this, LevelSelectActivity.class);
+                startActivity(selectLevel);
+
+                playGame.setClass(MainActivity.this, PlayGameActivity.class);
                 startActivity(playGame);
             }
         });
@@ -120,27 +100,14 @@ public class MainActivity extends DriveActivity {
             }
         });
 
-        timedButton = findViewById(R.id.mainTimedModeButton);
-        timedButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent selectPack = new Intent();
-                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
-                editor.putInt(getString(R.string.MODE), Common.MODE_TIMED);
-                editor.apply();
-                startActivity(selectPack);
-            }
-        });
 
-        puzzleButton = findViewById(R.id.mainPuzzleModeButton);
-        puzzleButton.setOnClickListener(new View.OnClickListener() {
+        tutorialButton = findViewById(R.id.mainTutorialButton);
+        tutorialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent selectPack = new Intent();
-                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
-                editor.putInt(getString(R.string.MODE), Common.MODE_PUZZLE);
-                editor.apply();
-                startActivity(selectPack);
+                Intent playTutorial = new Intent();
+                playTutorial.setClass(MainActivity.this, TutorialSelectActivity.class);
+                startActivity(playTutorial);
             }
         });
 

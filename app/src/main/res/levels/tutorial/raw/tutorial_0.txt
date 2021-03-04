@@ -1,5 +1,0 @@
-0 100
-0
-N Help the coloured dot climb the mountain
-R0 Swipe the climber to the right to set its movement direction
-G Press go

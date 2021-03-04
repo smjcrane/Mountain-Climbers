@@ -45,7 +45,6 @@ public class TutorialMountainView extends MountainView {
             }
             return false;
         } else if (game.getInstruction().getObjectID() == TutorialInstruction.ANYWHERE){
-            Log.d("TUT", "go is somewhere");
             game.markAsDone();
             initialiseFinger();
             invalidate();
@@ -88,7 +87,6 @@ public class TutorialMountainView extends MountainView {
     public void initialiseFinger() {
         TutorialInstruction instruction = game.getInstruction();
         if (instruction.getObjectID() == TutorialInstruction.GO_BUTTON){
-            Log.d("FINGER", "Tippety tappety");
             finger.tapOnPoint(new Point(getWidth() / 2 + 50, getHeight() - 100));
             return;
         }
@@ -102,10 +100,8 @@ public class TutorialMountainView extends MountainView {
         }
         MountainClimber.Direction dir = instruction.getDirection();
         if (dir == null){
-            Log.d("FINGER", "It doesn't want to go anywhere today");
             finger.disappear();
         } else {
-            Log.d("FINGER", "Doing me a draw");
             int width = getWidth() - 2 * PADDING;
             int height = getHeight() - PADDING - PADDING_TOP;
             int climberPos = instruction.getClimber().getPosition();
@@ -122,8 +118,13 @@ public class TutorialMountainView extends MountainView {
         }
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        initialiseFinger();
+    }
+
     protected void onDraw(Canvas canvas) {
-        Log.d("HINT", hint == null ? "null" : "not null");
         super.onDraw(canvas);
         if (game.moving != Game.Moving.NONE){
             return;

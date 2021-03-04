@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 
 import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,17 +34,13 @@ public class TutorialActivity extends DriveActivity {
     private Integer[] levelIDs;
     private TutorialMountainView mountainView;
     private TextView goButton;
-    private Button buttonBack, buttonNextLevel, buttonReset;
     private static int levelID;
-
-    private DataBaseHandler db;
 
     private TutorialGame game;
 
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     AchievementsClient client;
-
 
     int levelPos;
 
@@ -54,14 +51,10 @@ public class TutorialActivity extends DriveActivity {
 
         preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
         editor = preferences.edit();
-        editor.putBoolean(getString(R.string.TUTORIAL), true);
-        editor.apply();
-        int packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
-        levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
 
-        db = new DataBaseHandler(this);
+        levelPos = preferences.getInt(getString(R.string.tutorial), 0);
 
-        levelIDs = Levels.packs[packPos].getTutorialLevelIDs();
+        levelIDs = Levels.Tutorial.getLevelIDs();
         levelID = levelIDs[levelPos];
 
         mountainView = findViewById(R.id.tutorialMountainView);
@@ -71,34 +64,6 @@ public class TutorialActivity extends DriveActivity {
             @Override
             public void onClick(View v) {
                 TutorialActivity.this.mountainView.go();
-            }
-        });
-
-        buttonBack = findViewById(R.id.mountainBackButton);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        buttonReset = findViewById(R.id.mountainReplayButton);
-        buttonReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadLevel(null);
-            }
-        });
-
-        buttonNextLevel = findViewById(R.id.mountainNextLevelButton);
-        buttonNextLevel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                levelPos++;
-                editor.putInt(getString(R.string.LEVELPOS), levelPos);
-                editor.apply();
-                levelID = levelIDs[levelPos];
-                loadLevel(null);
             }
         });
 
@@ -124,11 +89,7 @@ public class TutorialActivity extends DriveActivity {
         int[] positions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_POSITIONS);
         int[] directions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_DIRECTIONS);
 
-        buttonBack.setVisibility(View.INVISIBLE);
-        buttonReset.setVisibility(View.INVISIBLE);
-        buttonNextLevel.setVisibility(View.INVISIBLE);
         goButton.setVisibility(View.VISIBLE);
-
 
         try {
             InputStream stream = getResources().openRawResource(levelID);
@@ -189,25 +150,33 @@ public class TutorialActivity extends DriveActivity {
 
             game = new TutorialGame(mountain, instructionList);
             game.instructionIndex = savedInstanceState == null ? 0 : savedInstanceState.getInt(SAVED_INDEX);
-            game.updateVictory();
 
             game.setOnVictoryListener(new Game.OnVictoryListener() {
                 @Override
                 public void onVictory() {
-                    buttonBack.setVisibility(View.VISIBLE);
-                    buttonReset.setVisibility(View.VISIBLE);
-                    int packPos = preferences.getInt(getString(R.string.PACKPOS), 0);
-                    int levelPos = preferences.getInt(getString(R.string.LEVELPOS), 0);
-                    db.markCompletedTutorial(db.getId(packPos, levelPos));
+                    game.setOnVictoryListener(null);
                     if (signedIn){
-                        client.setSteps(getString(R.string.achievement_learning_the_ropes), db.howManyTutorialCompletedInPack(packPos));
+                        client.setSteps(getString(R.string.achievement_learning_the_ropes), levelPos);
                     }
-                    if (levelPos < levelIDs.length - 1){
-                        buttonNextLevel.setVisibility(View.VISIBLE);
+                    levelPos++;
+                    editor.putInt(getString(R.string.LEVELPOS), levelPos);
+                    editor.apply();
+                    if (levelPos < levelIDs.length){
+                        levelID = levelIDs[levelPos];
+                        // wait a little
+                        (new Handler()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                TutorialActivity.this.loadLevel(null);
+                            }
+                        }, 700);
+                    } else {
+                        finish();
                     }
-
-                    goButton.setVisibility(View.INVISIBLE);            }
+                }
             });
+
+            game.updateVictory();
 
             mountainView.setGame(game);
             if (game.victory){
@@ -217,6 +186,8 @@ public class TutorialActivity extends DriveActivity {
             for (int i = 0; i < climbers.size(); i++){
                 mountainView.addClimber(climbers.get(i));
             }
+
+            mountainView.initialiseFinger(); // why is the first time the y position wrong about this???
 
             br.close();
             game.setOnStopMoving(new Runnable() {
@@ -229,7 +200,6 @@ public class TutorialActivity extends DriveActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        mountainView.initialiseFinger();
     }
 
     @Override
@@ -240,6 +210,7 @@ public class TutorialActivity extends DriveActivity {
         if (isLandscapeLocked){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         }
+        mountainView.initialiseFinger();
     }
 
     @Override
