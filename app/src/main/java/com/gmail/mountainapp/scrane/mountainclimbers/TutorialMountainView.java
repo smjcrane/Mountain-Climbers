@@ -2,7 +2,10 @@ package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.text.TextPaint;
@@ -20,6 +23,9 @@ public class TutorialMountainView extends MountainView {
     protected TextPaint textHintPaint;
     TutorialGame game;
     private TutorialFinger finger;
+    private boolean drawLine;
+    protected Paint linePaint;
+    protected Paint textBgPaint;
 
     public TutorialMountainView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -29,11 +35,24 @@ public class TutorialMountainView extends MountainView {
         textHintPaint.setTypeface(Typeface.create("Roboto", Typeface.NORMAL));
         victoryTextPaint.setAlpha(0);
         finger = new TutorialFinger(context);
+        drawLine = false;
+        linePaint = new Paint();
+        linePaint.setColor(Color.BLACK);
+        linePaint.setStrokeWidth(5);
+        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setPathEffect(new DashPathEffect(new float[]{10, 20}, 0));
+        textBgPaint = new Paint();
+        textBgPaint.setColor(Color.WHITE);
+        textBgPaint.setAlpha(100);
     }
 
     public void setGame(TutorialGame game){
         super.setGame(game);
         this.game = game;
+    }
+
+    public void setDrawLine(boolean drawLine){
+        this.drawLine = drawLine;
     }
 
     public boolean go(){
@@ -58,7 +77,7 @@ public class TutorialMountainView extends MountainView {
     }
 
     protected void drawTextHint(Canvas canvas, String text) {
-        int width = getWidth() - 2 * PADDING;
+        int width = getWidth() - 4 * PADDING;
         int height = getHeight() - 2 * PADDING;
         textHintPaint.setTextSize(Math.max(width, height) / 20);
         ArrayList<String> words = new ArrayList<>(Arrays.asList(text.split(" ")));
@@ -77,9 +96,11 @@ public class TutorialMountainView extends MountainView {
             }
         }
         lines.add(line);
-        float y = PADDING;
+        float y = PADDING_TOP;
+        canvas.drawRect( PADDING * 3 / 2, y - (textHintPaint.descent() - textHintPaint.ascent()),
+                (PADDING * 5 / 2 )+ width, y + lines.size() * (textHintPaint.descent() - textHintPaint.ascent()), textBgPaint);
         for (String s : lines){
-            canvas.drawText(s, 100, y, textHintPaint);
+            canvas.drawText(s, 2 * PADDING, y, textHintPaint);
             y = y + textHintPaint.descent() - textHintPaint.ascent();
         }
     }
@@ -88,6 +109,10 @@ public class TutorialMountainView extends MountainView {
         TutorialInstruction instruction = game.getInstruction();
         if (instruction.getObjectID() == TutorialInstruction.GO_BUTTON){
             finger.tapOnPoint(new Point(getWidth() / 2 + 50, getHeight() - 100));
+            return;
+        }
+        if (instruction.getObjectID() == TutorialInstruction.HINT_BUTTON){
+            finger.tapOnPoint(new Point(PADDING * 2 / 3, 2 * PADDING));
             return;
         }
         if (instruction.getObjectID() == TutorialInstruction.ANYWHERE) {
@@ -124,8 +149,36 @@ public class TutorialMountainView extends MountainView {
         initialiseFinger();
     }
 
+    protected void drawLine(Canvas canvas){
+        if (game.climbers.size() < 2){
+            return;
+        }
+        int width = getWidth() - 2 * PADDING;
+        int height = getHeight() - 2 * PADDING_TOP;
+
+        int x1 = game.climbers.get(0).getPosition();
+        int x2 = game.climbers.get(1).getPosition();
+
+        int sx = x1 * width / game.mountain.getWidth() + PADDING;
+        int sy = getHeight() - PADDING_TOP - game.mountain.getHeightAt(x1) *
+                height / game.mountain.getMaxHeight();
+
+        int ex = x2 * width / game.mountain.getWidth() + PADDING;
+        int ey = getHeight() - PADDING_TOP - game.mountain.getHeightAt(x2) *
+                height / game.mountain.getMaxHeight();
+
+        Path mPath = new Path();
+        mPath.moveTo(sx, sy);
+        mPath.quadTo(sx, sy, ex, ey);
+        canvas.drawPath(mPath, linePaint);
+    }
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (drawLine){
+            drawLine(canvas);
+            super.drawClimbers(canvas);
+        }
         if (game.moving != Game.Moving.NONE){
             return;
         }
@@ -139,6 +192,19 @@ public class TutorialMountainView extends MountainView {
             finger.draw(canvas);
         }
         invalidate();
+    }
+
+    @Override
+    public void showHint(){
+        if (hint == null){
+            hint = game.getInstruction().getHint();
+            if (hint == null){
+                return;
+            }
+            hintFlashOn = true;
+            hintTimer.start();
+            invalidate();
+        }
     }
 
     @Override
@@ -208,14 +274,6 @@ public class TutorialMountainView extends MountainView {
                 while (game.getInstruction().isDone()){
                     game.markAsDone();
                     initialiseFinger();
-                }
-                if (game.getInstruction().isHint() && hint == null){
-                    hint = game.getInstruction().getHint();
-                    hintFlashOn = true;
-                    hintTimer.start();
-                } else if (!game.getInstruction().isHint()) {
-                    hint = null;
-                    hintTimer.cancel();
                 }
                 invalidate();
                 return true;

@@ -11,13 +11,13 @@ import java.util.concurrent.TimeoutException;
 public class TutorialInstruction {
     public static final int GO_BUTTON = -1;
     public static final int ANYWHERE = -2;
+    public static final int HINT_BUTTON = -3;
 
     private int objectID;
     private String text;
     private MountainClimber.Direction direction;
     private boolean done;
     private MountainClimber climber;
-    private boolean isHint;
     private Solver.Move hint;
 
     public TutorialInstruction(String text, int objectID, MountainClimber.Direction direction){
@@ -25,22 +25,18 @@ public class TutorialInstruction {
         this.objectID = objectID;
         this.direction = direction;
         this.done = false;
-        this.isHint = false;
         this.hint = null;
     }
 
-    public TutorialInstruction(String text, int objectID, MountainClimber.Direction direction, boolean isHint){
-        this(text, objectID, direction);
-        this.isHint = isHint;
-        Log.d("INST", "I am " + (isHint ? "" : "not ") + "a hint");
-        this.hint = new Solver.Move(new MountainClimber.Direction[] {direction});
-    }
-
-    public boolean isHint(){
-        return isHint;
+    public TutorialInstruction(String text, int objectID, Solver.Move hint){
+        this(text, objectID, hint.getDirections()[0]);
+        this.hint = hint;
     }
 
     public Future<Solver.Move> getHint(){
+        if (hint == null){
+            return null;
+        }
         return new Future<Solver.Move>() {
             @Override
             public boolean cancel(boolean mayInterruptIfRunning) {
@@ -74,7 +70,7 @@ public class TutorialInstruction {
     }
 
     public boolean isDone(){
-        if (objectID == ANYWHERE || objectID == GO_BUTTON){
+        if (objectID == ANYWHERE || objectID == GO_BUTTON || objectID == HINT_BUTTON){
             return done;
         } else {
             Log.d("TUT", "I want " + direction + " and it is " + climber.getDirection());
@@ -83,7 +79,7 @@ public class TutorialInstruction {
     }
 
     public void markAsDone(){
-        if (objectID == ANYWHERE || objectID == GO_BUTTON){
+        if (objectID == ANYWHERE || objectID == GO_BUTTON || objectID == HINT_BUTTON){
             done = true;
         }
     }

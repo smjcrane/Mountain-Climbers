@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -34,6 +35,7 @@ public class TutorialActivity extends DriveActivity {
     private Integer[] levelIDs;
     private TutorialMountainView mountainView;
     private TextView goButton;
+    private ImageView buttonHint;
     private static int levelID;
 
     private TutorialGame game;
@@ -70,6 +72,22 @@ public class TutorialActivity extends DriveActivity {
             }
         });
 
+        buttonHint = findViewById(R.id.mountainHintButton);
+
+        buttonHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (game.victory || game.moving != Game.Moving.NONE || levelID != R.raw.tutorial_hints){
+                    return;
+                }
+                if (game.getInstruction().getObjectID() == TutorialInstruction.HINT_BUTTON){
+                    mountainView.showHint();
+                    game.markAsDone();
+                    mountainView.initialiseFinger();
+                }
+            }
+        });
+
         loadLevel(savedInstanceState);
     }
 
@@ -93,6 +111,12 @@ public class TutorialActivity extends DriveActivity {
         int[] directions = savedInstanceState == null ? null : savedInstanceState.getIntArray(SAVED_DIRECTIONS);
 
         goButton.setVisibility(View.VISIBLE);
+
+        if (levelID == R.raw.tutorial_hints){
+            buttonHint.setVisibility(View.VISIBLE);
+        } else {
+            buttonHint.setVisibility(View.INVISIBLE);
+        }
 
         try {
             InputStream stream = getResources().openRawResource(levelID);
@@ -126,27 +150,27 @@ public class TutorialActivity extends DriveActivity {
                 String type = s.substring(0, 1);
                 if (type.equals("N")){
                     instructionList.add(new TutorialInstruction(
-                            s.substring(2), TutorialInstruction.ANYWHERE, null
+                            s.substring(2), TutorialInstruction.ANYWHERE, MountainClimber.Direction.RIGHT
                     ));
                     //set text and wait for any tap
-                } else if (type.equals("G")){
+                } else if (type.equals("G")) {
                     instructionList.add(new TutorialInstruction(
-                            s.substring(2), TutorialInstruction.GO_BUTTON, null
+                            s.substring(2), TutorialInstruction.GO_BUTTON, MountainClimber.Direction.RIGHT
                     ));
                     //set text and wait for go button
+                } else if (type.equals("H")){
+                        instructionList.add(new TutorialInstruction(
+                                // cba to do this properly
+                                s.substring(5), TutorialInstruction.HINT_BUTTON,
+                                    new Solver.Move(new MountainClimber.Direction[] {MountainClimber.Direction.RIGHT, MountainClimber.Direction.LEFT})
+                        ));
+                        //set text and wait for hint button
                 } else {
                     int startOfText = s.indexOf(" ");
                     String text = s.substring(startOfText + 1);
-                    boolean isHint = s.substring(startOfText - 1, startOfText).equals("H");
-                    Log.d("TUT", "The instruction is " + (isHint ? "" : "not ") + "a hint");
                     MountainClimber.Direction d = type.equals("R") ? MountainClimber.Direction.RIGHT : MountainClimber.Direction.LEFT;
-                    int objectID;
-                    if (isHint) {
-                        objectID = Integer.parseInt(s.substring(1, startOfText - 1));
-                    } else {
-                        objectID = Integer.parseInt(s.substring(1, startOfText));
-                    }
-                    instructionList.add(new TutorialInstruction(text, objectID, d, isHint));
+                    int objectID = Integer.parseInt(s.substring(1, startOfText));
+                    instructionList.add(new TutorialInstruction(text, objectID, d));
                     //set text and wait to set climber direction
                 }
             }
@@ -199,6 +223,13 @@ public class TutorialActivity extends DriveActivity {
                     mountainView.initialiseFinger();
                 }
             });
+
+            mountainView.setDrawLine(levelID == R.raw.tutorial_stay_together);
+            if (levelID == R.raw.tutorial_stay_together){
+                Log.d("LINE", "Yes!");
+            } else {
+                Log.d("LINE", "No!");
+            }
 
         } catch (IOException e) {
             e.printStackTrace();

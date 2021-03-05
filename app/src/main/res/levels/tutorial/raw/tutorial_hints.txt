@@ -1,7 +1,7 @@
-0 100
-0
-N If you get stuck, you can ask for a hint
-N Hints are free and unlimited!
-N There will be a blue question mark.  This is the button to ask for a hint
-R0H Follow the hint
+0 100 0
+0 200
+N If you get stuck, you can ask for a hint. Hints are free and unlimited!
+H R0 Press the question mark to ask for a hint
+R0 Follow the hint
+L1 Follow the hint
 G Go!

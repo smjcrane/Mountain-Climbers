@@ -67,9 +67,9 @@ public class MountainView extends View {
         this.context = context;
         this.clickable = true;
 
-        PADDING = (int) (100 * getResources().getDisplayMetrics().density / 2.75);
-        PADDING_TOP = (int) (150 * getResources().getDisplayMetrics().density / 2.75);
-        TEXT_SIZE = (int) (1000 * getResources().getDisplayMetrics().density / 2.75);
+        PADDING = (int) (50 * getResources().getDisplayMetrics().density);
+        PADDING_TOP = (int) (60 * getResources().getDisplayMetrics().density);
+        TEXT_SIZE = (int) (360 * getResources().getDisplayMetrics().density);
 
         this.mountainPaint = new Paint();
         this.mountainPaint.setColor(context.getColor(R.color.mountainGrey));
@@ -141,7 +141,7 @@ public class MountainView extends View {
         invalidate();
     }
 
-    private void drawClimbers(Canvas canvas){
+    protected void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * PADDING;
         int height = getHeight() - 2 * PADDING_TOP;
         int climberSize = (int) (40 * getResources().getDisplayMetrics().density / 2.75);
@@ -218,11 +218,11 @@ public class MountainView extends View {
         MountainClimber.Direction[] directions;
         try {
             directions = hint.get().getDirections();
-        } catch (InterruptedException| ExecutionException e){
+        } catch (InterruptedException| ExecutionException | NullPointerException e){
             e.printStackTrace();
             return;
         }
-        int arrowSize = (int) (20 * getResources().getDisplayMetrics().density / 2.75);
+        int arrowSize = (int) (35 * getResources().getDisplayMetrics().density / 2.75);
         for (int i = 0; i < game.climbers.size(); i++) {
             MountainClimber climber = game.climbers.get(i);
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
