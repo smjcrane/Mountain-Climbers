@@ -127,4 +127,50 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:text="@string/nobody" />
 
+    <ImageView
+        android:id="@+id/mainPuzzleModeButton"
+        android:src="@drawable/full_star"
+        android:contentDescription="@string/settings"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="@id/mainPlayButton"
+        app:layout_constraintBottom_toTopOf="@+id/mainPuzzleModeText"
+        app:layout_constraintRight_toLeftOf="@id/mainPlayButton"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/mainPuzzleModeText"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@id/mainPuzzleModeButton"
+        app:layout_constraintLeft_toLeftOf="@id/mainPuzzleModeButton"
+        app:layout_constraintRight_toRightOf="@id/mainPuzzleModeButton"
+        app:layout_constraintBottom_toBottomOf="@id/mainPlayButton"
+        android:text="@string/puzzle_mode" />
+
+    <ImageView
+        android:id="@+id/mainTimedModeButton"
+        android:src="@drawable/alarm"
+        android:contentDescription="@string/settings"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="@id/mainPlayButton"
+        app:layout_constraintBottom_toTopOf="@+id/mainTimedModeText"
+        app:layout_constraintLeft_toRightOf="@id/mainPlayButton"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/mainTimedModeText"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@id/mainTimedModeButton"
+        app:layout_constraintLeft_toLeftOf="@id/mainTimedModeButton"
+        app:layout_constraintRight_toRightOf="@id/mainTimedModeButton"
+        app:layout_constraintBottom_toBottomOf="@id/mainPlayButton"
+        android:text="@string/timed_mode" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

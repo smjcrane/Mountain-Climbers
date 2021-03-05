@@ -28,7 +28,7 @@ public class MainActivity extends DriveActivity {
     private Button playButton, levelSelectButton, tutorialButton, dailyButton;
     private ImageView settingsButton;
     private TextView userNameText, streakText;
-    private ImageView userProfilePicture, streakBlob;
+    private ImageView userProfilePicture, streakBlob, puzzleButton, timedButton;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
 
@@ -85,6 +85,30 @@ public class MainActivity extends DriveActivity {
 
                 playGame.setClass(MainActivity.this, PlayGameActivity.class);
                 startActivity(playGame);
+            }
+        });
+
+        puzzleButton = findViewById(R.id.mainPuzzleModeButton);
+        puzzleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent selectPack = new Intent();
+                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
+                editor.putInt(getString(R.string.MODE), Common.MODE_PUZZLE);
+                editor.apply();
+                startActivity(selectPack);
+            }
+        });
+
+        timedButton = findViewById(R.id.mainTimedModeButton);
+        timedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent selectPack = new Intent();
+                selectPack.setClass(MainActivity.this, PackSelectActivity.class);
+                editor.putInt(getString(R.string.MODE), Common.MODE_TIMED);
+                editor.apply();
+                startActivity(selectPack);
             }
         });
 

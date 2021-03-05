@@ -37,6 +37,7 @@
     <string name="error_generic">Une erreur est survenue</string>
     <string name="error_getting_backup">Une erreur est survenue.  Impossible d\'obtenir le fichier</string>
     <string name="error_reading_backup">Une erreur est survenue.  Impossible de lire le fichier</string>
+    <string name="no_backups">Vous n\'avez pas des fichiers.</string>
     <string name="error_connecting_gpg">Impossible de connecter au Google</string>
     <string name="error_connecting_drive">Impossible de connecter au Google</string>
     <string name="backup_success">Sauvegarde réussie</string>

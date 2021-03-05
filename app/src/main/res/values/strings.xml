@@ -34,6 +34,7 @@
     <string name="error_connecting_gpg">Could not connect to Google Play Games</string>
     <string name="sign_in_for_backup">You must sign in save your progress</string>
     <string name="error_connecting_drive">Could not connect to Google Drive</string>
+    <string name="no_backups">You haven\'t saved any backups</string>
     <string name="error_generic">An error occurred</string>
     <string name="select_backup">Select backup</string>
     <string name="backup_success">Backup successful</string>

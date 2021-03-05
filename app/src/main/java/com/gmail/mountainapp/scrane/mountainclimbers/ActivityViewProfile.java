@@ -145,6 +145,10 @@ public class ActivityViewProfile extends DriveActivity {
             public void onComplete(@NonNull Task<FileList> task) {
                 if (task.isSuccessful()){
                     FileList files = task.getResult();
+                    if (files.getFiles().size() == 0){
+                        Toast.makeText(ActivityViewProfile.this, R.string.no_backups, Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     File file = files.getFiles().get(0);
                     Log.d("PROFILE", "Got a file");
                     fileID = file.getId();
