@@ -36,7 +36,7 @@ public class MainActivity extends DriveActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        
         preferences = getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE);
         editor = preferences.edit();
 

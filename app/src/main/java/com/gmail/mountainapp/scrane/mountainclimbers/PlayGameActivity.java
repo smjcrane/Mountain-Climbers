@@ -204,6 +204,9 @@ public class PlayGameActivity extends DriveActivity implements Game.OnVictoryLis
     @Override
     protected void onSignIn(GoogleSignInAccount account){
         super.onSignIn(account);
+        if (account == null){
+            return;
+        }
         client = Games.getAchievementsClient(PlayGameActivity.this, account);
         if (shouldUpdateAchievements){
             gamesClient = Games.getGamesClient(this, account);
