@@ -123,6 +123,8 @@ public class ActivityViewProfile extends DriveActivity {
                     signedIn = false;
                     userInfoText.setText(getString(R.string.not_signed_in));
                     signOutButton.setText(getString(R.string.sign_in));
+                    preferences.putBoolean(getString(R.string.SHOULD_SIGN_IN), false);
+                    preferences.apply();
                 }
             }
         });

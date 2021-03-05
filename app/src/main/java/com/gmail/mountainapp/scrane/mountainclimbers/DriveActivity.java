@@ -54,18 +54,38 @@ public abstract class DriveActivity extends AppCompatActivity {
     protected GamesClient gamesClient;
 
     protected boolean signedIn;
+    protected boolean waitingForResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         signedIn = false;
+        waitingForResult = false;
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         if (getSharedPreferences(getString(R.string.PREFERENCES), MODE_PRIVATE).getBoolean(getString(R.string.SHOULD_SIGN_IN), false) && !signedIn){
-            requestSignIn();
+            GoogleSignInOptions signInOptions =
+                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestEmail()
+                            .requestScopes(new Scope(DriveScopes.DRIVE_FILE))
+                            .requestScopes(new Scope(Scopes.GAMES_LITE))
+                            .build();
+            signInClient = GoogleSignIn.getClient(this, signInOptions);
+
+            Task<GoogleSignInAccount> signIn = signInClient.silentSignIn();
+            if (signIn.isSuccessful()) {
+                // There's immediate result available.
+                GoogleSignInAccount signInAccount = signIn.getResult();
+                onSignIn(signInAccount);
+            } else {
+                onSignIn(null);
+            }
+            //requestSignIn();
+        } else {
+            onSignIn(null);
         }
     }
 
@@ -89,7 +109,11 @@ public abstract class DriveActivity extends AppCompatActivity {
      * Starts a sign-in activity using {@link #REQUEST_CODE_SIGN_IN}.
      */
     void requestSignIn() {
+        if (waitingForResult){
+            return;
+        }
         Log.d(TAG, "Requesting sign-in");
+        waitingForResult = true;
 
         GoogleSignInOptions signInOptions =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -127,6 +151,12 @@ public abstract class DriveActivity extends AppCompatActivity {
     }
 
     protected void onSignIn(GoogleSignInAccount googleAccount){
+        waitingForResult = false;
+        if (googleAccount == null) {
+            Log.d(TAG, "Signed out");
+            signedIn = false;
+            return;
+        }
         Log.d(TAG, "Signed in as " + googleAccount.getEmail());
         signedIn = true;
 
@@ -147,5 +177,4 @@ public abstract class DriveActivity extends AppCompatActivity {
         // Its instantiation is required before handling any onClick actions.
         mDriveServiceHelper = new DriveServiceHelper(googleDriveService);
     }
-
 }
