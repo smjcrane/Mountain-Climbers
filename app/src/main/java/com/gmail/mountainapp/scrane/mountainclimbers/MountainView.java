@@ -35,9 +35,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class MountainView extends View {
-    public static int PADDING_TOP = 200;
-    public static int PADDING = 150;
-    private static int TEXT_SIZE = 1000;
+    public static int PADDING_TOP;
+    public static int PADDING;
+    private static int TEXT_SIZE;
     private static int HINT_FLASH_TIME = 500;
     private static int NUM_TREES = 30;
     protected Paint mountainPaint, victoryTextPaint;
@@ -67,6 +67,10 @@ public class MountainView extends View {
         this.context = context;
         this.clickable = true;
 
+        PADDING = (int) (100 * getResources().getDisplayMetrics().density / 2.75);
+        PADDING_TOP = (int) (150 * getResources().getDisplayMetrics().density / 2.75);
+        TEXT_SIZE = (int) (1000 * getResources().getDisplayMetrics().density / 2.75);
+
         this.mountainPaint = new Paint();
         this.mountainPaint.setColor(context.getColor(R.color.mountainGrey));
         this.mountainPaint.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -95,6 +99,7 @@ public class MountainView extends View {
         updateClimberDrawable();
         coloursInUse = new HashMap<>();
         random = new Random(SystemClock.elapsedRealtime());
+
     }
 
     public void deActivate(){
@@ -138,11 +143,11 @@ public class MountainView extends View {
 
     private void drawClimbers(Canvas canvas){
         int width = getWidth() - 2 * PADDING;
-        int height = getHeight() - PADDING - PADDING_TOP;
-        int climberSize = Math.max(40, Math.max(width, height) / 30);
+        int height = getHeight() - 2 * PADDING_TOP;
+        int climberSize = (int) (40 * getResources().getDisplayMetrics().density / 2.75);
         for (MountainClimber climber : game.climbers){
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
-            int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
+            int cy = getHeight() - PADDING_TOP - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
             Drawable d;
             if (climber.getDirection() == MountainClimber.Direction.LEFT){
@@ -172,11 +177,11 @@ public class MountainView extends View {
             return;
         }
         int width = getWidth() - 2 * PADDING;
-        int height = getHeight() - PADDING - PADDING_TOP;
-        int arrowSize = Math.max(20, Math.max(width, height) / 35);
+        int height = getHeight() - 2 * PADDING_TOP;
+        int arrowSize = (int) (35 * getResources().getDisplayMetrics().density / 2.75);
         for (MountainClimber climber : game.climbers) {
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
-            int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
+            int cy = getHeight() - PADDING_TOP - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
 
             MountainClimber.Direction direction = climber.getDirection();
@@ -209,7 +214,7 @@ public class MountainView extends View {
             return;
         }
         int width = getWidth() - 2 * PADDING;
-        int height = getHeight() - PADDING - PADDING_TOP;
+        int height = getHeight() - 2 * PADDING_TOP;
         MountainClimber.Direction[] directions;
         try {
             directions = hint.get().getDirections();
@@ -217,11 +222,11 @@ public class MountainView extends View {
             e.printStackTrace();
             return;
         }
-        int arrowSize = Math.max(20, Math.max(width, height) / 35);
+        int arrowSize = (int) (20 * getResources().getDisplayMetrics().density / 2.75);
         for (int i = 0; i < game.climbers.size(); i++) {
             MountainClimber climber = game.climbers.get(i);
             int cx = climber.getPosition() * width / game.mountain.getWidth() + PADDING;
-            int cy = getHeight() - PADDING - game.mountain.getHeightAt(climber.getPosition()) *
+            int cy = getHeight() - PADDING_TOP - game.mountain.getHeightAt(climber.getPosition()) *
                     height / game.mountain.getMaxHeight();
             MountainClimber.Direction direction = directions[i];
             if (direction == MountainClimber.Direction.LEFT && (climber.getDirection() != MountainClimber.Direction.LEFT)) {
@@ -241,7 +246,7 @@ public class MountainView extends View {
         }
 
     protected void drawMountain(Canvas canvas){
-        int height = getHeight() - PADDING - PADDING_TOP;
+        int height = getHeight() - 2 * PADDING_TOP;
         int width = getWidth() - 2 * PADDING;
 
         Path path = new Path();
@@ -254,7 +259,7 @@ public class MountainView extends View {
         path.lineTo(width + PADDING, height + PADDING_TOP);
         path.close();
         canvas.drawPath(path, mountainPaint);
-        canvas.drawRect(0, getHeight(), getWidth(), getHeight() - PADDING, mountainPaint);
+        canvas.drawRect(0, getHeight(), getWidth(), getHeight() - PADDING_TOP, mountainPaint);
         canvas.drawRect(0, getHeight(), PADDING,
                  height + PADDING_TOP - mountainPaint.getStrokeWidth() -
                          game.mountain.getHeightAt(0) * height / game.mountain.getMaxHeight(),

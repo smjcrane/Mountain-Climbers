@@ -24,7 +24,7 @@ public class Tree {
         boolean good = false;
         int parentHeight = maxHeight - PADDING - PADDING_TOP;
         int parentWidth = maxWidth - 2 * PADDING;
-        float scaleFactor = Math.min(parentHeight, parentWidth) / 800f;
+        double scaleFactor = context.getResources().getDisplayMetrics().density / 2.75;
         while (!good) {
             int x = random.nextInt(mountain.getWidth());
             int y = mountain.getHeightAt(x) * parentHeight / mountain.getMaxHeight() + 1;
@@ -42,12 +42,12 @@ public class Tree {
         int green = random.nextInt(70) + 60;
         int leafColor = Color.rgb(green + random.nextInt(40) - 60, green, random.nextInt(10) + 10);
         leafDrawable.setColorFilter(new PorterDuffColorFilter(leafColor, PorterDuff.Mode.SRC_ATOP));
-        leafDrawable.setBounds(p.x - 50, p.y - 100, p.x + 50, p.y);
+        leafDrawable.setBounds(p.x - (int) (50*scaleFactor), p.y - (int)(100*scaleFactor), p.x + (int)(50*scaleFactor), p.y);
 
         trunkDrawable = context.getDrawable(R.drawable.treetrunk).getConstantState().newDrawable().mutate();
         int trunkColor = Color.rgb(120 + random.nextInt(20), 50 + random.nextInt(20), random.nextInt(10));
         trunkDrawable.setColorFilter(new PorterDuffColorFilter(trunkColor, PorterDuff.Mode.SRC_ATOP));
-        trunkDrawable.setBounds(p.x - 50, p.y - 100, p.x + 50, p.y);
+        trunkDrawable.setBounds(p.x - (int) (50*scaleFactor), p.y - (int)(100*scaleFactor), p.x + (int)(50*scaleFactor), p.y);
     }
 
     public void draw(Canvas canvas){
