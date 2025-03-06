@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import androidx.appcompat.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -191,7 +192,7 @@ public class TutorialActivity extends DriveActivity {
                     if (levelPos < levelIDs.length){
                         levelID = levelIDs[levelPos];
                         // wait a little
-                        (new Handler()).postDelayed(new Runnable() {
+                        (new Handler(Looper.getMainLooper())).postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 TutorialActivity.this.loadLevel(null);

@@ -1,6 +1,7 @@
 package com.gmail.mountainapp.scrane.mountainclimbers;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 
 import java.util.Timer;
@@ -18,7 +19,7 @@ public class CountUpTimer {
 
     public CountUpTimer(long interval, Ticker ticker) {
         this.interval = interval;
-        handler = new Handler();
+        handler = new Handler(Looper.getMainLooper());
         runnable = new Runnable() {
             @Override
             public void run() {

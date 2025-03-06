@@ -2,16 +2,18 @@ apply plugin: 'com.android.application'
 
 android {
     packagingOptions {
-        exclude 'META-INF/DEPENDENCIES'
+        resources {
+            excludes += ['META-INF/DEPENDENCIES']
+        }
     }
-    compileSdkVersion 28
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.gmail.mountainapp.scrane.mountainclimbers"
-        minSdkVersion 24
-        targetSdkVersion 28
-        versionCode 24
-        versionName "1.6"
+        minSdk 28
+        targetSdk 34
+        versionCode 25
+        versionName '2.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -47,6 +49,7 @@ android {
                     ]
         }
     }
+    namespace 'com.gmail.mountainapp.scrane.mountainclimbers'
 }
 
 dependencies {

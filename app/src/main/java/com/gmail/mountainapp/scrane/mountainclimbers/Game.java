@@ -106,6 +106,7 @@ public class Game {
                 if (c2 != climber && Math.abs(c2.getPosition() - climber.getPosition()) < 1.5) {
                     this.climbers.remove(c2);
                     climber.setDirection(null);
+                    this.solver = null;
                     return new Pair<>(climber, c2);
                 }
             }
